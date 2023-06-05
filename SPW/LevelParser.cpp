@@ -210,6 +210,12 @@ void LevelParser::InitScene(LevelScene &scene) const
                 // TODO : Créer une luciolle
                 break;
             }
+            case 'C':
+            {
+                Checkpoint* checkpoint = new Checkpoint(scene);
+                checkpoint->SetStartPosition(position);
+                break;
+            }
             default:
                 break;
             }

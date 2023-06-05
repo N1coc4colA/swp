@@ -41,7 +41,7 @@ void LevelEnd::Start()
 
 void LevelEnd::Render()
 {
-    SDL_Renderer *renderer = m_scene.GetRenderer();
+    SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera *camera = m_scene.GetActiveCamera();
 
     m_animator.Update(m_scene.GetTime());
