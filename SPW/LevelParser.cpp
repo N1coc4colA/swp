@@ -237,6 +237,12 @@ void LevelParser::InitScene(LevelScene &scene) const
                 bonus->SetStartPosition(position);
                 break;
             }
+            case 'b':
+            {
+                Brick *brick = new Brick(scene);
+                brick->SetStartPosition(position);
+                break;
+            }
             default:
                 break;
             }
