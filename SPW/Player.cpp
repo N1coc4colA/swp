@@ -355,7 +355,9 @@ void Player::OnCollisionEnter(GameCollision &collision)
         }
         else
         {
+
             collision.SetEnabled(false);
+            
         }
 
         return;
@@ -370,6 +372,7 @@ void Player::OnCollisionEnter(GameCollision &collision)
         // Collecte l'objet
         // C'est ensuite l'objet qui affecte un bonus au joueur,
         // en appellant AddFirefly() par exemple.
+        
         collectable->Collect(this);
         return;
     }
@@ -402,6 +405,10 @@ void Player::OnCollisionStay(GameCollision &collision)
 void Player::AddFirefly(int count)
 {
     m_fireflyCount += count;
+    if (m_fireflyCount % 5 == 0) {
+        AddHeart();
+    }
+    
 }
 
 void Player::AddHeart()
@@ -411,11 +418,18 @@ void Player::AddHeart()
 
 void Player::Damage()
 {
+    
     if (m_state == State::DYING) {
         Kill();
-    } else {
-		m_lifeCount--;
+    } 
+    else if (m_heartCount == 0) {
+        m_lifeCount--;
         Kill();
+    }
+    else {
+		m_heartCount--;
+        
+
     }
 }
 

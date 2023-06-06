@@ -61,10 +61,11 @@ void Checkpoint::OnCollisionEnter(GameCollision &collision)
     LevelScene* lvlScn = dynamic_cast<LevelScene*>(&m_scene);
     if (lvlScn == nullptr)
         return;
-
+    
     Player* player = lvlScn->GetPlayer();
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
-        printf("feur");
+        PE_Vec2 position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+        player->SetStartPosition(position);    
     }
 }

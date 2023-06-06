@@ -3,7 +3,7 @@
 #include "Image.h"
 
 LevelHeader::LevelHeader(LevelScene &scene):
-    UIObject(scene), m_levelScene(scene), m_fireflyCount(nullptr)
+    UIObject(scene), m_levelScene(scene), m_fireflyCount(nullptr), m_heartCount(nullptr)
 {
     m_name = "LevelHeader";
 
@@ -50,10 +50,35 @@ LevelHeader::LevelHeader(LevelScene &scene):
     m_fireflyCount->GetLocalRect().offsetMin.Set(currX, currY);
     m_fireflyCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
     m_fireflyCount->SetParent(this);
+
+    
+    currX = 0.0f;
+    currY = 80.0f;
+    // Image du nombre de coeur
+    part = atlas->GetPart("Heart");
+    AssertNew(part);
+    Image* HeartImage = new Image(scene, part, 0);
+    HeartImage->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+    HeartImage->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
+    HeartImage->GetLocalRect().offsetMin.Set(currX, currY);
+    HeartImage->GetLocalRect().offsetMax.Set(currX + imgW, currY + imgH);
+    HeartImage->SetParent(this);
+
+    currX += imgW + sep;
+
+    // Compteur du nombre de coeur
+    m_heartCount = new Text(scene, "0", font, color);
+    m_heartCount->SetAnchor(RE_Anchor::WEST);
+    m_heartCount->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+    m_heartCount->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
+    m_heartCount->GetLocalRect().offsetMin.Set(currX, currY);
+    m_heartCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
+    m_heartCount->SetParent(this);
 }
 
 void LevelHeader::Update()
 {
     Player *player = m_levelScene.GetPlayer();
     m_fireflyCount->SetString(std::to_string(player->GetFireflyCount()));
+    m_heartCount->SetString(std::to_string(player->GetHeartCount()));
 }
