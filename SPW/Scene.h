@@ -85,7 +85,6 @@ public:
 class Scene
 {
 public:
-
     Scene(SDL_Renderer *renderer, RE_Timer &mainTime, ThemeID themeID);
     Scene(Scene const&) = delete;
     Scene& operator=(Scene const&) = delete;

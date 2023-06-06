@@ -2,8 +2,9 @@
 #include "Camera.h"
 #include "LevelScene.h"
 
-LevelEnd::LevelEnd(Scene &scene) :
-    GameBody(scene, Layer::TERRAIN_BACKGROUND), m_animator()
+LevelEnd::LevelEnd(Scene &scene)
+    : GameBody(scene, Layer::TERRAIN_BACKGROUND)
+    , m_animator()
 {
     m_name = "LevelEnd";
 
