@@ -2,8 +2,10 @@
 #include "Camera.h"
 #include "Player.h"
 
-StaticMap::StaticMap(Scene &scene, int width, int height) :
-    GameBody(scene, Layer::TERRAIN_BACKGROUND), m_width(width), m_height(height)
+StaticMap::StaticMap(Scene &scene, int width, int height)
+    : GameBody(scene, Layer::TERRAIN_BACKGROUND)
+    , m_width(width)
+    , m_height(height)
 {
     m_name = "StaticMap";
 
@@ -23,16 +25,16 @@ StaticMap::StaticMap(Scene &scene, int width, int height) :
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
 
     m_woodPart = atlas->GetPart("Wood");
-    AssertNew(m_woodPart);
+    AssertNew(m_woodPart)
 
     m_oneWayPart = atlas->GetPart("OneWay");
-    AssertNew(m_oneWayPart);
+    AssertNew(m_oneWayPart)
 
     m_terrainPart = atlas->GetPart("Terrain");
-    AssertNew(m_terrainPart);
+    AssertNew(m_terrainPart)
 
     m_spikePart = atlas->GetPart("Spike");
-    AssertNew(m_spikePart);
+    AssertNew(m_spikePart)
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
@@ -80,6 +82,29 @@ void StaticMap::InitTiles()
                 if (IsGround(x, y + 1))
                 {
                     tile.partIdx = 4;
+                    if (IsGround(x - 1, y) && !IsGround(x - 1, y + 1))
+                    {
+                        tile.partIdx = 6;
+                    } else if (IsGround(x + 1, y) && !IsGround(x + 1, y + 1))
+                    {
+                        tile.partIdx = 7;
+                    }
+                }
+                else if (!IsGround(x - 1, y) && IsGround(x + 1, y))
+                {
+                    tile.partIdx = 0;
+                }
+                else if (!IsGround(x + 1, y) && IsGround(x - 1, y))
+                {
+                    tile.partIdx = 2;
+                }
+                else if (GetTileType(x, y + 1) == Tile::Type::GENTLE_SLOPE_R1)
+                {
+                    tile.partIdx = 14;
+                }
+                else if (GetTileType(x, y + 1) == Tile::Type::GENTLE_SLOPE_L2)
+                {
+                    tile.partIdx = 17;
                 }
                 else
                 {
@@ -87,6 +112,25 @@ void StaticMap::InitTiles()
                 }
                 break;
 
+            case Tile::Type::STEEP_SLOPE_L:
+                tile.partIdx = 10;
+                break;
+            case Tile::Type::STEEP_SLOPE_R:
+                tile.partIdx = 9;
+                break;
+            case Tile::Type::GENTLE_SLOPE_L1:
+                tile.partIdx = 16;
+                break;
+            case Tile::Type::GENTLE_SLOPE_L2:
+                tile.partIdx = 15;
+                break;
+            case Tile::Type::GENTLE_SLOPE_R1:
+                tile.partIdx = 13;
+                break;
+            case Tile::Type::GENTLE_SLOPE_R2:
+                tile.partIdx = 12;
+                break;
+                
             default:
                 tile.partIdx = 0;
                 break;
@@ -118,11 +162,11 @@ void StaticMap::Render()
             Tile &tile = m_tiles[x][y];
             PE_Collider *collider = tile.collider;
 
-            PE_Vec2 position((float)x, (float)y);
+            const PE_Vec2 position((float)x, (float)y);
             SDL_FRect dst = { 0 };
 
             camera->WorldToView(position, dst.x, dst.y);
-            float scale = camera->GetWorldToViewScale();
+            const float scale = camera->GetWorldToViewScale();
             dst.w = scale * 1.0f;
             dst.h = scale * 1.0f;
 
@@ -156,19 +200,19 @@ void StaticMap::Render()
 void StaticMap::Start()
 {
     PE_World &world = m_scene.GetWorld();
-    PE_Body *body = NULL;
+    PE_Body *body = nullptr;
 
     // Crée le corps
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::STATIC;
     bodyDef.position.SetZero();
-    bodyDef.name = (char *)"StaticMap";
+    bodyDef.name = "StaticMap";
     body = world.CreateBody(bodyDef);
     AssertNew(body);
     SetBody(body);
 
     // Crée les colliders
-    PE_Vec2 vertices[3];
+    PE_Vec2 vertices[4];
     PE_PolygonShape polygon;
     PE_ColliderDef colliderDef;
 
@@ -189,9 +233,47 @@ void StaticMap::Start()
             colliderDef.friction = 0.5f;
             colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
             colliderDef.userData.id = 0;
-
+            
             switch (tile.type)
             {
+            case Tile::Type::GENTLE_SLOPE_L1:
+                vertices[0] = position + PE_Vec2{0.f, 0.5f};
+                vertices[1] = position + PE_Vec2{1.f, 1.f};
+                vertices[2] = position + PE_Vec2{1.f, 0.f};
+                vertices[3] = position + PE_Vec2{0.f, 0.f};
+                polygon.SetVertices(vertices, 4);
+                break;
+            case Tile::Type::GENTLE_SLOPE_L2:
+                vertices[0] = position + PE_Vec2{0.f, 0.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.5f};
+                vertices[2] = position + PE_Vec2{1.f, 0.f};
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::GENTLE_SLOPE_R1:
+                vertices[0] = position + PE_Vec2{0.f, 0.5f};
+                vertices[1] = position + PE_Vec2{1.f, 0.f};
+                vertices[2] = position + PE_Vec2{0.f, 0.f};
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::GENTLE_SLOPE_R2:
+                vertices[0] = position + PE_Vec2{0.f, 1.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.5f};
+                vertices[2] = position + PE_Vec2{1.f, 0.f};
+                vertices[3] = position + PE_Vec2{0.f, 0.f};
+                polygon.SetVertices(vertices, 4);
+                break;
+            case Tile::Type::STEEP_SLOPE_L:
+                vertices[0] = position + PE_Vec2{0.f, 0.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.f};
+                vertices[2] = position + PE_Vec2{1.f, 1.f};
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::STEEP_SLOPE_R:
+                vertices[0] = position + PE_Vec2{0.f, 1.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.f};
+                vertices[2] = position + PE_Vec2{0.f, 0.f};
+                polygon.SetVertices(vertices, 3);
+                break;
             case Tile::Type::ONE_WAY:
                 colliderDef.isOneWay = true;
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));

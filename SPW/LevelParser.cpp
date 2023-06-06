@@ -8,7 +8,6 @@
 #include "Bonus.h"
 #include "Camera.h"
 #include "Firefly.h"
-// TODO : Ajouter le fichier "Firefly.h"
 
 LevelParser::LevelParser(const std::string &path)
 {

@@ -113,9 +113,6 @@ void Player::Update()
     
 	if (!m_jump) {
         m_jump = controls.jumpPressed;
-		if (m_jump) {
-			m_state = State::SKIDDING;
-		}
 	}
 
     m_hDirection = controls.hAxis;
@@ -195,16 +192,14 @@ void Player::FixedUpdate()
 	State tmpState = m_state;
     
 	if (m_onGround) {
-	    //std::cout << "On the ground!" << std::endl;
-	    if (tmpState != State::IDLE)
+	    if (m_jump) {
+	        tmpState = State::SKIDDING;
+	        m_jump = false;
+	    } else if (m_hDirection == 0.f)
 	    {
 	        tmpState = State::IDLE;
-	    }
-		if (m_hDirection != 0.f) {
-		    //std::cout << "Running!" << std::endl;
+	    } else {
 			tmpState = State::RUNNING;
-		} else {
-		    //std::cout << "Value: " << m_hDirection << std::endl;
 		}
     } else {
         if (tmpState != State::FALLING)
@@ -223,7 +218,9 @@ void Player::FixedUpdate()
     {
         switch (tmpState) {
         case State::SKIDDING: {
+                body->ApplyImpulse(PE_Vec2::up * 80.f);
                 m_animator.PlayAnimation("Skidding");
+	            m_jump = false;
                 break;
         }
         case State::FALLING: {
@@ -242,16 +239,22 @@ void Player::FixedUpdate()
                 m_animator.PlayAnimation("Dying");
                 break;
         }
+        default: {
+                break;
+        }
         }
         m_state = tmpState;
     }
 
     // Orientation du joueur
-    // Utilisez m_hDirection qui vaut :
-    // *  0.0f si le joueur n'accélère pas ;
-    // * +1.0f si le joueur accélère vers la droite ;
-    // * -1.0f si le joueur accélère vers la gauche.
     m_facingRight = true;
+    if (m_hDirection < 0.f)
+    {
+        m_facingRight = false;
+    } else if (m_hDirection > 0.f)
+    {
+        m_facingRight = true;
+    }
 
     //--------------------------------------------------------------------------
     // Modification de la vitesse et application des forces
@@ -266,14 +269,6 @@ void Player::FixedUpdate()
     PE_Vec2 mvt = body->GetLocalVelocity();
     mvt.x = PE_Clamp(mvt.x, -20.f, 20.f);
     body->SetVelocity(mvt);
-
-
-	if (m_jump) {
-        body->ApplyImpulse(PE_Vec2::up * 80.f);
-
-		// No spam please!
-		m_jump = false;
-	}
 
     // TODO : Rebond sur les ennemis
 

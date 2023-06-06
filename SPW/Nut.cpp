@@ -193,7 +193,7 @@ void Nut::OnCollisionStay(GameCollision &collision)
             assert(false);
             return;
         }
-        float angle = PE_SignedAngleDeg(manifold.normal, PE_Vec2::down);
+        const float angle = PE_SignedAngleDeg(manifold.normal, PE_Vec2::down);
         if (fabsf(angle) > PLAYER_DAMAGE_ANGLE)
         {
             player->Damage();
