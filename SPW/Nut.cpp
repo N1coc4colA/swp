@@ -203,8 +203,8 @@ void Nut::OnCollisionStay(GameCollision &collision)
     {
         if (Nut *nut = dynamic_cast<Nut *>(collision.gameBody))
         {
-            nut->Bounce(manifold.normal * 4.f);
-            Bounce(manifold.normal * 40.f);
+            nut->Bounce(manifold.normal * 40.f);
+            Bounce(manifold.normal * 4.f);
         }
     }
 }

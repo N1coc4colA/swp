@@ -29,18 +29,18 @@ void Brick::Start()
     PE_World &world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::STATIC;
-    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+    bodyDef.position = GetStartPosition();
     bodyDef.name = "Brick";
+    bodyDef.damping.SetZero();
     PE_Body *body = world.CreateBody(bodyDef);
     SetBody(body);
 
     // Crée le collider
-    PE_PolygonShape box(-0.4f, 0.0f, 0.4f, 1.9f);
+    PE_PolygonShape box(-0.5f, 0.f, 0.5f, 1.f);
     PE_ColliderDef colliderDef;
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
     colliderDef.filter.maskBits = CATEGORY_PLAYER;
     colliderDef.shape = &box;
-    colliderDef.isTrigger = true;
     PE_Collider *collider = body->CreateCollider(colliderDef);
 }
 
@@ -54,27 +54,21 @@ void Brick::Render()
         m_animator.Update(m_scene.GetTime());
 
         const float scale = camera->GetWorldToViewScale();
-        SDL_FRect rect = { 0 };
-        rect.w = 1.0f * scale;
-        rect.h = 2.0f * scale;
+        SDL_FRect rect = { 0, 0, scale, scale};
         camera->WorldToView(GetPosition(), rect.x, rect.y);
         m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
     }
 }
 
-void Brick::OnCollisionEnter(GameCollision &collision)
+void Brick::touchedFromBottom()
 {
-    if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
-    {
-        if (const Player *player = dynamic_cast<Player *>(collision.gameBody))
-        {
-            collision.SetEnabled(false);
-        }
-    }
+    SetEnabled(false);
 }
 
 void Brick::OnRespawn()
 {
+    m_active = true;
+    
     SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);
@@ -85,5 +79,13 @@ void Brick::OnRespawn()
     body->ClearForces();
 
     m_animator.StopAnimations();
-    m_animator.PlayAnimation("Idle");
+    m_animator.PlayAnimation("Base");
+}
+
+void Brick::OnCollisionStay(GameCollision &collision)
+{
+    if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+    {
+        collision.ResolveUp();
+    }
 }

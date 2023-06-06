@@ -4,6 +4,8 @@
 #include "Collectable.h"
 #include "Enemy.h"
 #include "Graphics.h"
+#include  "Brick.h"
+
 
 Player::Player(Scene &scene)
 	: GameBody(scene, Layer::PLAYER)
@@ -207,6 +209,14 @@ void Player::FixedUpdate()
         {
             tmpState = State::FALLING;
         }
+        if (m_jump)
+        {
+            const RayHit result1 = m_scene.RayCast(GetPosition(), PE_Vec2::up, 4, CATEGORY_TERRAIN, true);
+            if (!result1.collider)
+            {
+                tmpState = State::SKIDDING;
+            }
+        }
     }
 
 	if (m_state == State::DYING) {
@@ -270,6 +280,24 @@ void Player::FixedUpdate()
     PE_Vec2 mvt = body->GetLocalVelocity();
     mvt.x = PE_Clamp(mvt.x, -20.f, 20.f);
     body->SetVelocity(mvt);
+    
+    const RayHit result1 = m_scene.RayCast(GetPosition(), PE_Vec2::up, 1.3f, CATEGORY_TERRAIN, false);
+    if (result1.collider)
+    {
+        if (result1.collider->GetUserData().id == 2)
+        {
+            std::cout << "result!" << std::endl;
+            if (Brick *brick = dynamic_cast<Brick *>(result1.gameBody))
+            {
+                std::cout << "Cast!" << std::endl;
+                const float angleUp = PE_AngleDeg(result1.normal, PE_Vec2::up);
+                if (angleUp <= 55.f)
+                {
+                    brick->touchedFromBottom();
+                }
+            }
+        }
+    }
 
     // TODO : Rebond sur les ennemis
 
@@ -317,8 +345,11 @@ void Player::DrawGizmos()
 {
     SDL_Renderer *renderer = m_scene.GetRenderer();
     Graphics graphics(renderer, *m_scene.GetActiveCamera());
-    PE_Vec2 position = GetPosition();
-    PE_Vec2 velocity = GetVelocity();
+    const PE_Vec2 position = GetPosition();
+    const PE_Vec2 velocity = GetVelocity();
+
+    
+    //const RayHit result1 = m_scene.RayCast(, 1, CATEGORY_TERRAIN, true);
 
     // Dessine en blanc le vecteur vitesse du joueur
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
@@ -326,10 +357,11 @@ void Player::DrawGizmos()
 
     // Dessine en jaune les rayons pour la détection du sol
     SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-    PE_Vec2 originL = position + PE_Vec2(-0.35f, 0.0f);
-    PE_Vec2 originR = position + PE_Vec2(+0.35f, 0.0f);
+    const PE_Vec2 originL = position + PE_Vec2(-0.35f, 0.0f);
+    const PE_Vec2 originR = position + PE_Vec2(+0.35f, 0.0f);
     graphics.DrawVector(0.1f * PE_Vec2::down, originL);
     graphics.DrawVector(0.1f * PE_Vec2::down, originR);
+    graphics.DrawVector(PE_Vec2::up * 1.3f, position);
 }
 
 void Player::OnCollisionEnter(GameCollision &collision)
@@ -360,9 +392,7 @@ void Player::OnCollisionEnter(GameCollision &collision)
         }
         else
         {
-
             collision.SetEnabled(false);
-            
         }
 
         return;
@@ -386,7 +416,7 @@ void Player::OnCollisionEnter(GameCollision &collision)
 void Player::OnCollisionStay(GameCollision &collision)
 {
     const PE_Manifold &manifold = collision.manifold;
-    PE_Collider *otherCollider = collision.otherCollider;
+    const PE_Collider *otherCollider = collision.otherCollider;
 
     if (otherCollider->CheckCategory(CATEGORY_COLLECTABLE))
     {
@@ -397,12 +427,15 @@ void Player::OnCollisionStay(GameCollision &collision)
     }
     else if (otherCollider->CheckCategory(CATEGORY_TERRAIN))
     {
-        float angleUp = PE_AngleDeg(manifold.normal, PE_Vec2::up);
-        if (angleUp <= 55.0f)
+        const float angleUp = PE_AngleDeg(manifold.normal, PE_Vec2::up);
+        if (angleUp <= 55.f)
         {
             // Résoud la collision en déplaçant le joueur vers le haut
             // Evite de "glisser" sur les pentes si le joueur ne bouge pas
             collision.ResolveUp();
+        } else if (Brick *brick = dynamic_cast<Brick *>(collision.gameBody))
+        {
+            brick->touchedFromBottom();
         }
     }
 }

@@ -1,6 +1,7 @@
 #include "StaticMap.h"
 #include "Camera.h"
 #include "Player.h"
+#include "Brick.h"
 
 StaticMap::StaticMap(Scene &scene, int width, int height)
     : GameBody(scene, Layer::TERRAIN_BACKGROUND)
@@ -24,6 +25,9 @@ StaticMap::StaticMap(Scene &scene, int width, int height)
 
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
 
+    m_brickPart = atlas->GetPart("Brick");
+    AssertNew(m_brickPart)
+    
     m_woodPart = atlas->GetPart("Wood");
     AssertNew(m_woodPart)
 
@@ -208,7 +212,7 @@ void StaticMap::Start()
     bodyDef.position.SetZero();
     bodyDef.name = "StaticMap";
     body = world.CreateBody(bodyDef);
-    AssertNew(body);
+    AssertNew(body)
     SetBody(body);
 
     // Crée les colliders
@@ -237,41 +241,41 @@ void StaticMap::Start()
             switch (tile.type)
             {
             case Tile::Type::GENTLE_SLOPE_L1:
-                vertices[0] = position + PE_Vec2{0.f, 0.5f};
-                vertices[1] = position + PE_Vec2{1.f, 1.f};
-                vertices[2] = position + PE_Vec2{1.f, 0.f};
-                vertices[3] = position + PE_Vec2{0.f, 0.f};
-                polygon.SetVertices(vertices, 4);
-                break;
-            case Tile::Type::GENTLE_SLOPE_L2:
-                vertices[0] = position + PE_Vec2{0.f, 0.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.5f};
-                vertices[2] = position + PE_Vec2{1.f, 0.f};
-                polygon.SetVertices(vertices, 3);
-                break;
-            case Tile::Type::GENTLE_SLOPE_R1:
-                vertices[0] = position + PE_Vec2{0.f, 0.5f};
-                vertices[1] = position + PE_Vec2{1.f, 0.f};
-                vertices[2] = position + PE_Vec2{0.f, 0.f};
-                polygon.SetVertices(vertices, 3);
-                break;
-            case Tile::Type::GENTLE_SLOPE_R2:
-                vertices[0] = position + PE_Vec2{0.f, 1.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.5f};
-                vertices[2] = position + PE_Vec2{1.f, 0.f};
-                vertices[3] = position + PE_Vec2{0.f, 0.f};
-                polygon.SetVertices(vertices, 4);
-                break;
-            case Tile::Type::STEEP_SLOPE_L:
                 vertices[0] = position + PE_Vec2{0.f, 0.f};
                 vertices[1] = position + PE_Vec2{1.f, 0.f};
                 vertices[2] = position + PE_Vec2{1.f, 1.f};
+                vertices[3] = position + PE_Vec2{0.f, 0.5f};
+                polygon.SetVertices(vertices, 4);
+                break;
+            case Tile::Type::GENTLE_SLOPE_L2:
+                vertices[0] = position + PE_Vec2{1.f, 0.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.5f};
+                vertices[2] = position + PE_Vec2{0.f, 0.f};
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::GENTLE_SLOPE_R1:
+                vertices[0] = position + PE_Vec2{0.f, 0.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.f};
+                vertices[2] = position + PE_Vec2{0.f, 0.5f};
+                polygon.SetVertices(vertices, 3);
+                break;
+            case Tile::Type::GENTLE_SLOPE_R2:
+                vertices[0] = position + PE_Vec2{0.f, 0.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.f};
+                vertices[2] = position + PE_Vec2{1.f, 0.5f};
+                vertices[3] = position + PE_Vec2{0.f, 1.f};
+                polygon.SetVertices(vertices, 4);
+                break;
+            case Tile::Type::STEEP_SLOPE_L:
+                vertices[0] = position + PE_Vec2{1.f, 1.f};
+                vertices[1] = position + PE_Vec2{1.f, 0.f};
+                vertices[2] = position + PE_Vec2{0.f, 0.f};
                 polygon.SetVertices(vertices, 3);
                 break;
             case Tile::Type::STEEP_SLOPE_R:
-                vertices[0] = position + PE_Vec2{0.f, 1.f};
+                vertices[0] = position + PE_Vec2{0.f, 0.f};
                 vertices[1] = position + PE_Vec2{1.f, 0.f};
-                vertices[2] = position + PE_Vec2{0.f, 0.f};
+                vertices[2] = position + PE_Vec2{0.f, 1.f};
                 polygon.SetVertices(vertices, 3);
                 break;
             case Tile::Type::ONE_WAY:
@@ -279,6 +283,8 @@ void StaticMap::Start()
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
                 break;
 
+            case Tile::Type::BRICK:
+                colliderDef.userData.id = 2;
             case Tile::Type::GROUND:
             case Tile::Type::WOOD:
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
@@ -300,7 +306,7 @@ void StaticMap::Start()
             if (newCollider)
             {
                 tile.collider = body->CreateCollider(colliderDef);
-                AssertNew(tile.collider);
+                AssertNew(tile.collider)
             }
             else
             {
@@ -328,11 +334,7 @@ void StaticMap::Start()
 
 void StaticMap::OnCollisionStay(GameCollision &collision)
 {
-    // On vérifie que la collision concerne une pique
-    if (collision.collider->GetUserData().id != 1)
-        return;
-
-    if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+    if (collision.collider->GetUserData().id == 1 && collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
         Player *player = dynamic_cast<Player *>(collision.gameBody);
         if (player == nullptr)

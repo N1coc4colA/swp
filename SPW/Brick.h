@@ -7,13 +7,15 @@ class Brick : public GameBody
 {
 public:
     Brick(Scene &scene);
-    virtual ~Brick();
+    ~Brick() override;
     
-    virtual void Start() override;
-    virtual void Render() override;
-    virtual void OnCollisionEnter(GameCollision &collision) override;
-    virtual void OnRespawn() override;
+    void Start() override;
+    void Render() override;
+    void OnRespawn() override;
+    void OnCollisionStay(GameCollision &collision) override;
 
+    void touchedFromBottom();
+    
 private:
     RE_Animator m_animator;
     bool m_active = true;

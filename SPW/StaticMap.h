@@ -17,7 +17,8 @@ struct Tile
         GENTLE_SLOPE_L1,
         GENTLE_SLOPE_L2,
         GENTLE_SLOPE_R1,
-        GENTLE_SLOPE_R2
+        GENTLE_SLOPE_R2,
+        BRICK
     };
     Type type;
     int partIdx;
@@ -38,7 +39,7 @@ public:
     void OnCollisionStay(GameCollision &collision) override;
 
 private:
-
+    RE_AtlasPart *m_brickPart;
     RE_AtlasPart *m_woodPart;
     RE_AtlasPart *m_oneWayPart;
     RE_AtlasPart *m_terrainPart;

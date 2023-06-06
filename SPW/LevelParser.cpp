@@ -206,9 +206,8 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case 'o':
             {
-                Firefly* firefly = new Firefly(scene);
+                Firefly *firefly = new Firefly(scene);
                 firefly->SetStartPosition(position);
-                // TODO : Créer une luciolle
                 break;
             }
             case 'H':
@@ -227,14 +226,22 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case 'C':
             {
-                Checkpoint* checkpoint = new Checkpoint(scene);
+                Checkpoint *checkpoint = new Checkpoint(scene);
                 checkpoint->SetStartPosition(position);
                 break;
             }
+<<<<<<< Updated upstream
             case 'M':
             {
                 Bonus* bonus = new Bonus(scene);
                 bonus->SetStartPosition(position);
+=======
+            case 'b':
+            {
+                Brick *brick = new Brick(scene);
+                brick->SetStartPosition(position);
+                //map->SetTile(x, y, Tile::Type::BRICK);
+>>>>>>> Stashed changes
                 break;
             }
             default:
