@@ -4,12 +4,12 @@
 #include "Camera.h"
 #include "Collectable.h"
 
-class Heart : public Collectable
+class Shield : public Collectable
 {
 public:
-    Heart(Scene &scene);
+    Shield(Scene &scene);
     
-    ~Heart();
+    ~Shield();
     void Start() override;
     void Render() override;
     void OnRespawn() override;

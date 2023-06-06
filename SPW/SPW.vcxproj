@@ -173,6 +173,7 @@
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="Shield.cpp" />
     <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="StaticMap.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -219,6 +220,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="Shield.h" />
     <ClInclude Include="StartScreen.h" />
     <ClInclude Include="StaticMap.h" />
     <ClInclude Include="Text.h" />

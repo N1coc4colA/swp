@@ -1,41 +1,41 @@
-#include "Heart.h"
+#include "Shield.h"
 #include "Scene.h"
 #include "Camera.h"
 #include "Player.h"
 #include "Camera.h"
 #include "LevelScene.h"
 
-Heart::Heart(Scene &scene) :
+Shield::Shield(Scene &scene) :
     Collectable(scene, Layer::COLLECTABLE)
 {
-    m_name = "Heart";
+    m_name = "Shield";
     
 
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
     AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("Heart");
+    RE_AtlasPart* part = atlas->GetPart("Button");
     AssertNew(part);
     RE_TexAnim* anim = new RE_TexAnim(m_animator, "IDLE",part);
     anim->SetCycleCount(0);
 
     atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
     AssertNew(atlas);
-    part = atlas->GetPart("Heart");
+    part = atlas->GetPart("Button");
     AssertNew(part);
     RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "RUNNING", part);
     RunningAnim->SetCycleCount(-1);
     RunningAnim->SetCycleTime(1);
 }
 
-void Heart::Start()
+void Shield::Start()
 {
     m_animator.PlayAnimation("IDLE");
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::DYNAMIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
-    bodyDef.name = "Heart";
+    bodyDef.name = "Shield";
     bodyDef.damping.SetZero();
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
@@ -55,7 +55,7 @@ void Heart::Start()
     body->SetAwake(false);
 }
 
-void Heart::Render()
+void Shield::Render()
 {
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
@@ -70,7 +70,7 @@ void Heart::Render()
     m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
-void Heart::OnRespawn()
+void Shield::OnRespawn()
 {
     SetBodyEnabled(true);
     SetEnabled(true);
@@ -83,10 +83,10 @@ void Heart::OnRespawn()
     m_animator.PlayAnimation("IDLE");
 }
 
-Heart::~Heart()
+Shield::~Shield()
 {
 }
-void Heart::FixedUpdate()
+void Shield::FixedUpdate()
 {
     PE_Body* body = GetBody();
     PE_Vec2 position = body->GetPosition();
@@ -141,7 +141,7 @@ void Heart::FixedUpdate()
 
 }
 
-void Heart::OnCollisionEnter(GameCollision &collision)
+void Shield::OnCollisionEnter(GameCollision &collision)
 {
     LevelScene* lvlScn = dynamic_cast<LevelScene*>(&m_scene);
     if (lvlScn == nullptr)
@@ -150,11 +150,13 @@ void Heart::OnCollisionEnter(GameCollision &collision)
     Player* player = lvlScn->GetPlayer();
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
-        player->AddHeart();
+        player->SetShield(true);
+        player->StartTimerShield();
+        
         SetEnabled(false);
     }
 }
 
-void Heart::Collect(GameBody *collector)
+void Shield::Collect(GameBody *collector)
 {
 }

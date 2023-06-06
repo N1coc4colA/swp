@@ -29,6 +29,8 @@ public:
     void Damage();
     void Kill();
     void Bounce();
+    void SetShield(bool res);
+    void StartTimerShield();
 
 private:
     void WakeUpSurroundings();
@@ -53,11 +55,14 @@ private:
     bool m_onGround;
     bool m_bounce = false;
     bool m_facingRight = true;
-
+    bool shield = false;
     int m_lifeCount = 5;
     int m_heartCount = 2;
     int m_fireflyCount = 0;
 	int m_consecutiveJumps = 0;
+    float timer_shield =0;
+    bool timer_start = false;
+    
 };
 
 
@@ -80,3 +85,13 @@ inline int Player::GetLifeCount() const
 {
     return m_lifeCount;
 }
+
+inline void Player::SetShield(bool res) {
+    shield = res;
+}
+
+
+inline void Player::StartTimerShield() {
+    timer_start = true;
+}
+

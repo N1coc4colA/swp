@@ -8,6 +8,8 @@
 #include "Bonus.h"
 #include "Camera.h"
 #include "Firefly.h"
+#include "Heart.h"
+#include "Shield.h"
 
 LevelParser::LevelParser(const std::string &path)
 {
@@ -209,10 +211,30 @@ void LevelParser::InitScene(LevelScene &scene) const
                 // TODO : Créer une luciolle
                 break;
             }
+            case 'H':
+            {
+                Heart* heart = new Heart(scene);
+                heart->SetStartPosition(position);
+                // TODO : Créer un coeur
+                break;
+            }
+            case 's':
+            {
+                Shield* shield = new Shield(scene);
+                shield->SetStartPosition(position);
+                // TODO : Créer une luciolle
+                break;
+            }
             case 'C':
             {
                 Checkpoint* checkpoint = new Checkpoint(scene);
                 checkpoint->SetStartPosition(position);
+                break;
+            }
+            case 'M':
+            {
+                Bonus* bonus = new Bonus(scene);
+                bonus->SetStartPosition(position);
                 break;
             }
             default:

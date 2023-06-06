@@ -78,6 +78,7 @@ Player::~Player()
 
 void Player::Start()
 {
+    
     // Joue l'animation par défaut
     m_animator.PlayAnimation("Idle");
 
@@ -280,6 +281,15 @@ void Player::FixedUpdate()
 
     // Définit la nouvelle vitesse du corps
     // TODO : Appliquer la nouvelle velocité au player
+    
+    if (timer_start) {
+        timer_shield += m_scene.GetFixedTimeStep();
+        if (timer_shield >= 2.f) {
+            SetShield(false);
+            timer_shield = 0;
+            timer_start = false;
+        }
+    }
 }
 
 void Player::OnRespawn()
@@ -413,18 +423,22 @@ void Player::AddHeart()
 
 void Player::Damage()
 {
-    
-    if (m_state == State::DYING) {
-        Kill();
-    } 
-    else if (m_heartCount == 0) {
-        m_lifeCount--;
-        Kill();
-    }
-    else {
-		m_heartCount--;
-        
+    if (!shield) {
+        if (m_state == State::DYING) {
+            Kill();
+        }
+        else if (m_heartCount == 1) {
+            m_lifeCount--;
+            Kill();
+        }
+        else {
+            m_heartCount--;
+            SetShield(true);
+            timer_start = true;
+            //timer_shield = 5; // plus que 2 direct shield
 
+
+        }
     }
 }
 
@@ -455,3 +469,4 @@ void Player::WakeUpSurroundings()
     WakeUpCallback callback;
     world.QueryAABB(callback, aabb);
 }
+

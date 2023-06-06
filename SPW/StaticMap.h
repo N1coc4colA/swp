@@ -27,7 +27,7 @@ struct Tile
 class StaticMap : public GameBody
 {
 public:
-    StaticMap(Scene &scene, int width, int height);
+     StaticMap(Scene &scene, int width, int height);
     virtual ~StaticMap();
 
     void SetTile(int x, int y, Tile::Type type);

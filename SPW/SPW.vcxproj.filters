@@ -182,6 +182,12 @@
     <ClCompile Include="LevelData.cpp">
       <Filter>Fichiers sources\Assets</Filter>
     </ClCompile>
+    <ClCompile Include="Shield.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
+    </ClCompile>
+    <ClCompile Include="Firefly.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -312,6 +318,12 @@
     </ClInclude>
     <ClInclude Include="LevelData.h">
       <Filter>Fichiers sources\Assets</Filter>
+    </ClInclude>
+    <ClInclude Include="Shield.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
+    </ClInclude>
+    <ClInclude Include="Firefly.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
