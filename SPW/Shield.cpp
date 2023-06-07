@@ -12,16 +12,16 @@ Shield::Shield(Scene &scene) :
     
 
     // Animation "Base"
-    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
+    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
     AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("Button");
+    RE_AtlasPart* part = atlas->GetPart("Shield");
     AssertNew(part);
     RE_TexAnim* anim = new RE_TexAnim(m_animator, "IDLE",part);
     anim->SetCycleCount(0);
 
-    atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
+    atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
     AssertNew(atlas);
-    part = atlas->GetPart("Button");
+    part = atlas->GetPart("Shield");
     AssertNew(part);
     RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "RUNNING", part);
     RunningAnim->SetCycleCount(-1);
@@ -89,6 +89,9 @@ Shield::~Shield()
 void Shield::FixedUpdate()
 {
     PE_Body* body = GetBody();
+    if (body == nullptr)
+        return;
+
     PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
 
