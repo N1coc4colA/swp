@@ -44,10 +44,10 @@ void KeyButton::Update()
             }
             else if (mouse.leftReleased)
             {
-                if (m_listener)
+                if (false) //m_listener)
                 {
                     // Exécute l'action associée au bouton
-                    m_listener->OnPress();
+                    //m_listener->OnPress();
 
                     m_scene.GetAssetManager().PlaySound(
                         SoundID::SYSTEM_SELECT, ChannelID::SYSTEM_1
@@ -82,7 +82,7 @@ void KeyButton::Update()
     }
 
     // Met à jour les textes du bouton
-    for (int i = 0; i < 4; i++)
+    /*for (int i = 0; i < 4; i++)
     {
         if (m_texts[i] == nullptr) continue;
 
@@ -91,7 +91,7 @@ void KeyButton::Update()
         {
             m_texts[i]->SetEnabled(enabled);
         }
-    }
+    }*/
 }
 
 void KeyButton::Render()
@@ -134,20 +134,5 @@ void KeyButton::Render()
         {
             SDL_RenderCopyF(renderer, texture, srcRect, &dstRect);
         }
-    }
-}
-
-void KeyButton::SetText(Text *text, State state)
-{
-    if (m_texts[int(state)])
-    {
-        m_texts[int(state)]->Delete();
-    }
-
-    m_texts[int(state)] = text;
-    if (text)
-    {
-        text->SetParent(this);
-        text->SetEnabled(state == m_currState);
     }
 }

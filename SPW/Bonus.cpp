@@ -100,53 +100,29 @@ void Bonus::OnCollisionEnter(GameCollision &collision)
 
 void Bonus::Give_Bonus() 
 {
-    if (m_active) {
-<<<<<<< Updated upstream
-        int Id_bonus = rand() % 2;
-        
-        switch (Id_bonus) {
-=======
+    if (m_active)
+    {
         int Id_bonus = rand() % 3;
         
         Shield* shields = new Shield(m_scene);
         shields->SetStartPosition(GetPosition());
-        /*switch (Id_bonus) {
->>>>>>> Stashed changes
-        case 0: {
-
-            printf("here\n\n");
-            Firefly* firefly = new Firefly(m_scene);
-            firefly->SetStartPosition(GetPosition());
+        switch (Id_bonus) {
+            case 0: {
+                Heart* heart = new Heart(m_scene);
+                heart->SetStartPosition(GetPosition());
+            }
+            case 1: {
+                Shield * shield = new Shield(m_scene);
+                shield->SetStartPosition(GetPosition());
+            }
+            case 2: {
+                    Firefly* firefly = new Firefly(m_scene);
+                    firefly->SetStartPosition(GetPosition());
+            }
+            default: {
+                break;
+            }
         }
-        case 1: {
-<<<<<<< Updated upstream
-            Heart* heart = new Heart(m_scene);
-            heart->SetStartPosition(GetPosition());
-        }
-        
-        case 2 :
-            Shield * shield = new Shield(m_scene);
-            shield->SetStartPosition(GetPosition());
-=======
-            printf("la\n\n");
-            //Firefly* firefly = new Firefly(m_scene);
-            //firefly->SetStartPosition(GetPosition());
-            Heart* heart = new Heart(m_scene);
-            heart->SetStartPosition(GetPosition());
-        }
-        case 2: {
-
-            printf("ici\n\n");
-            //Shield* shield = new Shield(m_scene);
-            //shield->SetStartPosition(GetPosition());
->>>>>>> Stashed changes
-        }
-        default: {
-            break;
-            //Shield* shields = new Shield(m_scene);
-            //shields->SetStartPosition(GetPosition());
-        }
-        }*/
         Set_BonusEmpty();
     }
 }
