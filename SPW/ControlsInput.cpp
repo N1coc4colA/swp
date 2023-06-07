@@ -12,6 +12,7 @@ ControlsInput::ControlsInput() :
 void ControlsInput::OnPreEventProcess()
 {
     jumpPressed = false;
+    
 }
 
 void ControlsInput::OnEventProcess(SDL_Event evt)
@@ -108,6 +109,14 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
             // Saut
             jumpDown = true;
             jumpPressed = true;
+        } else if (scanCode == GameSettings::get()->shield)
+        {
+            if (!shieldon) {
+                shieldon = true;
+            }
+            else {
+                shieldon = false;
+            }
         } else if (scanCode == GameSettings::get()->special)
         {
             specialPressed = true;
@@ -127,6 +136,7 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
             // Saut
             jumpDown = false;
         }
+        
         else if (scanCode == GameSettings::get()->left)
         {
             // Déplacement à gauche

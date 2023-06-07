@@ -113,6 +113,15 @@ void Player::Update()
     // Sauvegarde les contrôles du joueur pour modifier
     // sa physique au prochain FixedUpdate()
     
+    if (controls.shieldon) {
+        if (shield == true) {
+            shield = false;
+        }
+        else {
+            shield = true;
+        }
+    }
+    
 	if (!m_jump) {
         m_jump = controls.jumpPressed;
 	}
@@ -134,7 +143,7 @@ void Player::Render()
     PE_Vec2 pos = GetPosition();
 	//pos.y += 0.1f;
     camera->WorldToView(pos, rect.x, rect.y);
-
+    
     // Dessine l'animation du joueur
     m_animator.RenderCopyExF(&rect, RE_Anchor::SOUTH, 0., Vec2(0.5f, 0.5f), flip);
 }
@@ -518,17 +527,21 @@ void Player::Damage()
 {
     if (!shield) {
         if (m_state == State::DYING) {
-            Kill();
-            m_scene.Quit();
+            Kill();    
         }
+
         else if (m_heartCount == 1) {
+            m_heartCount--;
             m_lifeCount--;
+            m_heartCount = m_heartstart;
             Kill();
-            m_scene.Quit();
+            
+            
+            
         }
         else {
             m_heartCount--;
-            Kill();
+            
             SetShield(true);
             timer_start = true;
             //timer_shield = 5; // plus que 2 direct shield

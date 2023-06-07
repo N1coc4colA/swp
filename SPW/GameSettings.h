@@ -8,7 +8,8 @@ public:
     explicit GameSettings();
     static GameSettings *get();
 
-    SDL_Scancode jump,
+    SDL_Scancode shield,
+                 jump,
                  left,
                  right,
                  special,

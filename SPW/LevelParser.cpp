@@ -54,7 +54,7 @@ LevelParser::LevelParser(const std::string &path)
         }
         else
         {
-            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
+            //std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
         }
     }
     if (height == 0)
@@ -92,7 +92,7 @@ LevelParser::LevelParser(const std::string &path)
         }
         else
         {
-            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
+            //std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
         }
     }
 
@@ -252,10 +252,18 @@ void LevelParser::InitScene(LevelScene &scene) const
                 brick->SetStartPosition(position);
                 break;
             }
-            case 'B':
+            case '6':
             {
-                Snake* snake = new Snake(scene);
+                Snake* snake = new Snake(scene,3,position,-1);
                 snake->SetStartPosition(position);
+                
+                break;
+            }
+            case '9':
+            {
+                Snake* snake = new Snake(scene, 3, position, 1);
+                snake->SetStartPosition(position);
+
                 break;
             }
             default:

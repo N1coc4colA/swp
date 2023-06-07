@@ -40,6 +40,7 @@ void GameSettings::load()
     if (input.is_open())
     {
         input
+        >> shield
         >> jump
         >> left
         >> right
@@ -54,6 +55,7 @@ void GameSettings::load()
     } else
     {
         std::wcerr << "Unable to read settings!\n";
+        shield = SDL_SCANCODE_U;
         jump = SDL_SCANCODE_SPACE;
         left = SDL_SCANCODE_LEFT;
         right = SDL_SCANCODE_RIGHT;
@@ -76,6 +78,7 @@ void GameSettings::save() const
     if (output.is_open())
     {
         output
+        << shield
         << jump
         << left
         << right

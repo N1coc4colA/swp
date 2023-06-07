@@ -1,5 +1,5 @@
 {
-    "texture": "Terrain_dbg.png",
+    "texture": "Terrain.png",
     "rectangles": [
         {"x":   5, "y":   5, "w": 80, "h": 80},
         {"x":  85, "y":   5, "w": 80, "h": 80},
