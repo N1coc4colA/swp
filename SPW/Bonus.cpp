@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "Heart.h"
 #include "Firefly.h"
+#include "Shield.h"
 
 Bonus::Bonus(Scene &scene) :
     GameBody(scene, Layer::TERRAIN_FOREGROUND), m_animator(), m_hit(false)
@@ -101,19 +102,21 @@ void Bonus::Give_Bonus()
 {
     if (m_active) {
         int Id_bonus = rand() % 2;
-        printf("gere\n");
+        
         switch (Id_bonus) {
         case 0: {
 
             Firefly* firefly = new Firefly(m_scene);
             firefly->SetStartPosition(GetPosition());
         }
-        case 1: 
-        default: {
+        case 1: {
             Heart* heart = new Heart(m_scene);
             heart->SetStartPosition(GetPosition());
         }
         
+        case 2 :
+            Shield * shield = new Shield(m_scene);
+            shield->SetStartPosition(GetPosition());
         }
         Set_BonusEmpty();
     }
