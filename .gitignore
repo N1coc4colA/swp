@@ -34,3 +34,5 @@
 /.vs
 /x64
 /SPW/x64
+SPW/settings.raw
+.idea/.idea.SPW/.idea/encodings.xml
