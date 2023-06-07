@@ -1,6 +1,10 @@
 #include "LevelHeader.h"
 #include "LevelScene.h"
 #include "Image.h"
+#include "Boss.h"
+#include "Barreboss.h"
+#include "Camera.h"
+#include "Background.h"
 
 LevelHeader::LevelHeader(LevelScene &scene):
     UIObject(scene), m_levelScene(scene), m_fireflyCount(nullptr), m_heartCount(nullptr)
@@ -74,11 +78,45 @@ LevelHeader::LevelHeader(LevelScene &scene):
     m_heartCount->GetLocalRect().offsetMin.Set(currX, currY);
     m_heartCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
     m_heartCount->SetParent(this);
+
+    
+    if (m_levelScene.GetBoss()) {
+        Camera* camera = m_scene.GetActiveCamera();
+        AssertNew(camera);
+
+        SDL_Renderer* renderer = m_scene.GetRenderer();
+        PE_AABB view = camera->GetWorldView();
+
+        // Dimension du fond dans le référentiel monde
+        float scale = camera->GetWorldToViewScale();
+        PE_Vec2 worldDim = m_levelScene.worldDim;
+        float layerW = scale * worldDim.x;
+        float layerH = scale * worldDim.y;
+        int coefpdv = m_levelScene.GetBoss()->Get_life();
+        currX = 1740.0f;
+        currY = 0.0f;
+        // Image du nombre de coeur
+        part = atlas->GetPart("Heart");
+        AssertNew(part);
+        printf("%f %f\n", layerW + (10.f * scale) , layerH + 7.f * scale);
+        Barreboss* HeartBarreboss = new Barreboss(scene, part, 0, &m_levelScene);
+        HeartBarreboss->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+        HeartBarreboss->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
+        HeartBarreboss->GetLocalRect().offsetMin.Set(currX,currY);
+        HeartBarreboss->GetLocalRect().offsetMax.Set(currX+ imgW*coefpdv,currY + imgH);
+        HeartBarreboss->SetParent(this);
+    }
+
+
+
+   
 }
 
-void LevelHeader::Update()
+void LevelHeader::FixedUpdate()
 {
     Player *player = m_levelScene.GetPlayer();
+
     m_fireflyCount->SetString(std::to_string(player->GetFireflyCount()));
     m_heartCount->SetString(std::to_string(player->GetHeartCount()));
+    
 }

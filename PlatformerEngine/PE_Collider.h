@@ -142,6 +142,8 @@ private:
     void Synchronize(
         PE_CollisionManager *manager,
         const PE_Vec2 &transform0, const PE_Vec2 &transform1);
+
+    friend class Snake;
 };
 
 inline PE_ColliderProxy *PE_Collider::GetProxy()

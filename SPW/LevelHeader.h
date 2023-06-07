@@ -12,7 +12,7 @@ class LevelHeader : public UIObject
 public:
     LevelHeader(LevelScene &scene);
 
-    virtual void Update() override;
+    void FixedUpdate() override;
 
 private:
     LevelScene &m_levelScene;

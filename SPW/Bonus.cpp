@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Camera.h"
 #include "Heart.h"
+#include "Firefly.h"
 
 Bonus::Bonus(Scene &scene) :
     GameBody(scene, Layer::TERRAIN_FOREGROUND), m_animator(), m_hit(false)
@@ -11,8 +12,15 @@ Bonus::Bonus(Scene &scene) :
     AssertNew(atlas)
         RE_AtlasPart* part = atlas->GetPart("BonusFull");
     AssertNew(part)
-        RE_TexAnim* anim = new RE_TexAnim(m_animator, "Base", part);
+        RE_TexAnim* anim = new RE_TexAnim(m_animator, "FULL", part);
     anim->SetCycleCount(0);
+
+    atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
+    AssertNew(atlas)
+    part = atlas->GetPart("BonusEmpty");
+    AssertNew(part)
+    RE_TexAnim* emptyanim = new RE_TexAnim(m_animator, "EMPTY", part);
+    emptyanim->SetCycleCount(0);
 
 }
 
@@ -21,7 +29,7 @@ void Bonus::Start()
     SetToRespawn(true);
 
     // Joue l'animation par défaut
-    m_animator.PlayAnimation("Base");
+    m_animator.PlayAnimation("FULL");
 
     // Crée le corps
     PE_World& world = m_scene.GetWorld();
@@ -51,11 +59,12 @@ void Bonus::Start()
 
 void Bonus::Render()
 {
+    SDL_Renderer* renderer = m_scene.GetRenderer();
+    const Camera* camera = m_scene.GetActiveCamera();
+
     if (m_active)
     {
-        SDL_Renderer* renderer = m_scene.GetRenderer();
-        const Camera* camera = m_scene.GetActiveCamera();
-
+        
         m_animator.Update(m_scene.GetTime());
 
         const float scale = camera->GetWorldToViewScale();
@@ -64,6 +73,17 @@ void Bonus::Render()
         rect.h = scale;
         camera->WorldToView(GetPosition(), rect.x, rect.y);
         m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
+    }
+    else {
+        m_animator.Update(m_scene.GetTime());
+
+        const float scale = camera->GetWorldToViewScale();
+        SDL_FRect rect = { 0 };
+        rect.w = scale;
+        rect.h = scale;
+        camera->WorldToView(GetPosition(), rect.x, rect.y);
+        m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
+
     }
 }
 
@@ -74,4 +94,32 @@ void Bonus::OnRespawn()
 void Bonus::OnCollisionEnter(GameCollision &collision)
 {
     
+}
+
+
+void Bonus::Give_Bonus() 
+{
+    if (m_active) {
+        int Id_bonus = rand() % 2;
+        switch (Id_bonus) {
+        case 0: {
+
+            Firefly* firefly = new Firefly(m_scene);
+            firefly->SetStartPosition(GetPosition());
+        }
+        case 1:  {
+            Heart* heart = new Heart(m_scene);
+            heart->SetStartPosition(GetPosition());
+        }
+        default:
+            break;
+        }
+        Set_BonusEmpty();
+    }
+}
+
+void Bonus::Set_BonusEmpty(){
+    m_active = false;
+    m_state = State::EMPTY;
+    m_animator.PlayAnimation("EMPTY");
 }

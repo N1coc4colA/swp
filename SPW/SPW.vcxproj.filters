@@ -188,6 +188,15 @@
     <ClCompile Include="Firefly.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
     </ClCompile>
+    <ClCompile Include="Snake.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Barreboss.cpp">
+      <Filter>Fichiers sources\GameObject\UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -324,6 +333,15 @@
     </ClInclude>
     <ClInclude Include="Firefly.h">
       <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
+    </ClInclude>
+    <ClInclude Include="Snake.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Barreboss.h">
+      <Filter>Fichiers sources\GameObject\UI</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

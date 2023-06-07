@@ -10,6 +10,8 @@
 #include "Firefly.h"
 #include "Heart.h"
 #include "Shield.h"
+#include "Snake.h"
+#include "Boss.h"
 
 LevelParser::LevelParser(const std::string &path)
 {
@@ -204,6 +206,13 @@ void LevelParser::InitScene(LevelScene &scene) const
                 nut->SetStartPosition(position);
                 break;
             }
+            case 'E':
+            {
+                Boss* boss = new Boss(scene);
+                boss->SetStartPosition(position);
+                scene.SetBoss(boss);
+                break;
+            }
             case 'o':
             {
                 Firefly* firefly = new Firefly(scene);
@@ -222,7 +231,7 @@ void LevelParser::InitScene(LevelScene &scene) const
             {
                 Shield* shield = new Shield(scene);
                 shield->SetStartPosition(position);
-                // TODO : Créer une luciolle
+                // TODO : Créer un shield
                 break;
             }
             case 'C':
@@ -241,6 +250,12 @@ void LevelParser::InitScene(LevelScene &scene) const
             {
                 Brick *brick = new Brick(scene);
                 brick->SetStartPosition(position);
+                break;
+            }
+            case 'B':
+            {
+                Snake* snake = new Snake(scene);
+                snake->SetStartPosition(position);
                 break;
             }
             default:

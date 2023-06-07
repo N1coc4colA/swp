@@ -3,6 +3,7 @@
 #include "MainCamera.h"
 #include "DebugCamera.h"
 #include "Background.h"
+#include "Boss.h"
 
 LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, const LevelData &level) :
     Scene(renderer, mainTime, level.themeID), m_paused(false),
@@ -36,7 +37,7 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, const LevelDa
     {
     case ThemeID::LAKE:
     {
-        PE_Vec2 worldDim(24.0f, 24.0f * 1080.0f / 1920.0f);
+        worldDim = {24.0f, 24.0f * 1080.0f / 1920.0f };
         background->SetWorldDimensions(worldDim);
         float factors[] = { 0.0f, 0.05f, 0.3f, 0.6f, 0.7f };
         for (int i = 0; i < 5; i++)
@@ -48,7 +49,7 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, const LevelDa
 
     case ThemeID::SKY:
     {
-        PE_Vec2 worldDim(24.0f, 24.0f * 1080.0f / 1920.0f);
+        worldDim = { 24.0f, 24.0f * 1080.0f / 1920.0f };
         background->SetWorldDimensions(worldDim);
         float factors[] = { 0.0f, 0.05f, 0.1f, 0.2f, 0.35f, 0.5f, 0.7f };
         for (int i = 0; i < 7; i++)
@@ -61,7 +62,7 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, const LevelDa
     case ThemeID::MOUNTAINS:
     default:
     {
-        PE_Vec2 worldDim(36.0f, 36.0f * 1080.0f / 2880.0f);
+        worldDim = { 36.0f, 36.0f * 1080.0f / 2880.0f };
         background->SetWorldDimensions(worldDim);
         float factors[] = { 0.0f, 0.05f, 0.3f, 0.6f };
         for (int i = 0; i < 4; i++)

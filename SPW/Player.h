@@ -57,7 +57,7 @@ private:
     bool m_facingRight = true;
     bool shield = false;
     int m_lifeCount = 5;
-    int m_heartCount = 2;
+    int m_heartCount = 10;
     int m_fireflyCount = 0;
 	int m_consecutiveJumps = 0;
     float timer_shield =0;

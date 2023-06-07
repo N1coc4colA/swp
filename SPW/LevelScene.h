@@ -6,6 +6,8 @@
 #include "LevelCanvas.h"
 #include "LevelData.h"
 
+class Boss;
+
 class LevelScene : public Scene
 {
 public:
@@ -18,12 +20,17 @@ public:
     virtual void OnRespawn() override;
 
     Player *GetPlayer() const;
+    Boss* GetBoss() const;
+    void SetBoss(Boss*);
     bool IsPaused() const;
     void SetPaused(bool isPaused);
+
+    PE_Vec2 worldDim;
 
 private:
     std::array<Camera *, 2> m_cameras;
     Player *m_player;
+    Boss* m_boss = nullptr;
     LevelCanvas *m_canvas;
 
     PE_Vec2 m_startPos;
@@ -36,6 +43,15 @@ private:
 inline Player *LevelScene::GetPlayer() const
 {
     return m_player;
+}
+
+inline Boss* LevelScene::GetBoss() const
+{
+    return m_boss;
+}
+inline void LevelScene::SetBoss(Boss* MBoss) 
+{
+    m_boss = MBoss;
 }
 
 inline bool LevelScene::IsPaused() const

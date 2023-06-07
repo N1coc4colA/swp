@@ -140,7 +140,9 @@
     <ClCompile Include="ApplicationInput.cpp" />
     <ClCompile Include="AssetManager.cpp" />
     <ClCompile Include="Background.cpp" />
+    <ClCompile Include="Barreboss.cpp" />
     <ClCompile Include="Bonus.cpp" />
+    <ClCompile Include="Boss.cpp" />
     <ClCompile Include="Brick.cpp" />
     <ClCompile Include="Button.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -174,6 +176,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shield.cpp" />
+    <ClCompile Include="Snake.cpp" />
     <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="StaticMap.cpp" />
     <ClCompile Include="Text.cpp" />
@@ -187,7 +190,9 @@
     <ClInclude Include="ApplicationInput.h" />
     <ClInclude Include="AssetManager.h" />
     <ClInclude Include="Background.h" />
+    <ClInclude Include="Barreboss.h" />
     <ClInclude Include="Bonus.h" />
+    <ClInclude Include="Boss.h" />
     <ClInclude Include="Brick.h" />
     <ClInclude Include="Button.h" />
     <ClInclude Include="Camera.h" />
@@ -221,6 +226,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Shield.h" />
+    <ClInclude Include="Snake.h" />
     <ClInclude Include="StartScreen.h" />
     <ClInclude Include="StaticMap.h" />
     <ClInclude Include="Text.h" />

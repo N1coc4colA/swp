@@ -89,6 +89,9 @@ Heart::~Heart()
 void Heart::FixedUpdate()
 {
     PE_Body* body = GetBody();
+    if (body == nullptr)
+        return;
+
     PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
 
@@ -151,6 +154,7 @@ void Heart::OnCollisionEnter(GameCollision &collision)
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
         player->AddHeart();
+
         SetEnabled(false);
     }
 }

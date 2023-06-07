@@ -5,6 +5,7 @@
 #include "Enemy.h"
 #include "Graphics.h"
 #include  "Brick.h"
+#include  "Bonus.h"
 
 
 Player::Player(Scene &scene)
@@ -328,7 +329,7 @@ void Player::OnRespawn()
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);
 
-    m_heartCount = 2;
+   
     m_state = State::IDLE;
     m_hDirection = 0.0f;
     m_facingRight = true;
@@ -437,6 +438,11 @@ void Player::OnCollisionStay(GameCollision &collision)
         {
             brick->touchedFromBottom();
         }
+        else if (Bonus* bonus = dynamic_cast<Bonus*>(collision.gameBody))
+        {
+            bonus->Give_Bonus();
+            
+        }
     }
 }
 
@@ -459,13 +465,16 @@ void Player::Damage()
     if (!shield) {
         if (m_state == State::DYING) {
             Kill();
+            m_scene.Quit();
         }
         else if (m_heartCount == 1) {
             m_lifeCount--;
             Kill();
+            m_scene.Quit();
         }
         else {
             m_heartCount--;
+            Kill();
             SetShield(true);
             timer_start = true;
             //timer_shield = 5; // plus que 2 direct shield
