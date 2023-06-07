@@ -27,11 +27,16 @@ public:
 
     void Update() override;
     void Render() override;
+    void FixedUpdate() override;
 
-    void setText(const std::string &);
+    void SetText(const std::string &);
+    void SetKey(SDL_Scancode sc);
+    
     std::function<void (SDL_Scancode)> onChange = [](SDL_Scancode) {};
 
 protected:
+    void regenerateText();
+    
     RE_AtlasPart *m_atlasPart;
 
     State m_currState;
@@ -40,12 +45,16 @@ protected:
     UIBorders *m_borders;
 
     Text *usedKey = nullptr;
+    Text *description = nullptr;
+    
     std::string text = "KB";
-    bool requiresReload = false;
+    bool listening = false;
+    SDL_Scancode key;
 };
 
-inline void KeyButton::setText(const std::string &str)
+inline void KeyButton::SetBorders(UIBorders *borders)
 {
-    text = str;
-    requiresReload = true;
+    if (m_borders) delete m_borders;
+    m_borders = borders;
 }
+

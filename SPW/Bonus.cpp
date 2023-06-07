@@ -109,7 +109,6 @@ void Bonus::Give_Bonus()
         std::random_device rd; // obtain a random number from hardware
         std::mt19937 gen(rd()); // seed the generator
         std::uniform_int_distribution<> distr(0, 2); // define the range
-        
         switch (distr(gen)) {
             case 0: {
                 Heart* heart = new Heart(m_scene);
