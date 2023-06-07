@@ -147,6 +147,7 @@ void Boss::Damage(GameBody *damager)
 {
     if (heart_count <=1) {
         SetEnabled(false);
+        m_scene.Quit();
     }
 	if (Player *player = dynamic_cast<Player *>(damager)) {
         player->Bounce();

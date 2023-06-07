@@ -112,15 +112,20 @@ void Player::Update()
 
     // Sauvegarde les contrôles du joueur pour modifier
     // sa physique au prochain FixedUpdate()
-    
+    //printf("%d %d\n", controls.shieldon,forcedshield);
     if (controls.shieldon) {
-        if (shield == true) {
+        if (shield) {
             shield = false;
         }
         else {
             shield = true;
         }
+        
+        printf("%d \n", shield);
+        controls.shieldon = false;
+
     }
+    
     
 	if (!m_jump) {
         m_jump = controls.jumpPressed;
@@ -139,6 +144,11 @@ void Player::Render()
 
     float scale = camera->GetWorldToViewScale();
     SDL_RendererFlip flip = m_state == State::DYING ? SDL_FLIP_VERTICAL : (m_facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL);
+    if (m_state == State::DYING) {
+        m_state = State::DEAD;
+        m_scene.Quit();
+   }
+
     SDL_FRect rect = { 0, 0, 1.4f * scale, rect.w = 2.f * scale };
     PE_Vec2 pos = GetPosition();
 	//pos.y += 0.1f;
@@ -162,6 +172,12 @@ void Player::FixedUpdate()
     {
         m_scene.Respawn();
         return;
+    }
+
+    if (m_state == State::DEAD) {
+        
+        Kill();
+        
     }
 
     //--------------------------------------------------------------------------
@@ -525,29 +541,29 @@ void Player::AddHeart()
 
 void Player::Damage()
 {
-    if (!shield) {
-        if (m_state == State::DYING) {
-            Kill();    
-        }
+    
+        if (!shield) {
+            if (m_state == State::DYING) {
+                Kill();
+            }
 
-        else if (m_heartCount == 1) {
-            m_heartCount--;
-            m_lifeCount--;
-            m_heartCount = m_heartstart;
-            Kill();
-            
-            
-            
-        }
-        else {
-            m_heartCount--;
-            
-            SetShield(true);
-            timer_start = true;
-            //timer_shield = 5; // plus que 2 direct shield
+            else if (m_heartCount == 1) {
+                m_heartCount--;
+                m_lifeCount--;
+                m_heartCount = m_heartstart;
+                Kill();
 
 
-        }
+
+            }
+            else {
+                m_heartCount--;
+
+                SetShield(true);
+                timer_start = true;
+                
+            }
+        
     }
 }
 

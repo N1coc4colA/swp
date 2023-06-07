@@ -111,12 +111,10 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
             jumpPressed = true;
         } else if (scanCode == GameSettings::get()->shield)
         {
-            if (!shieldon) {
-                shieldon = true;
-            }
-            else {
-                shieldon = false;
-            }
+            shieldon = true;
+            
+            
+            
         } else if (scanCode == GameSettings::get()->special)
         {
             specialPressed = true;
@@ -135,6 +133,11 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
         {
             // Saut
             jumpDown = false;
+        }
+        else if (scanCode == GameSettings::get()->shield)
+        {
+            // Saut
+            shieldon = false;
         }
         
         else if (scanCode == GameSettings::get()->left)

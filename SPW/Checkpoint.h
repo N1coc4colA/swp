@@ -15,4 +15,5 @@ public:
 private:
     RE_Animator m_animator;
     bool m_isActive;
+    bool empty;
 };

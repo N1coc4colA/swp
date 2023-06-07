@@ -12,16 +12,23 @@ Checkpoint::Checkpoint(Scene &scene) :
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
     AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("LevelCheckpoint");
+
+    RE_AtlasPart* part = atlas->GetPart("CheckpointFull");
     AssertNew(part);
-    RE_TexAnim* anim = new RE_TexAnim(m_animator, "Base", part);
+    RE_TexAnim* anim = new RE_TexAnim(m_animator, "Full", part);
+    anim->SetCycleCount(0);
+    part = atlas->GetPart("CheckpointEmpty");
+    AssertNew(part);
+    RE_TexAnim* Emptyanim = new RE_TexAnim(m_animator, "Empty", part);
     anim->SetCycleCount(0);
 }
 
 void Checkpoint::Start()
 {
     // Joue l'animation par défaut
-    m_animator.PlayAnimation("Base");
+    m_animator.PlayAnimation("Empty");
+    
+   
 
     // Crée le corps
     PE_World& world = m_scene.GetWorld();
@@ -45,7 +52,12 @@ void Checkpoint::Render()
 {
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
-
+    if (empty) {
+        m_animator.PlayAnimation("Empty");
+    }
+    else {
+        m_animator.PlayAnimation("Full");
+    }
     m_animator.Update(m_scene.GetTime());
 
     float scale = camera->GetWorldToViewScale();
@@ -66,6 +78,8 @@ void Checkpoint::OnCollisionEnter(GameCollision &collision)
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
         PE_Vec2 position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
-        player->SetStartPosition(position);    
+        player->SetStartPosition(position); 
+        empty = true;
+
     }
 }

@@ -80,8 +80,8 @@ LevelHeader::LevelHeader(LevelScene &scene):
     m_heartCount->SetParent(this);
 
 
-    currX = 100.0f;
-    currY = 80.0f;
+    currX = 0.0f;
+    currY = 920.0f;
     // Image du nombre de coeur
     part = atlas->GetPart("Life");
     AssertNew(part);
@@ -143,5 +143,7 @@ void LevelHeader::FixedUpdate()
 
     m_fireflyCount->SetString(std::to_string(player->GetFireflyCount()));
     m_heartCount->SetString(std::to_string(player->GetHeartCount()));
+    m_vieCount->SetString(std::to_string(player->GetLifeCount()));
+    
     
 }

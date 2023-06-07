@@ -6,10 +6,10 @@
 
 Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
 	: Enemy(scene)
-	, m_animator(),m_size(size),m_sens(sens)
+	, m_animator(),m_size(size),m_sens(sens), m_fixedCount(0)
 {
     m_name = "Snake";
-
+    m_snakes = nullptr;
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
     AssertNew(atlas);
    
@@ -19,8 +19,8 @@ Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
     RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "Idle", part);
     idleAnim->SetCycleCount(0);
     if (m_size >= 1) {
-        Snake* snakes = new Snake(scene, m_size-1,pos,m_sens);
-        snakes->SetStartPosition(pos);
+        Snake* m_snakes = new Snake(scene, m_size-1,pos,m_sens);
+        m_snakes->SetStartPosition(pos);
     }
 
     
@@ -63,10 +63,6 @@ void Snake::Start()
     m_collider = body->CreateCollider(colliderDef);
     
     
-    // Endort le corps
-    // Permet d'optimiser le calcul de la physique,
-    // seuls les corps proches du joueur sont simulés
-    body->SetAwake(false);
 }
 
 void Snake::FixedUpdate()
@@ -78,73 +74,33 @@ void Snake::FixedUpdate()
     PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
 
-    // Tue la noisette si elle tombe dans un trou
-    if (position.y < -2.0f)
-    {
-        SetEnabled(false);
-        SetToRespawn(true);
-        return;
-    }
+    m_fixedCount++;
 
-    if (body->IsAwake() == false)
-    {
-        // Ne met pas à jour la noisette si elle est endormie
-        // Le joueur est loin d'elle et elle n'est plus visible par la caméra.
-        return;
-    }
 
-    LevelScene* levelScene = dynamic_cast<LevelScene*>(&m_scene);
-    if (levelScene == nullptr)
-    {
-        assert(false);
-        return;
-    }
-
-    Player* player = levelScene->GetPlayer();
-
-    float dist = PE_Distance(position, player->GetPosition());
-
-    if (dist > 24.0f)
-    {
-        // La distance entre de joueur et la noisette vient de dépasser 24 tuiles.
-        // On endort la noisette pour ne plus la simuler dans le moteur physique.
-        body->SetAwake(false);
-        return;
-    }
 
     body->SetVelocity(PE_Vec2::zero);
     body->ClearForces();
     
     PE_Vec2 positionstart = body->GetPosition();
+
+    if (m_fixedCount == 119)
+    {
+        m_retour = !m_retour;
+        m_fixedCount = 0;
+    }
    
     if (m_retour) {
-        PE_Vec2 mvt = PE_Vec2{ m_sens*0.5f*m_size, 0.f };
-        body->SetVelocity(mvt);
-        if (m_sens == 1) {
-            if (position.x >= m_posmax.x) {
-                m_retour = false;
-            }
-        }
-        else {
-            if (position.x <= m_posmax.x) {
-                m_retour = false;
-            }
-        }
-    }
-    else {
-        PE_Vec2 mvt = PE_Vec2{ -1*m_sens*0.5f*m_size, 0.f };
-        body->SetVelocity(mvt); 
-        if (m_sens == 1) {
-            if (position.x <= m_posstart.x) {
-                m_retour = true;
-            }
-        }
-        else {
-            if (position.x >= m_posstart.x) {
-                m_retour = true;
-            }
-        }
-    }
+        
+
+		PE_Vec2 mvt(+m_sens * 0.5f * m_size, 0.f);
+		body->SetVelocity(mvt);
+	}
+	else {
+		PE_Vec2 mvt(-m_sens * 0.5f * m_size, 0.f);
+		body->SetVelocity(mvt);
+	}
+
+
     if (m_state == State::IDLE)
     {
         m_state = State::DASH;

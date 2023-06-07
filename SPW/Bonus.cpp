@@ -101,18 +101,19 @@ void Bonus::Give_Bonus()
 {
     if (m_active) {
         int Id_bonus = rand() % 2;
+        printf("gere\n");
         switch (Id_bonus) {
         case 0: {
 
             Firefly* firefly = new Firefly(m_scene);
             firefly->SetStartPosition(GetPosition());
         }
-        case 1:  {
+        case 1: 
+        default: {
             Heart* heart = new Heart(m_scene);
             heart->SetStartPosition(GetPosition());
         }
-        default:
-            break;
+        
         }
         Set_BonusEmpty();
     }

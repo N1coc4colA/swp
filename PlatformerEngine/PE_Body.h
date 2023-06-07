@@ -207,6 +207,7 @@ private:
     PE_BodySolverData m_solverData;
 
     PE_BodyUserData m_userData;
+
 };
 
 inline PE_Vec2 PE_Body::GetPosition() const

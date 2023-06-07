@@ -31,14 +31,16 @@ private:
         IN,
 		DYING
     };
-
+    int m_fixedCount;
     State m_state = State::IDLE;
     bool m_isBounced = false;
     PE_Vec2 m_bounce;
     PE_Collider *m_collider;
+    Snake *m_snakes;
     PE_Vec2 m_posmax;
     PE_Vec2 m_posstart;
     bool m_retour;
     int m_size;
     int m_sens;
+    PE_Vec2 position;
 };

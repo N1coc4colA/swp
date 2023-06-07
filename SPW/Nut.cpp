@@ -176,10 +176,11 @@ void Nut::OnCollisionStay(GameCollision &collision)
 {
     PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
-
+    PE_Body* body = GetBody();
     if (m_state == State::DYING)
     {
         collision.SetEnabled(false);
+        
         return;
     }
 
