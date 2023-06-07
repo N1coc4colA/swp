@@ -5,6 +5,10 @@
 #include "Firefly.h"
 #include "Shield.h"
 
+#include <cstdlib>
+#include <random>
+
+
 Bonus::Bonus(Scene &scene) :
     GameBody(scene, Layer::TERRAIN_FOREGROUND), m_animator(), m_hit(false)
 {
@@ -102,22 +106,25 @@ void Bonus::Give_Bonus()
 {
     if (m_active)
     {
-        int Id_bonus = rand() % 3;
+        std::random_device rd; // obtain a random number from hardware
+        std::mt19937 gen(rd()); // seed the generator
+        std::uniform_int_distribution<> distr(0, 2); // define the range
         
-        Shield* shields = new Shield(m_scene);
-        shields->SetStartPosition(GetPosition());
-        switch (Id_bonus) {
+        switch (distr(gen)) {
             case 0: {
                 Heart* heart = new Heart(m_scene);
                 heart->SetStartPosition(GetPosition());
+                    break;
             }
             case 1: {
                 Shield * shield = new Shield(m_scene);
                 shield->SetStartPosition(GetPosition());
+                    break;
             }
             case 2: {
-                    Firefly* firefly = new Firefly(m_scene);
-                    firefly->SetStartPosition(GetPosition());
+                Firefly* firefly = new Firefly(m_scene);
+                firefly->SetStartPosition(GetPosition());
+                    break;
             }
             default: {
                 break;
@@ -127,7 +134,8 @@ void Bonus::Give_Bonus()
     }
 }
 
-void Bonus::Set_BonusEmpty(){
+void Bonus::Set_BonusEmpty()
+{
     m_active = false;
     m_state = State::EMPTY;
     m_animator.PlayAnimation("EMPTY");

@@ -133,11 +133,9 @@ LevelParser::LevelParser(const std::string &path)
                 {
                     break;
                 }
-                std::cout << std::endl;
             }
             else
             {
-                std::cout << c;
                 m_matrix[x][y] = c;
                 x++;
             }
@@ -286,7 +284,7 @@ void LevelParser::InitScene(LevelScene &scene) const
     }
     map->InitTiles();
 
-    PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
+    const PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
     Camera *camera = scene.GetActiveCamera();
     camera->SetWorldBounds(bounds);
 }
