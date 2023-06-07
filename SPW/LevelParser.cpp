@@ -42,17 +42,16 @@ LevelParser::LevelParser(const std::string &path)
         themeName += buffer[i];
         i++;
     }
-    i++;
 
     //Remove the "\n" from our string.
     themeName.pop_back();
 
     int height = 0;
     int width = 0;
-    for (; i < fileSize; i++)
+    for (i = i+1; i < fileSize; i++)
     {
         char c = buffer[i];
-        if (isValidChar[(int)c])
+        if (isValidChar[(unsigned int)c])
         {
             if (c == '\n')
             {
@@ -66,7 +65,7 @@ LevelParser::LevelParser(const std::string &path)
         }
         else
         {
-            //std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
+            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
         }
     }
     if (height == 0)
@@ -79,7 +78,7 @@ LevelParser::LevelParser(const std::string &path)
     for (i = i + 1; i < fileSize; ++i)
     {
         char c = buffer[i];
-        if (isValidChar[(int)c])
+        if (isValidChar[(unsigned int)c])
         {
             if (c == '\n')
             {
@@ -104,7 +103,7 @@ LevelParser::LevelParser(const std::string &path)
         }
         else
         {
-            //std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
+            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
         }
     }
 
@@ -121,10 +120,10 @@ LevelParser::LevelParser(const std::string &path)
     // Remplissage de la matrice du niveau
     int x = 0;
     int y = height - 1;
-    for (i = 0; i < fileSize; ++i)
+    for (i = static_cast<int>(themeName.size()) + 1; i < fileSize; ++i)
     {
         char c = buffer[i];
-        if (isValidChar[(int)c])
+        if (isValidChar[(unsigned int)c])
         {
             if (c == '\n')
             {
@@ -134,9 +133,11 @@ LevelParser::LevelParser(const std::string &path)
                 {
                     break;
                 }
+                std::cout << std::endl;
             }
             else
             {
+                std::cout << c;
                 m_matrix[x][y] = c;
                 x++;
             }
