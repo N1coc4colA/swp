@@ -107,7 +107,7 @@ void Boss::FixedUpdate()
     else {
         SetCloser(false);
     }
-    //printf("life :%d\n", heart_count);
+    
 }
 
 void Boss::Render()

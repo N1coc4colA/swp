@@ -7,7 +7,7 @@ class Snake
     : public Enemy
 {
 public:
-    Snake(Scene &scene);
+    Snake(Scene &scene, int size,PE_Vec2 pos,int sens);
     ~Snake();
 
     void Start() override;
@@ -19,7 +19,7 @@ public:
 
     void OnCollisionStay(GameCollision &collision) override;
 
-    void Bounce(const PE_Vec2 &v);
+    
 
 private:
     RE_Animator m_animator;
@@ -36,4 +36,9 @@ private:
     bool m_isBounced = false;
     PE_Vec2 m_bounce;
     PE_Collider *m_collider;
+    PE_Vec2 m_posmax;
+    PE_Vec2 m_posstart;
+    bool m_retour;
+    int m_size;
+    int m_sens;
 };

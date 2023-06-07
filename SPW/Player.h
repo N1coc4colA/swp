@@ -31,6 +31,7 @@ public:
     void Bounce();
     void SetShield(bool res);
     void StartTimerShield();
+    bool GetShield();
 
 private:
     void WakeUpSurroundings();
@@ -57,8 +58,9 @@ private:
     bool m_bounce = false;
     bool m_facingRight = true;
     bool shield = false;
-    int m_lifeCount = 5;
+    int m_lifeCount = 3;
     int m_heartCount = 3;
+    int m_heartstart = m_heartCount;
     int m_fireflyCount = 0;
 	int m_consecutiveJumps = 0;
     float timer_shield = 0;
@@ -67,6 +69,7 @@ private:
     bool m_canDash = false;
     PE_Vec2 m_dashDirection;
     bool m_drifting = false;
+    
 };
 
 
@@ -92,6 +95,10 @@ inline int Player::GetLifeCount() const
 
 inline void Player::SetShield(bool res) {
     shield = res;
+}
+
+inline bool Player::GetShield() {
+    return shield;
 }
 
 

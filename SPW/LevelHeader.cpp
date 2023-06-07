@@ -79,6 +79,31 @@ LevelHeader::LevelHeader(LevelScene &scene):
     m_heartCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
     m_heartCount->SetParent(this);
 
+
+    currX = 100.0f;
+    currY = 80.0f;
+    // Image du nombre de coeur
+    part = atlas->GetPart("Life");
+    AssertNew(part);
+    Image* VieImage = new Image(scene, part, 0);
+    VieImage->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+    VieImage->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
+    VieImage->GetLocalRect().offsetMin.Set(currX, currY);
+    VieImage->GetLocalRect().offsetMax.Set(currX + imgW, currY + imgH);
+    VieImage->SetParent(this);
+
+    currX += imgW + sep;
+
+    // Compteur du nombre de vie
+    m_vieCount = new Text(scene, "0", font, color);
+    m_vieCount->SetAnchor(RE_Anchor::WEST);
+    m_vieCount->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+    m_vieCount->GetLocalRect().anchorMax.Set(0.0f, 0.0f);
+    m_vieCount->GetLocalRect().offsetMin.Set(currX, currY);
+    m_vieCount->GetLocalRect().offsetMax.Set(currX + numW, currY + imgH);
+    m_vieCount->SetParent(this);
+
+
     
     if (m_levelScene.GetBoss()) {
         Camera* camera = m_scene.GetActiveCamera();
@@ -98,7 +123,7 @@ LevelHeader::LevelHeader(LevelScene &scene):
         // Image du nombre de coeur
         part = atlas->GetPart("Heart");
         AssertNew(part);
-        printf("%f %f\n", layerW + (10.f * scale) , layerH + 7.f * scale);
+        //printf("%f %f\n", layerW + (10.f * scale) , layerH + 7.f * scale);
         Barreboss* HeartBarreboss = new Barreboss(scene, part, 0, &m_levelScene);
         HeartBarreboss->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
         HeartBarreboss->GetLocalRect().anchorMax.Set(0.0f, 0.0f);

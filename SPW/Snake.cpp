@@ -4,20 +4,25 @@
 #include "LevelScene.h"
 #include "Graphics.h"
 
-Snake::Snake(Scene &scene)
+Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
 	: Enemy(scene)
-	, m_animator()
+	, m_animator(),m_size(size),m_sens(sens)
 {
     m_name = "Snake";
 
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
     AssertNew(atlas);
-
+   
     // Animation "Idle"
     RE_AtlasPart* part = atlas->GetPart("House");
     AssertNew(part);
     RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "Idle", part);
     idleAnim->SetCycleCount(0);
+    if (m_size >= 1) {
+        Snake* snakes = new Snake(scene, m_size-1,pos,m_sens);
+        snakes->SetStartPosition(pos);
+    }
+
     
 }
 
@@ -35,13 +40,19 @@ void Snake::Start()
     // Crée le corps
     PE_World &world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
-    bodyDef.type = PE_BodyType::STATIC;
+    bodyDef.type = PE_BodyType::KINEMATIC;
+
+    
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+    m_posstart  = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+    m_posmax = GetStartPosition() + PE_Vec2((m_sens*m_size)+.5f, 0.0f);
+
+
     bodyDef.name = "Snake";
     bodyDef.damping.SetZero();
     PE_Body *body = world.CreateBody(bodyDef);
     SetBody(body);
-
+    m_retour = true;
     // Crée le collider
     PE_PolygonShape box(-0.5f, 0.f, 0.5f, 1.f);
     PE_ColliderDef colliderDef;
@@ -60,7 +71,10 @@ void Snake::Start()
 
 void Snake::FixedUpdate()
 {
-    PE_Body *body = GetBody();
+    PE_Body* body = GetBody();
+    if (body == nullptr)
+        return;
+
     PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
 
@@ -79,14 +93,14 @@ void Snake::FixedUpdate()
         return;
     }
 
-    LevelScene *levelScene = dynamic_cast<LevelScene *>(&m_scene);
+    LevelScene* levelScene = dynamic_cast<LevelScene*>(&m_scene);
     if (levelScene == nullptr)
     {
         assert(false);
         return;
     }
 
-    Player *player = levelScene->GetPlayer();
+    Player* player = levelScene->GetPlayer();
 
     float dist = PE_Distance(position, player->GetPosition());
 
@@ -94,29 +108,50 @@ void Snake::FixedUpdate()
     {
         // La distance entre de joueur et la noisette vient de dépasser 24 tuiles.
         // On endort la noisette pour ne plus la simuler dans le moteur physique.
-        m_state = State::IDLE;
         body->SetAwake(false);
         return;
     }
 
-    if (PE_PolygonShape* mabox = dynamic_cast<PE_PolygonShape*>(m_collider->m_shape)) {
-        PE_AABB test;
-        mabox->GetAABB(PE_Vec2(0.f, 0.f), test);
-        //printf("test %f %f %f %f\n", test.lower.x,test.lower.y,test.upper.x,test.upper.y);
-        float value = 0.01f;
-        //test.lower.x = value; test.lower.y -= value;
-        //test.upper.x += value; test.upper.y -= value;
-        //test.upper.x += 0.1f;
-        
-        //test.Translate(vec);
-        //printf("%f\n",test.GetHeight());
-        //mabox->SetAsBox(test);
-        //PE_AABB testfin;
-        //mabox->GetAABB(PE_Vec2(0.f, 0.f), testfin);
-        //printf("test fin%f %f %f %f\n", testfin.lower.x, testfin.lower.y, testfin.upper.x, testfin.upper.y);
-        
-    }
+    body->SetVelocity(PE_Vec2::zero);
+    body->ClearForces();
     
+    PE_Vec2 positionstart = body->GetPosition();
+   
+    if (m_retour) {
+        PE_Vec2 mvt = PE_Vec2{ m_sens*0.5f*m_size, 0.f };
+        body->SetVelocity(mvt);
+        if (m_sens == 1) {
+            if (position.x >= m_posmax.x) {
+                m_retour = false;
+            }
+        }
+        else {
+            if (position.x <= m_posmax.x) {
+                m_retour = false;
+            }
+        }
+    }
+    else {
+        PE_Vec2 mvt = PE_Vec2{ -1*m_sens*0.5f*m_size, 0.f };
+        body->SetVelocity(mvt); 
+        if (m_sens == 1) {
+            if (position.x <= m_posstart.x) {
+                m_retour = true;
+            }
+        }
+        else {
+            if (position.x >= m_posstart.x) {
+                m_retour = true;
+            }
+        }
+    }
+    if (m_state == State::IDLE)
+    {
+        m_state = State::DASH;
+        m_animator.PlayAnimation("Idle");
+    }
+
+
 }
 
 void Snake::Render()
@@ -155,8 +190,8 @@ void Snake::OnRespawn()
 void Snake::Damage(GameBody *damager)
 {
 	if (Player *player = dynamic_cast<Player *>(damager)) {
-        player->Bounce();
-        SetEnabled(false);
+        player->Damage();
+        
 	}
 }
 
@@ -164,13 +199,6 @@ void Snake::OnCollisionStay(GameCollision &collision)
 {
     PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
-
-    if (m_state == State::DYING)
-    {
-        collision.SetEnabled(false);
-        return;
-    }
-
 
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
@@ -187,26 +215,6 @@ void Snake::OnCollisionStay(GameCollision &collision)
             player->Damage();
         }
         return;
-    } else if (otherCollider->CheckCategory(CATEGORY_ENEMY))
-    {
-        if (Snake *snake = dynamic_cast<Snake*>(collision.gameBody))
-        {
-            snake->Bounce(manifold.normal * 40.f);
-            Bounce(manifold.normal * 4.f);
-        }
     }
 }
 
-void Snake::Bounce(const PE_Vec2 &v)
-{
-    if (m_isBounced)
-    {
-        m_bounce += v;
-        m_bounce /= 2;
-    }
-    else
-    {
-        m_isBounced = true;
-        m_bounce = v;
-    }
-}
