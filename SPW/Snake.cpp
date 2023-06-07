@@ -10,14 +10,31 @@ Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
 {
     m_name = "Snake";
     m_snakes = nullptr;
-    RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
+    RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::ENEMY);
     AssertNew(atlas);
    
     // Animation "Idle"
-    RE_AtlasPart* part = atlas->GetPart("House");
-    AssertNew(part);
-    RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "Idle", part);
-    idleAnim->SetCycleCount(0);
+    if (m_size == 0) {
+        RE_AtlasPart* part = atlas->GetPart("SerpentHouse");
+        AssertNew(part);
+        m_state = State::HOUSE;
+        RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "House", part);
+        idleAnim->SetCycleCount(0);
+    }
+    else if(m_size ==3){
+        RE_AtlasPart* part = atlas->GetPart("SerpentHead");
+        AssertNew(part);
+        m_state = State::HEAD;
+        RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "Head", part);
+        idleAnim->SetCycleCount(0);
+    }
+    else {
+        RE_AtlasPart* part = atlas->GetPart("SerpentBody");
+        AssertNew(part);
+        m_state = State::BODY;
+        RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "Body", part);
+        idleAnim->SetCycleCount(0);
+    }
     if (m_size >= 1) {
         Snake* m_snakes = new Snake(scene, m_size-1,pos,m_sens);
         m_snakes->SetStartPosition(pos);
@@ -35,7 +52,18 @@ void Snake::Start()
     SetToRespawn(true);
 
     // Joue l'animation par défaut
-    m_animator.PlayAnimation("Idle");
+    
+        
+    
+    if (m_state == State::HOUSE) {
+        m_animator.PlayAnimation("House");
+    }
+    else if(m_state == State::HEAD) {
+        m_animator.PlayAnimation("Head");
+    }
+    else {
+        m_animator.PlayAnimation("Body");
+    }
 
     // Crée le corps
     PE_World &world = m_scene.GetWorld();
@@ -100,21 +128,13 @@ void Snake::FixedUpdate()
 		body->SetVelocity(mvt);
 	}
 
-
-    if (m_state == State::IDLE)
-    {
-        m_state = State::DASH;
-        m_animator.PlayAnimation("Idle");
-    }
-
-
 }
 
 void Snake::Render()
 {
     SDL_Renderer *renderer = m_scene.GetRenderer();
     Camera *camera = m_scene.GetActiveCamera();
-
+    SDL_RendererFlip flip = m_sens == 1 ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
     m_animator.Update(m_scene.GetTime());
 
     float scale = camera->GetWorldToViewScale();
@@ -122,12 +142,12 @@ void Snake::Render()
     rect.h = 1.0f * scale;
     rect.w = 1.0f * scale;
     camera->WorldToView(GetPosition(), rect.x, rect.y);
-    m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
+    m_animator.RenderCopyExF(&rect, RE_Anchor::SOUTH,0.,{0.f,0.f}, flip);
 }
 
 void Snake::OnRespawn()
 {
-    m_state = State::IDLE;
+    
     m_isBounced = false;
 
     SetToRespawn(true);

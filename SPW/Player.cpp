@@ -6,6 +6,7 @@
 #include "Graphics.h"
 #include  "Brick.h"
 #include  "Bonus.h"
+#include "Shield.h"
 
 
 Player::Player(Scene &scene)
@@ -403,6 +404,7 @@ void Player::FixedUpdate()
             m_shieldAanimator.StopAnimations();
         }
     }
+    
 }
 
 void Player::OnRespawn()

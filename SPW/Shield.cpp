@@ -16,7 +16,7 @@ Shield::Shield(Scene &scene) :
     AssertNew(atlas);
     RE_AtlasPart* part = atlas->GetPart("Shield");
     AssertNew(part);
-    RE_TexAnim* anim = new RE_TexAnim(m_animator, "IDLE",part);
+    RE_TexAnim* anim = new RE_TexAnim(m_animator, "shield",part);
     anim->SetCycleCount(0);
 
     atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
@@ -30,7 +30,7 @@ Shield::Shield(Scene &scene) :
 
 void Shield::Start()
 {
-    m_animator.PlayAnimation("IDLE");
+    m_animator.PlayAnimation("shield");
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::DYNAMIC;
@@ -80,7 +80,7 @@ void Shield::OnRespawn()
     body->ClearForces();
 
     m_animator.StopAnimations();
-    m_animator.PlayAnimation("IDLE");
+    m_animator.PlayAnimation("shield");
 }
 
 Shield::~Shield()

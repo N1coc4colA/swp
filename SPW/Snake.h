@@ -26,13 +26,12 @@ private:
 
     enum class State
     {
-        IDLE,
-		DASH,
-        IN,
-		DYING
+        HEAD,
+        BODY,
+        HOUSE
     };
     int m_fixedCount;
-    State m_state = State::IDLE;
+    State m_state = State::HOUSE;
     bool m_isBounced = false;
     PE_Vec2 m_bounce;
     PE_Collider *m_collider;
