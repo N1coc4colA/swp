@@ -287,6 +287,7 @@ void StaticMap::Start()
                 colliderDef.userData.id = 2;
             case Tile::Type::GROUND:
             case Tile::Type::WOOD:
+                colliderDef.userData.id = 3;
                 polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
                 break;
 
@@ -345,6 +346,10 @@ void StaticMap::OnCollisionStay(GameCollision &collision)
 
         player->Damage();
         player->Bounce();
+    }
+    if (collision.collider->GetUserData().id == 2 && collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+    {
+        std::cout << "Contact!" << std::endl;
     }
 }
 

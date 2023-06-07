@@ -10,7 +10,7 @@ class Button : public UIObject
 {
 public:
     Button(Scene &scene, RE_AtlasPart *atlasPart);
-    virtual ~Button();
+    ~Button() override;
 
     enum class State : int
     {

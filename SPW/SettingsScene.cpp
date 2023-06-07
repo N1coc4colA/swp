@@ -1,7 +1,8 @@
-#include "LevelSelection.h"
+#include "SettingsScene.h"
 #include "TitleScene.h"
 #include "Button.h"
 #include "Text.h"
+
 
 namespace LevelSelectionNS
 {
@@ -25,8 +26,8 @@ namespace LevelSelectionNS
     };
 }
 
-LevelSelection::LevelSelection(TitleScene &scene) :
-    UIObject(scene)
+SettingsScene::SettingsScene(TitleScene& scene)
+    : UIObject(scene)
 {
     float buttonH = 55.0f;
     float topSkip = 100.0f;

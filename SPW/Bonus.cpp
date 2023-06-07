@@ -48,7 +48,7 @@ void Bonus::Start()
     colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
     colliderDef.filter.maskBits = CATEGORY_PLAYER;
     colliderDef.shape = &box;
-    PE_Collider* collider = body->CreateCollider(colliderDef);
+    PE_Collider *collider = body->CreateCollider(colliderDef);
 
     // Endort le corps
     // Permet d'optimiser le calcul de la physique,

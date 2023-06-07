@@ -155,6 +155,7 @@
     <ClCompile Include="Firefly.cpp" />
     <ClCompile Include="GameBody.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Heart.cpp" />
     <ClCompile Include="Image.cpp" />
@@ -175,6 +176,7 @@
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene.cpp" />
+    <ClCompile Include="SettingsScene.cpp" />
     <ClCompile Include="Shield.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="StartScreen.cpp" />
@@ -205,6 +207,7 @@
     <ClInclude Include="Firefly.h" />
     <ClInclude Include="GameBody.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="GameSettings.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Heart.h" />
     <ClInclude Include="Image.h" />
@@ -225,6 +228,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Settings.h" />
+    <ClInclude Include="SettingsScene.h" />
     <ClInclude Include="Shield.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="StartScreen.h" />

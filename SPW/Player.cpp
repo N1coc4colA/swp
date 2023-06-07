@@ -81,7 +81,6 @@ Player::~Player()
 
 void Player::Start()
 {
-    
     // Joue l'animation par défaut
     m_animator.PlayAnimation("Idle");
 
@@ -100,7 +99,6 @@ void Player::Start()
     PE_ColliderDef colliderDef;
 
     PE_CapsuleShape capsule(PE_Vec2(0.0f, 0.35f), PE_Vec2(0.0f, 0.85f), 0.35f);
-//PE_Vec2(-0.3f, 0.1f), PE_Vec2(0.2f, 0.1f), 0.7f);
     colliderDef.friction = 1.f;
     colliderDef.filter.categoryBits = CATEGORY_PLAYER;
     //colliderDef.filter.maskBits = CATEGORY_TERRAIN;
@@ -131,17 +129,14 @@ void Player::Render()
     m_animator.Update(m_scene.GetTime());
 
     float scale = camera->GetWorldToViewScale();
-    SDL_RendererFlip flip = SDL_FLIP_NONE;
-    SDL_FRect rect = { 0 };
-
-    rect.h = 1.4f * scale;
-    rect.w = 2.f * scale;
+    SDL_RendererFlip flip = m_facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+    SDL_FRect rect = { 0, 0, 1.4f * scale, rect.w = 2.f * scale };
     PE_Vec2 pos = GetPosition();
 	//pos.y += 0.1f;
     camera->WorldToView(pos, rect.x, rect.y);
 
     // Dessine l'animation du joueur
-    m_animator.RenderCopyExF(&rect, RE_Anchor::SOUTH, 0.f, Vec2(0.5f, 0.5f), flip);
+    m_animator.RenderCopyExF(&rect, RE_Anchor::SOUTH, 0., Vec2(0.5f, 0.5f), flip);
 }
 
 void Player::FixedUpdate()
@@ -176,19 +171,19 @@ void Player::FixedUpdate()
     RayHit hitL = m_scene.RayCast(originL, PE_Vec2::down, 0.1f, CATEGORY_TERRAIN, true);
     RayHit hitR = m_scene.RayCast(originR, PE_Vec2::down, 0.1f, CATEGORY_TERRAIN, true);
 
-    if (hitL.collider != NULL)
+    if (hitL.collider != nullptr)
     {
         // Le rayon gauche à touché le sol
         m_onGround = true;
         gndNormal = hitL.normal;
     }
-    if (hitR.collider != NULL)
+    if (hitR.collider != nullptr)
     {
         // Le rayon droit à touché le sol
         m_onGround = true;
         gndNormal = hitR.normal;
     }
-
+    
     //--------------------------------------------------------------------------
     // Etat du joueur
 
@@ -196,9 +191,9 @@ void Player::FixedUpdate()
 	State tmpState = m_state;
     
 	if (m_onGround) {
+	    m_jumpedOnce = false;
 	    if (m_jump) {
 	        tmpState = State::SKIDDING;
-	        m_jump = false;
 	    } else if (m_hDirection == 0.f)
 	    {
 	        tmpState = State::IDLE;
@@ -212,12 +207,30 @@ void Player::FixedUpdate()
         }
         if (m_jump)
         {
-            const RayHit result1 = m_scene.RayCast(GetPosition(), PE_Vec2::up, 4, CATEGORY_TERRAIN, true);
-            if (!result1.collider)
+            RayHit result1 = m_scene.RayCast(GetPosition(), PE_Vec2::down, 4, CATEGORY_TERRAIN, true);
+            if (!result1.collider && !m_jumpedOnce)
             {
                 tmpState = State::SKIDDING;
+                m_jumpedOnce = true;
+            }
+            result1 = m_scene.RayCast(GetPosition(), PE_Vec2::down, 1.f, CATEGORY_TERRAIN, false);
+            if (result1.collider)
+            {
+                if (m_jumpedOnce && result1.collider->GetUserData().id == 1) //Aw, looks like you tried to trick above the spikes!
+                {
+                    tmpState = State::SKIDDING;
+                    m_jumpedOnce = false;
+                }
             }
         }
+    }
+
+    const RayHit dashHit1 = m_scene.RayCast(GetPosition(), PE_Vec2::left, 0.8f, CATEGORY_TERRAIN, false);
+    const RayHit dashHit2 = m_scene.RayCast(GetPosition(), PE_Vec2::right, 0.8f, CATEGORY_TERRAIN, false);
+    const bool dashing = ((dashHit1.collider && dashHit1.collider->GetUserData().id == 3) || (dashHit2.collider && dashHit2.collider->GetUserData().id == 3)) && m_jump && !m_onGround;
+    if (dashing)
+    {
+        tmpState = State::SKIDDING;
     }
 
 	if (m_state == State::DYING) {
@@ -226,11 +239,22 @@ void Player::FixedUpdate()
 		tmpState = State::DYING;
 	}
 
-    if (m_state != tmpState)
+    if (m_state != tmpState || dashing)
     {
         switch (tmpState) {
         case State::SKIDDING: {
-                body->ApplyImpulse(PE_Vec2::up * 80.f);
+                if (dashing)
+                {
+                    if (dashHit1.collider)
+                    {
+                        body->ApplyImpulse((PE_Vec2{2.f, 2.f}) * 45.f);
+                    } else
+                    { 
+                        body->ApplyImpulse((PE_Vec2{-2.f, 2.f}) * 45.f);
+                    } 
+                } else {
+                    body->ApplyImpulse(PE_Vec2::up * 45.f);
+                }
                 m_animator.PlayAnimation("Skidding");
 	            m_jump = false;
                 break;
@@ -258,8 +282,14 @@ void Player::FixedUpdate()
         m_state = tmpState;
     }
 
+    if (m_drifting)
+    {
+        body->SetGravityScale(1.f);
+        m_drifting = false;
+    }
+    
     // Orientation du joueur
-    m_facingRight = true;
+    const bool oldFacing = m_facingRight;
     if (m_hDirection < 0.f)
     {
         m_facingRight = false;
@@ -279,7 +309,11 @@ void Player::FixedUpdate()
     body->ApplyForce(force);
 
     PE_Vec2 mvt = body->GetLocalVelocity();
-    mvt.x = PE_Clamp(mvt.x, -20.f, 20.f);
+    mvt.x = PE_Clamp(mvt.x, -8.f, 8.f);
+    if (mvt.y > 50.f)
+    {
+        mvt.y = 50.f;
+    }
     body->SetVelocity(mvt);
     
     const RayHit result1 = m_scene.RayCast(GetPosition(), PE_Vec2::up, 1.3f, CATEGORY_TERRAIN, false);
@@ -287,10 +321,8 @@ void Player::FixedUpdate()
     {
         if (result1.collider->GetUserData().id == 2)
         {
-            std::cout << "result!" << std::endl;
             if (Brick *brick = dynamic_cast<Brick *>(result1.gameBody))
             {
-                std::cout << "Cast!" << std::endl;
                 const float angleUp = PE_AngleDeg(result1.normal, PE_Vec2::up);
                 if (angleUp <= 55.f)
                 {
@@ -298,6 +330,13 @@ void Player::FixedUpdate()
                 }
             }
         }
+    }
+
+    // Ow what?? It looks like we can ... drift !!
+    if (oldFacing != m_facingRight && m_state == State::RUNNING)
+    {
+        m_drifting = true;
+        body->SetGravityScale(0.01f);
     }
 
     // TODO : Rebond sur les ennemis
@@ -309,7 +348,6 @@ void Player::FixedUpdate()
     // La physique peut être différente si le joueur touche ou non le sol.
 
     // Définit la nouvelle vitesse du corps
-    // TODO : Appliquer la nouvelle velocité au player
     
     if (timer_start) {
         timer_shield += m_scene.GetFixedTimeStep();
@@ -324,7 +362,7 @@ void Player::FixedUpdate()
 void Player::OnRespawn()
 {
     PE_Body *body = GetBody();
-    AssertNew(body);
+    AssertNew(body)
 
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);
@@ -335,6 +373,7 @@ void Player::OnRespawn()
     m_facingRight = true;
     m_bounce = false;
     m_jump = false;
+    m_jumpedOnce = false;
 
     m_animator.StopAnimations();
     m_animator.PlayAnimation("Idle");
@@ -362,6 +401,8 @@ void Player::DrawGizmos()
     const PE_Vec2 originR = position + PE_Vec2(+0.35f, 0.0f);
     graphics.DrawVector(0.1f * PE_Vec2::down, originL);
     graphics.DrawVector(0.1f * PE_Vec2::down, originR);
+    graphics.DrawVector(PE_Vec2::left * 0.8f, position);
+    graphics.DrawVector(PE_Vec2::right * 0.8f, position);
     graphics.DrawVector(PE_Vec2::up * 1.3f, position);
 }
 
@@ -429,14 +470,26 @@ void Player::OnCollisionStay(GameCollision &collision)
     else if (otherCollider->CheckCategory(CATEGORY_TERRAIN))
     {
         const float angleUp = PE_AngleDeg(manifold.normal, PE_Vec2::up);
-        if (angleUp <= 55.f)
+        if (angleUp > 55.f && angleUp < 125.f) // Also check that it's we can dash on it.
+        {
+            if (collision.collider->GetUserData().id == 3)
+            {
+                m_canDash = true;
+                m_dashDirection = collision.manifold.normal;
+                //collision.SetEnabled(false);
+                //collision.ResolveUp();
+            }
+        }
+        else if (angleUp <= 55.f)
         {
             // Résoud la collision en déplaçant le joueur vers le haut
             // Evite de "glisser" sur les pentes si le joueur ne bouge pas
             collision.ResolveUp();
-        } else if (Brick *brick = dynamic_cast<Brick *>(collision.gameBody))
+        }
+        else if (Brick *brick = dynamic_cast<Brick *>(collision.gameBody))
         {
             brick->touchedFromBottom();
+            collision.SetEnabled(false);
         }
         else if (Bonus* bonus = dynamic_cast<Bonus*>(collision.gameBody))
         {
@@ -492,8 +545,9 @@ void Player::Kill()
 class WakeUpCallback : public PE_QueryCallback
 {
 public:
-    WakeUpCallback() {};
-    virtual bool ReportCollider(PE_Collider *collider)
+    inline WakeUpCallback() {}
+    
+    inline virtual bool ReportCollider(PE_Collider *collider)
     {
         collider->GetBody()->SetAwake(true);
         return true;

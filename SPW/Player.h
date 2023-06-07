@@ -39,6 +39,7 @@ private:
     {
         IDLE,
 		WALKING,
+        LEAP,
 		RUNNING,
 		SKIDDING,
 		FALLING,
@@ -57,12 +58,19 @@ private:
     bool m_facingRight = true;
     bool shield = false;
     int m_lifeCount = 5;
+<<<<<<< Updated upstream
     int m_heartCount = 10;
+=======
+    int m_heartCount = 3;
+>>>>>>> Stashed changes
     int m_fireflyCount = 0;
 	int m_consecutiveJumps = 0;
-    float timer_shield =0;
+    float timer_shield = 0;
     bool timer_start = false;
-    
+    bool m_jumpedOnce = false;
+    bool m_canDash = false;
+    PE_Vec2 m_dashDirection;
+    bool m_drifting = false;
 };
 
 

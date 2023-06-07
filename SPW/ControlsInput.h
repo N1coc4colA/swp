@@ -8,12 +8,14 @@ class ControlsInput : public InputGroup
 public:
     ControlsInput();
 
-    virtual void OnPreEventProcess() override;
-    virtual void OnEventProcess(SDL_Event evt) override;
-    virtual void Reset() override;
+    void OnPreEventProcess() override;
+    void OnEventProcess(SDL_Event evt) override;
+    void Reset() override;
 
-    float hAxis;
-    bool jumpDown;
-    bool jumpPressed;
-    bool goDownDown;
+    float hAxis = 0.f;
+    bool jumpDown = false;
+    bool jumpPressed = false;
+    bool goDownDown = false;
+    bool pausePressed = false;
+    bool specialPressed = false;
 };

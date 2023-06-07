@@ -38,8 +38,8 @@ AssetManager::AssetManager(SDL_Renderer *renderer, ThemeID themeID) :
         Mix_Chunk *chunck = Mix_LoadWAV(audioSpecs[i].path);
         if (chunck == nullptr)
         {
-            printf("ERROR - Loading audio %s\n", audioSpecs[i].path);
-            printf("      - %s\n", Mix_GetError());
+            std::cerr << "ERROR - Loading audio " << audioSpecs[i].path << "\n"
+                      << "      - " << Mix_GetError() << std::endl;
             assert(false);
             abort();
         }
@@ -211,7 +211,7 @@ std::vector<SDL_Texture *> &AssetManager::GetBackgrounds()
             SDL_Texture *texture = IMG_LoadTexture(m_renderer, path.c_str());
             if (texture == nullptr)
             {
-                printf("ERROR - IMG_LoadTexture %s\n", SDL_GetError());
+                std::cerr << "ERROR - IMG_LoadTexture " << SDL_GetError() << std::endl;
                 assert(false); abort();
             }
             m_backgrounds.push_back(texture);

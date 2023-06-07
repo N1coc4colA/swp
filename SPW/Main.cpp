@@ -1,6 +1,7 @@
 #include "Settings.h"
 #include "LevelScene.h"
 #include "TitleScene.h"
+#include "GameSettings.h"
 
 //#define FHD
 //#define FULLSCREEN
@@ -32,27 +33,31 @@ int main(int argc, char *argv[])
     // Initialise la SDL2 mixer
     if (Mix_Init(MIX_INIT_MP3) != MIX_INIT_MP3)
     {
-        printf("ERROR - Mix_Init %s\n", Mix_GetError());
+        std::cerr << "ERROR - Mix_Init " << Mix_GetError() << std::endl;
         assert(false);
         abort();
     }
     if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) < 0)
     {
-        printf("ERROR - Mix_OpenAudio %s\n", Mix_GetError());
+        std::cerr << "ERROR - Mix_OpenAudio " << Mix_GetError() << std::endl;
         assert(false);
         abort();
     }
     Mix_AllocateChannels(16);
+    
+    // Loads the settings.
+    GameSettings gSettings;
+    gSettings.load();
 
     int exitStatus;
-    exitStatus = Mix_MasterVolume((int)(0.50f * MIX_MAX_VOLUME));
+    exitStatus = Mix_MasterVolume((int)(MIX_MAX_VOLUME));
     //exitStatus = Mix_VolumeMusic((int)(0.70f * MIX_MAX_VOLUME));
-    exitStatus = Mix_VolumeMusic(0);
-    exitStatus = Mix_Volume((int)ChannelID::COLLECTABLE, (int)(0.40f * MIX_MAX_VOLUME));
-    exitStatus = Mix_Volume((int)ChannelID::ENEMY, (int)(0.50f * MIX_MAX_VOLUME));
-    exitStatus = Mix_Volume((int)ChannelID::PLAYER, (int)(0.50f * MIX_MAX_VOLUME));
-    exitStatus = Mix_Volume((int)ChannelID::SYSTEM_1, (int)(0.40f * MIX_MAX_VOLUME));
-    exitStatus = Mix_Volume((int)ChannelID::SYSTEM_2, (int)(0.60f * MIX_MAX_VOLUME));
+    exitStatus = Mix_VolumeMusic((int)(gSettings.soundGlobal * MIX_MAX_VOLUME));
+    exitStatus = Mix_Volume((int)ChannelID::COLLECTABLE, (int)(gSettings.soundCollectable * MIX_MAX_VOLUME));
+    exitStatus = Mix_Volume((int)ChannelID::ENEMY, (int)(gSettings.soundEnemy * MIX_MAX_VOLUME));
+    exitStatus = Mix_Volume((int)ChannelID::PLAYER, (int)(gSettings.soundPlayer * MIX_MAX_VOLUME));
+    exitStatus = Mix_Volume((int)ChannelID::SYSTEM_1, (int)(gSettings.soundSystem1 * MIX_MAX_VOLUME));
+    exitStatus = Mix_Volume((int)ChannelID::SYSTEM_2, (int)(gSettings.soundSystem2 * MIX_MAX_VOLUME));
 
     Mix_Music *music = Mix_LoadMUS("../Assets/Music/main.mp3");
     Mix_PlayMusic(music, -1);
@@ -70,7 +75,7 @@ int main(int argc, char *argv[])
 
     if (!window)
     {
-        printf("ERROR - Create window %s\n", SDL_GetError());
+        std::cerr << "ERROR - Create window " << SDL_GetError() << std::endl;
         assert(false); abort();
     }
 
@@ -86,7 +91,7 @@ int main(int argc, char *argv[])
 
     if (!renderer)
     {
-        printf("ERROR - Create renderer %s\n", SDL_GetError());
+        std::cerr << "ERROR - Create renderer " << SDL_GetError() << std::endl;
         assert(false); abort();
     }
 
@@ -96,7 +101,7 @@ int main(int argc, char *argv[])
     {
         gameController = SDL_JoystickOpen(0);
     }
-
+    
     // Crée le temps global du jeu
     RE_Timer time;
     time.Start();

@@ -54,12 +54,12 @@ LevelParser::LevelParser(const std::string &path)
         }
         else
         {
-            printf("INFO - Invalid char (%c)\n", c);
+            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
         }
     }
     if (height == 0)
     {
-        printf("ERROR - Incorrect level file\n");
+        std::cerr << "ERROR - Incorrect level file" << std::endl;
         assert(false);
         abort();
     }
@@ -79,7 +79,7 @@ LevelParser::LevelParser(const std::string &path)
 
                 if (w != width)
                 {
-                    printf("ERROR - Incorrect level file\n");
+                    std::cerr << "ERROR - Incorrect level file" << std::endl;
                     assert(false);
                     abort();
                 }
@@ -92,7 +92,7 @@ LevelParser::LevelParser(const std::string &path)
         }
         else
         {
-            printf("INFO - Invalid char (%c)\n", c);
+            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
         }
     }
 

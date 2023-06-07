@@ -1,5 +1,8 @@
 #include "ControlsInput.h"
 
+#include "GameSettings.h"
+
+
 ControlsInput::ControlsInput() :
     InputGroup(), hAxis(0.0f),
     jumpDown(false), jumpPressed(false), goDownDown(false)
@@ -88,65 +91,56 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
         if (evt.key.repeat)
             break;
 
-        switch (scanCode)
+        if (scanCode == GameSettings::get()->down)
         {
-        case SDL_SCANCODE_RIGHT:
-            // Deplacement à droite
-            hAxis = 1.f;
-            break;
-
-        case SDL_SCANCODE_LEFT:
-            // Deplacement à gauche
-            hAxis = -1.f;
-            break;
-
-        case SDL_SCANCODE_DOWN:
             // Descente d'une plateforme
             goDownDown = true;
-            break;
-
-        case SDL_SCANCODE_SPACE:
-        case SDL_SCANCODE_UP:
+        } else if (scanCode == GameSettings::get()->right)
+        {
+            // Deplacement à droite
+            hAxis = 1.f;
+        } else if (scanCode == GameSettings::get()->left)
+        {
+            // Deplacement à gauche
+            hAxis = -1.f;
+        } else if (scanCode == GameSettings::get()->jump)
+        {
             // Saut
             jumpDown = true;
             jumpPressed = true;
-            break;
-
-        default:
-            break;
+        } else if (scanCode == GameSettings::get()->special)
+        {
+            specialPressed = true;
+        } else if (scanCode == GameSettings::get()->pause)
+        {
+            pausePressed = true;
         }
         break;
 
     case SDL_KEYUP:
         scanCode = evt.key.keysym.scancode;
 
-        switch (scanCode)
+        if (scanCode == GameSettings::get()->down)
         {
-        case SDL_SCANCODE_RIGHT:
+            // Descente d'une plateforme
+            goDownDown = true;
+        }
+        else if (scanCode == GameSettings::get()->jump)
+        {
+            // Saut
+            jumpDown = false;
+        }
+        else if (scanCode == GameSettings::get()->left)
+        {
+            // Déplacement à gauche
+            if (hAxis < 0.f)
+                hAxis = 0.f;
+        }
+        else if (scanCode == GameSettings::get()->right)
+        {
             // Deplacement à droite
             if (hAxis > 0.f)
                 hAxis = 0.f;
-            break;
-
-        case SDL_SCANCODE_LEFT:
-            // Deplacement à gauche
-            if (hAxis < 0.f)
-                hAxis = 0.f;
-            break;
-
-        case SDL_SCANCODE_DOWN:
-            // Descente d'une plateforme
-            goDownDown = false;
-            break;
-
-        case SDL_SCANCODE_SPACE:
-        case SDL_SCANCODE_UP:
-            // Saut
-            jumpDown = false;
-            break;
-
-        default:
-            break;
         }
         break;
 
@@ -157,8 +151,10 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
 
 void ControlsInput::Reset()
 {
-    hAxis = 0.0f;
+    hAxis = 0.f;
     jumpDown = false;
     jumpPressed = false;
     goDownDown = false;
+    pausePressed = false;
+    specialPressed = false;
 }
