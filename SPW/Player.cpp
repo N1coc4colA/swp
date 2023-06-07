@@ -129,7 +129,7 @@ void Player::Render()
     m_animator.Update(m_scene.GetTime());
 
     float scale = camera->GetWorldToViewScale();
-    SDL_RendererFlip flip = m_facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+    SDL_RendererFlip flip = m_state == State::DYING ? SDL_FLIP_VERTICAL : (m_facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL);
     SDL_FRect rect = { 0, 0, 1.4f * scale, rect.w = 2.f * scale };
     PE_Vec2 pos = GetPosition();
 	//pos.y += 0.1f;
@@ -143,6 +143,7 @@ void Player::FixedUpdate()
 {
     PE_Body *body = GetBody();
     const PE_Vec2 position = body->GetPosition();
+    PE_Vec2 velocity = body->GetLocalVelocity();
 
     // Réveille les corps autour du joueur
     WakeUpSurroundings();

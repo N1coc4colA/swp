@@ -4,10 +4,11 @@
 #include "DebugCamera.h"
 #include "Background.h"
 #include "Boss.h"
+#include "PauseMenu.h"
 
-LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, const LevelData &level) :
-    Scene(renderer, mainTime, level.themeID), m_paused(false),
-    m_camIndex(0), m_cameras(), m_stepDelay(0.0f)
+LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, const LevelData &level)
+    : Scene(renderer, mainTime, level.themeID)
+    , m_cameras()
 {
     m_inputManager.GetApplication().SetEnabled(true);
     m_inputManager.GetMouse().SetEnabled(true);

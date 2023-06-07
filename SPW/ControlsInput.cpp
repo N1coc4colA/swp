@@ -111,9 +111,6 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
         } else if (scanCode == GameSettings::get()->special)
         {
             specialPressed = true;
-        } else if (scanCode == GameSettings::get()->pause)
-        {
-            pausePressed = true;
         }
         break;
 
@@ -155,6 +152,5 @@ void ControlsInput::Reset()
     jumpDown = false;
     jumpPressed = false;
     goDownDown = false;
-    pausePressed = false;
     specialPressed = false;
 }

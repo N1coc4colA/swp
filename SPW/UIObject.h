@@ -29,14 +29,14 @@ class UIObject : public GameObject
 {
 public:
     UIObject(Scene &scene);
-    virtual ~UIObject();
+    ~UIObject() override;
 
     void SetLocalRect(UIRect &rect);
     UIRect &GetLocalRect();
     SDL_FRect GetCanvasRect() const;
     bool Contains(const SDL_FPoint &point) const;
 
-    virtual void DrawGizmos() override;
+    void DrawGizmos() override;
 
 protected:
     void SetGizmosColor(SDL_Color color);

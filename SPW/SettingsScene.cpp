@@ -2,35 +2,25 @@
 #include "TitleScene.h"
 #include "Button.h"
 #include "Text.h"
+#include "Slider.h"
+#include "GameSettings.h"
+#include "StartScreen.h"
+
+#include <functional>
 
 
-namespace LevelSelectionNS
+class WayHome : public ButtonListener
 {
-    class SelectionListener : public ButtonListener
-    {
-    public:
-        SelectionListener(TitleScene &scene, int levelID) :
-            m_titleScene(scene), m_levelID(levelID)
-        {
-        }
-
-        void OnPress() override
-        {
-            m_titleScene.SetLevelID(m_levelID);
-            m_titleScene.Quit();
-        }
-
-    private:
-        TitleScene &m_titleScene;
-        int m_levelID;
-    };
-}
+public:
+    std::function<void()> pressed = []() {};
+    void OnPress() override {pressed();}
+};
 
 SettingsScene::SettingsScene(TitleScene& scene)
     : UIObject(scene)
 {
     float buttonH = 55.0f;
-    float topSkip = 100.0f;
+    float topSkip = 600.0f;
     float sep = 10.0f;
     float panelW = 350.0f;
     float panelH = topSkip + 4.0f * buttonH + 3.0f * sep;
@@ -42,11 +32,11 @@ SettingsScene::SettingsScene(TitleScene& scene)
 
     AssetManager &assets = scene.GetAssetManager();
     RE_Atlas *atlas = assets.GetAtlas(AtlasID::UI);
-    AssertNew(atlas);
-
+    AssertNew(atlas)
+    
     // Création du titre
     TTF_Font *font = assets.GetFont(FontID::LARGE);
-    Text *title = new Text(scene, u8"Sélection du niveau", font, assets.GetColor(ColorID::NORMAL));
+    Text *title = new Text(scene, u8"Paramètres", font, assets.GetColor(ColorID::NORMAL));
     title->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
     title->GetLocalRect().anchorMax.Set(1.0f, 0.0f);
     title->GetLocalRect().offsetMin.Set(0.0f, 0);
@@ -62,27 +52,106 @@ SettingsScene::SettingsScene(TitleScene& scene)
     SDL_Color colorDown = assets.GetColor(ColorID::NORMAL);
     font = assets.GetFont(FontID::NORMAL);
 
-    const std::vector<LevelData> &levels = scene.GetLevels();
+    
+    const char *sliderTexts[6] = {
+        "Son global",
+        "Son collectables",
+        "Son ennemis",
+        "Son joueur",
+        "Son controles 1",
+        "Son controles 2"
+    };
 
-    float curY = topSkip;
-    for (int i = 0; i < levels.size(); i++, curY += buttonH + sep)
+    std::function<void (float)> sliderSetters[6] = {
+        [](float v)
+        {
+            GameSettings::get()->soundGlobal = v;
+            Mix_VolumeMusic((int)(v * MIX_MAX_VOLUME));
+        },
+        [](float v)
+        {
+            GameSettings::get()->soundCollectable = v;
+            Mix_Volume((int)ChannelID::COLLECTABLE, (int)(v * MIX_MAX_VOLUME));
+        },
+        [](float v)
+        {
+            GameSettings::get()->soundEnemy = v;
+            Mix_Volume((int)ChannelID::ENEMY, (int)(v * MIX_MAX_VOLUME));
+        },
+        [](float v)
+        {
+            GameSettings::get()->soundPlayer = v;
+            Mix_Volume((int)ChannelID::PLAYER, (int)(v * MIX_MAX_VOLUME));
+        },
+        [](float v)
+        {
+            GameSettings::get()->soundSystem1 = v;
+            Mix_Volume((int)ChannelID::SYSTEM_1, (int)(v * MIX_MAX_VOLUME));
+        },
+        [](float v)
+        {
+            GameSettings::get()->soundSystem2 = v;
+            Mix_Volume((int)ChannelID::SYSTEM_2, (int)(v * MIX_MAX_VOLUME));
+        },
+    };
+
+    float sliderValues[6] = {
+        GameSettings::get()->soundGlobal,
+        GameSettings::get()->soundCollectable,
+        GameSettings::get()->soundEnemy,
+        GameSettings::get()->soundPlayer,
+        GameSettings::get()->soundSystem1,
+        GameSettings::get()->soundSystem2,
+    };
+
+    float curY = topSkip/2;
+    int i;
+    for (i = 0; i < 6; i++, curY += buttonH + sep)
     {
-        Button *button = new Button(scene, buttonPart);
-        button->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
-        button->GetLocalRect().anchorMax.Set(1.0f, 0.0f);
-        button->GetLocalRect().offsetMin.Set(0.0f, curY);
-        button->GetLocalRect().offsetMax.Set(0.0f, curY + buttonH);
-        button->SetParent(this);
-        button->SetBorders(new UIBorders(25, 25, 25, 25));
-        button->SetListener(new LevelSelectionNS::SelectionListener(scene, i));
+        Slider *slider = new Slider(scene, buttonPart);
+        slider->SetValue(sliderValues[i]);
+        slider->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+        slider->GetLocalRect().anchorMax.Set(1.0f, 0.0f);
+        slider->GetLocalRect().offsetMin.Set(0.0f, curY);
+        slider->GetLocalRect().offsetMax.Set(0.0f, curY + buttonH);
+        slider->SetParent(this);
+        slider->SetBorders(new UIBorders(25, 25, 25, 25));
+        auto listener = new SliderListener();
+        listener->setter = sliderSetters[i];
+        slider->SetListener(listener);
 
-        Text *buttonLabel = new Text(scene, levels[i].name, font, colorUp);
-        button->SetText(buttonLabel, Button::State::UP);
+        Text *sliderLabel = new Text(scene, sliderTexts[i], font, colorHover);
+        slider->SetText(sliderLabel, Slider::State::UP);
 
-        buttonLabel = new Text(scene, levels[i].name, font, colorHover);
-        button->SetText(buttonLabel, Button::State::HOVER);
+        sliderLabel = new Text(scene, sliderTexts[i], font, colorHover);
+        slider->SetText(sliderLabel, Slider::State::HOVER);
 
-        buttonLabel = new Text(scene, levels[i].name, font, colorDown);
-        button->SetText(buttonLabel, Button::State::DOWN);
+        sliderLabel = new Text(scene, sliderTexts[i], font, colorHover);
+        slider->SetText(sliderLabel, Slider::State::DOWN);
     }
+    
+    Button *button = new Button(scene, buttonPart);
+    button->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
+    button->GetLocalRect().anchorMax.Set(1.0f, 0.0f);
+    button->GetLocalRect().offsetMin.Set(0.0f, curY);
+    button->GetLocalRect().offsetMax.Set(0.0f, curY + buttonH);
+    button->SetParent(this);
+    button->SetBorders(new UIBorders(25, 25, 25, 25));
+    auto wh = new WayHome();
+    wh->pressed = [this, &scene]()
+    {
+        StartScreen *sc = new StartScreen(scene);
+        sc->SetParent(GetParent());
+        Delete();
+    };
+    button->SetListener(wh);
+
+    Text *buttonLabel = new Text(scene, "Retour", font, colorUp);
+    button->SetText(buttonLabel, Button::State::UP);
+
+    buttonLabel = new Text(scene, "Retour", font, colorHover);
+    button->SetText(buttonLabel, Button::State::HOVER);
+
+    buttonLabel = new Text(scene, "Retour", font, colorDown);
+    button->SetText(buttonLabel, Button::State::DOWN);
 }

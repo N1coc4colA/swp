@@ -108,3 +108,7 @@ PauseMenu::PauseMenu(LevelScene &scene) :
         button->SetText(buttonLabel, Button::State::DOWN);
     }
 }
+
+void PauseMenu::Update()
+{
+}

@@ -9,4 +9,6 @@ class PauseMenu : public UIObject
 {
 public:
     PauseMenu(LevelScene &scene);
+
+    void Update() override;
 };

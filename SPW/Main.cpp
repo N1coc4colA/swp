@@ -114,7 +114,7 @@ int main(int argc, char *argv[])
     int levelID = 0;
 
 #ifdef SKIP_MENU
-    state = GameState::LEVEL;
+    state = GameState::MAIN_MENU;//GameState::LEVEL;
     levelID = DEFAUT_LEVEL;
 #endif
 
@@ -189,6 +189,8 @@ int main(int argc, char *argv[])
             scene = nullptr;
         }
     }
+
+    gSettings.save();
 
     if (gameController)
     {

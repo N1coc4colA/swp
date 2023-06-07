@@ -178,6 +178,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SettingsScene.cpp" />
     <ClCompile Include="Shield.cpp" />
+    <ClCompile Include="Slider.cpp" />
     <ClCompile Include="Snake.cpp" />
     <ClCompile Include="StartScreen.cpp" />
     <ClCompile Include="StaticMap.cpp" />
@@ -230,6 +231,7 @@
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsScene.h" />
     <ClInclude Include="Shield.h" />
+    <ClInclude Include="Slider.h" />
     <ClInclude Include="Snake.h" />
     <ClInclude Include="StartScreen.h" />
     <ClInclude Include="StaticMap.h" />

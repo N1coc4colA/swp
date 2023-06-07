@@ -58,7 +58,7 @@ void GameSettings::load()
         left = SDL_SCANCODE_LEFT;
         right = SDL_SCANCODE_RIGHT;
         down = SDL_SCANCODE_DOWN;
-        pause = SDL_SCANCODE_ESCAPE;
+        pause = SDL_SCANCODE_S;
         soundGlobal = 0.5f;
         soundCollectable = 0.4f;
         soundEnemy = 0.5f;

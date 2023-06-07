@@ -35,9 +35,9 @@ private:
 
     PE_Vec2 m_startPos;
 
-    bool m_paused;
-    int m_camIndex;
-    float m_stepDelay;
+    bool m_paused = false;
+    int m_camIndex = 0;
+    float m_stepDelay = 0.f;
 };
 
 inline Player *LevelScene::GetPlayer() const

@@ -10,6 +10,6 @@ class TitleCanvas : public UIObject
 public:
     TitleCanvas(TitleScene &scene);
 
-    virtual void Update() override;
-    virtual void Render() override;
+    void Update() override;
+    void Render() override;
 };

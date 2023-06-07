@@ -24,8 +24,8 @@ public:
 
     void SetText(Text *text, State state);
 
-    virtual void Update() override;
-    virtual void Render() override;
+    void Update() override;
+    void Render() override;
 
 protected:
     ButtonListener *m_listener;

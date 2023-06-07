@@ -16,6 +16,5 @@ public:
     bool jumpDown = false;
     bool jumpPressed = false;
     bool goDownDown = false;
-    bool pausePressed = false;
     bool specialPressed = false;
 };

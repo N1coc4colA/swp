@@ -1,5 +1,8 @@
 #include "ApplicationInput.h"
 
+#include "GameSettings.h"
+
+
 ApplicationInput::ApplicationInput() :
     InputGroup(), pausePressed(false), quitPressed(false), printPressed(false)
 {
@@ -27,24 +30,28 @@ void ApplicationInput::OnEventProcess(SDL_Event evt)
         if (evt.key.repeat)
             break;
 
-        switch (scanCode)
+        if (GameSettings::get()->pause == scanCode)
         {
-        case SDL_SCANCODE_ESCAPE:
-            // Touche pour quiter le jeu
-            quitPressed = true;
-            break;
-
-        case SDL_SCANCODE_RETURN:
             pausePressed = true;
-            break;
-
-        case SDL_SCANCODE_BACKSPACE:
-            printPressed = true;
-            break;
-
-        default:
-            break;
         }
+        else
+        {
+            switch (scanCode)
+            {
+            case SDL_SCANCODE_ESCAPE:
+                // Touche pour quiter le jeu
+                quitPressed = true;
+                break;
+
+            case SDL_SCANCODE_BACKSPACE:
+                printPressed = true;
+                break;
+
+            default:
+                break;
+            }
+        }
+        
         break;
 
 
