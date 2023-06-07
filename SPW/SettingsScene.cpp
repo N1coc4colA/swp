@@ -19,6 +19,8 @@ public:
 SettingsScene::SettingsScene(TitleScene& scene)
     : UIObject(scene)
 {
+    scene.GetInputManager().GetControls().SetEnabled(true);
+    
     float buttonH = 55.0f;
     float topSkip = 600.0f;
     float sep = 10.0f;

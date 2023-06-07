@@ -17,6 +17,11 @@ void ControlsInput::OnPreEventProcess()
 
 void ControlsInput::OnEventProcess(SDL_Event evt)
 {
+    if (disableDirectStroke)
+    {
+        current = SDL_SCANCODE_UNKNOWN;
+    }
+    
     SDL_Scancode scanCode;
     switch (evt.type)
     {
@@ -92,6 +97,12 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
         if (evt.key.repeat)
             break;
 
+        if (disableDirectStroke)
+        {
+            current = scanCode;
+            break;
+        }
+        
         if (scanCode == GameSettings::get()->down)
         {
             // Descente d'une plateforme
@@ -124,6 +135,11 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
     case SDL_KEYUP:
         scanCode = evt.key.keysym.scancode;
 
+        if (disableDirectStroke)
+        {
+            current = scanCode;
+        }
+        
         if (scanCode == GameSettings::get()->down)
         {
             // Descente d'une plateforme

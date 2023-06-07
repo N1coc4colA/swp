@@ -161,6 +161,7 @@
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="InputGroup.cpp" />
     <ClCompile Include="InputManager.cpp" />
+    <ClCompile Include="KeyButton.cpp" />
     <ClCompile Include="LevelCanvas.cpp" />
     <ClCompile Include="LevelData.cpp" />
     <ClCompile Include="LevelEnd.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="Image.h" />
     <ClInclude Include="InputGroup.h" />
     <ClInclude Include="InputManager.h" />
+    <ClInclude Include="KeyButton.h" />
     <ClInclude Include="LevelCanvas.h" />
     <ClInclude Include="LevelData.h" />
     <ClInclude Include="LevelEnd.h" />

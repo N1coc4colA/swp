@@ -18,4 +18,7 @@ public:
     bool jumpPressed = false;
     bool goDownDown = false;
     bool specialPressed = false;
+
+    bool disableDirectStroke = false;
+    SDL_Scancode current;
 };

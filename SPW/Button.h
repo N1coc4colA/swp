@@ -14,7 +14,10 @@ public:
 
     enum class State : int
     {
-        UP = 0, HOVER, DOWN, DISABLED
+        UP = 0,
+        HOVER,
+        DOWN,
+        DISABLED
     };
 
     void SetListener(ButtonListener *listener);
