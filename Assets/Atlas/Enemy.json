@@ -9,9 +9,9 @@
     "parts": [
         {"name": "NutIdle", "frames": [0]},
         {"name": "NutSpinning", "frames": [0,1,2,3]},
-        {"name": "NutDying", "frames": [4]}
-	{"name": "SerpentHead", "frames": [5]},
-	{"name": "SerpentBody", "frames": [6]},
-	{"name": "SerpentHouse", "frames": [7]},
+        {"name": "NutDying", "frames": [4]},
+        {"name": "SerpentHead", "frames": [5]},
+        {"name": "SerpentBody", "frames": [6]},
+        {"name": "SerpentHouse", "frames": [7]}
     ]
 }
