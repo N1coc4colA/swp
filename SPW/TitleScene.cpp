@@ -20,7 +20,7 @@ TitleScene::TitleScene(SDL_Renderer *renderer, RE_Timer &mainTime, const std::ve
 
     // Crée le fond
     Background *background = new Background(*this, Layer::BACKGROUND);
-    auto m_textures = m_assetManager.GetBackgrounds();
+    auto m_textures = m_assetManager.GetBackgrounds(ThemeID::MOUNTAINS);
     PE_Vec2 worldDim(36.0f, 36.0f * 1080.0f / 2880.0f);
     background->SetWorldDimensions(worldDim);
     float factors[] = { 0.0f, 0.05f, 0.3f, 0.6f };

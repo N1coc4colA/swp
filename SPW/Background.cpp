@@ -3,8 +3,10 @@
 #include "DebugCamera.h"
 
 Background::Background(Scene &scene, Layer layer) :
-    GameObject(scene, layer), m_layers(),
-    m_shiftFactors(), m_worldDim(PE_Vec2::one)
+    GameObject(scene, layer)
+    , m_layers()
+    , m_worldDim(PE_Vec2::one)
+    , m_shiftFactors()
 {
     m_name = "Background";
 
@@ -37,9 +39,9 @@ void Background::Render()
         return;
 
     // Dimension du fond dans le référentiel monde
-    float scale = camera->GetWorldToViewScale();
-    float layerW = scale * m_worldDim.x;
-    float layerH = scale * m_worldDim.y;
+    const float scale = camera->GetWorldToViewScale();
+    const float layerW = scale * m_worldDim.x;
+    const float layerH = scale * m_worldDim.y;
 
     // Dessine les différents calques du fond (parallax)
     for (int i = 0; i < m_layers.size(); ++i)

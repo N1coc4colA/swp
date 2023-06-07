@@ -13,10 +13,11 @@
 #include "Snake.h"
 #include "Boss.h"
 
+
 LevelParser::LevelParser(const std::string &path)
 {
     FILE *levelFile = fopen(path.c_str(), "rb");
-    AssertNew(levelFile);
+    AssertNew(levelFile)
 
     bool isValidChar[128] = { 0 };
     isValidChar['\n'] = true;
@@ -33,11 +34,22 @@ LevelParser::LevelParser(const std::string &path)
     fread(buffer, 1, fileSize, levelFile);
     fclose(levelFile);
     levelFile = NULL;
+    
+    //Parse the theme name
+    int i = 0;
+    while (buffer[i] != '\n')
+    {
+        themeName += buffer[i];
+        i++;
+    }
+    i++;
+
+    //Remove the "\n" from our string.
+    themeName.pop_back();
 
     int height = 0;
     int width = 0;
-    int i;
-    for (i = 0; i < fileSize; i++)
+    for (; i < fileSize; i++)
     {
         char c = buffer[i];
         if (isValidChar[(int)c])

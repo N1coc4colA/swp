@@ -12,6 +12,8 @@ public:
 
     void InitScene(LevelScene &scene) const;
 
+    std::string themeName = "";
+    
 private:
     char **m_matrix;
     int m_width;

@@ -11,7 +11,7 @@ class Boss;
 class LevelScene : public Scene
 {
 public:
-    LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, const LevelData &level);
+    LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &level);
     LevelScene(LevelScene const&) = delete;
     LevelScene& operator=(LevelScene const&) = delete;
     virtual ~LevelScene();

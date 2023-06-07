@@ -4,32 +4,55 @@
 
 enum class AtlasID : uint32_t
 {
-    COLLECTABLE, ENEMY, LOGO, PLAYER, TERRAIN, UI
+    COLLECTABLE,
+    ENEMY,
+    LOGO,
+    PLAYER,
+    TERRAIN,
+    UI
 };
 enum class FontID : uint32_t
 {
-    SMALL, NORMAL, LARGE
+    SMALL,
+    NORMAL,
+    LARGE
 };
 enum class ColorID : uint32_t
 {
-    BLACK, WHITE, NORMAL
+    BLACK,
+    WHITE,
+    NORMAL
 };
 enum class ThemeID : uint32_t
 {
-    MOUNTAINS, LAKE, SKY
+    MOUNTAINS,
+    LAKE,
+    SKY,
+    LOST,
+    DESERT
 };
 
 enum class SoundID : uint32_t
 {
-    PLAYER_JUMP, PLAYER_LAND, PLAYER_HIT,
-    ENEMY_JUMP, ENEMY_DOWN,
-    COLLECT_FIREFLY, COLLECT_ITEM, HEART_APPEAR,
+    PLAYER_JUMP,
+    PLAYER_LAND,
+    PLAYER_HIT,
+    ENEMY_JUMP,
+    ENEMY_DOWN,
+    COLLECT_FIREFLY,
+    COLLECT_ITEM,
+    HEART_APPEAR,
     BRICK,
-    SYSTEM_HOVER, SYSTEM_PAUSE, SYSTEM_SELECT
+    SYSTEM_HOVER,
+    SYSTEM_PAUSE, SYSTEM_SELECT
 };
 enum class ChannelID : uint32_t
 {
-    PLAYER, COLLECTABLE, ENEMY, SYSTEM_1, SYSTEM_2
+    PLAYER,
+    COLLECTABLE,
+    ENEMY,
+    SYSTEM_1,
+    SYSTEM_2
 };
 
 class AssetManager
@@ -43,7 +66,7 @@ public:
     RE_Atlas *GetAtlas(AtlasID atlasID);
     TTF_Font *GetFont(FontID fontID);
     SDL_Color GetColor(ColorID colorID) const;
-    std::vector<SDL_Texture *> &GetBackgrounds();
+    std::vector<SDL_Texture *> &GetBackgrounds(ThemeID id);
 
     void PlaySound(SoundID soundID, ChannelID channelID);
 

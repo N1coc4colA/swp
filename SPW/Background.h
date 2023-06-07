@@ -9,12 +9,13 @@ public:
     Background(Scene &scene, Layer layer);
     virtual ~Background();
 
-    virtual void Update() override;
-    virtual void Render() override;
+    void Update() override;
+    void Render() override;
 
     void SetWorldDimensions(const PE_Vec2 &dimensions);
     void SetTexture(int i, SDL_Texture *texture, PE_Vec2 factor);
     PE_Vec2 GetworldDim();
+    
 private:
     PE_Vec2 m_worldDim;
     std::vector<SDL_Texture *> m_layers;
@@ -32,6 +33,7 @@ inline void Background::SetTexture(int i, SDL_Texture *texture, PE_Vec2 factor)
     m_shiftFactors[i] = factor;
 }
 
-inline PE_Vec2 Background::GetworldDim(){
+inline PE_Vec2 Background::GetworldDim()
+{
     return m_worldDim;
 }

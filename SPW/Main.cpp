@@ -110,7 +110,7 @@ int main(int argc, char *argv[])
     Scene *scene = nullptr;
     bool quitGame = false;
     GameState state = GameState::MAIN_MENU;
-    const std::vector<LevelData> levels(LevelData::Init());
+    std::vector<LevelData> levels(LevelData::Init());
     int levelID = 0;
 
 #ifdef SKIP_MENU

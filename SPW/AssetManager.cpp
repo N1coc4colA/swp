@@ -8,15 +8,20 @@ struct AudioSpec
     AudioSpec(SoundID soundID, const char *path);
 };
 
-AudioSpec::AudioSpec(SoundID soundIDIn, const char *pathIn) :
-    soundID(soundIDIn), path(pathIn)
+AudioSpec::AudioSpec(SoundID soundIDIn, const char *pathIn)
+    : soundID(soundIDIn)
+    , path(pathIn)
 {
 }
 
 
-AssetManager::AssetManager(SDL_Renderer *renderer, ThemeID themeID) :
-    m_renderer(renderer), m_theme(themeID),
-    m_atlases(), m_fonts(), m_backgrounds(), m_sounds()
+AssetManager::AssetManager(SDL_Renderer *renderer, ThemeID themeID)
+    : m_renderer(renderer)
+    , m_theme(themeID)
+    , m_atlases()
+    , m_fonts()
+    , m_backgrounds()
+    , m_sounds()
 {
     std::array<AudioSpec, 12> audioSpecs{
         AudioSpec(SoundID::BRICK,           "../Assets/SoundFX/Brick.wav"),
@@ -181,13 +186,13 @@ SDL_Color AssetManager::GetColor(ColorID colorID) const
     return color;
 }
 
-std::vector<SDL_Texture *> &AssetManager::GetBackgrounds()
+std::vector<SDL_Texture *> &AssetManager::GetBackgrounds(ThemeID theme)
 {
     if (m_backgrounds.empty())
     {
         std::string folder;
         int layerCount = 0;
-        switch (m_theme)
+        switch (theme) //m_theme
         {
         case ThemeID::LAKE:
             folder.assign("../Assets/Theme_Lake");
@@ -195,6 +200,14 @@ std::vector<SDL_Texture *> &AssetManager::GetBackgrounds()
             break;
         case ThemeID::SKY:
             folder.assign("../Assets/Theme_Sky");
+            layerCount = 7;
+            break;
+        case ThemeID::LOST:
+            folder.assign("../Assets/Theme_Lost");
+            layerCount = 7;
+            break;
+        case ThemeID::DESERT:
+            folder.assign("../Assets/Theme_Desert");
             layerCount = 7;
             break;
         case ThemeID::MOUNTAINS:
