@@ -268,14 +268,14 @@ void StaticMap::Start()
                 break;
             case Tile::Type::STEEP_SLOPE_L:
                 vertices[0] = position + PE_Vec2{1.f, 1.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.f};
-                vertices[2] = position + PE_Vec2{0.f, 0.f};
+                vertices[1] = position + PE_Vec2{0.f, 0.f};
+                vertices[2] = position + PE_Vec2{1.f, 0.f};
                 polygon.SetVertices(vertices, 3);
                 break;
             case Tile::Type::STEEP_SLOPE_R:
                 vertices[0] = position + PE_Vec2{0.f, 0.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.f};
-                vertices[2] = position + PE_Vec2{0.f, 1.f};
+                vertices[1] = position + PE_Vec2{0.f, 1.f};
+                vertices[2] = position + PE_Vec2{1.f, 0.f};
                 polygon.SetVertices(vertices, 3);
                 break;
             case Tile::Type::ONE_WAY:
