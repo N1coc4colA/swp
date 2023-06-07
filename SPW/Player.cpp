@@ -11,6 +11,7 @@
 Player::Player(Scene &scene)
 	: GameBody(scene, Layer::PLAYER)
 	, m_animator()
+    , m_shieldAanimator()
 {
     m_name = "Player";
 
@@ -20,9 +21,20 @@ Player::Player(Scene &scene)
     RE_Atlas *atlas = assetsManager.GetAtlas(AtlasID::PLAYER);
     RE_AtlasPart *part = nullptr;
 
+    // Animation shield
+    part = atlas->GetPart("Shield");
+    AssertNew(part)
+    RE_TexAnim *shieldAnim = new RE_TexAnim(
+        m_shieldAanimator,
+        "Shield",
+        part
+    );
+    shieldAnim->SetCycleCount(-1);
+    shieldAnim->SetCycleTime(0.5f);
+    
     // Animation "Idle"
     part = atlas->GetPart("Idle");
-    AssertNew(part);
+    AssertNew(part)
     RE_TexAnim *idleAnim = new RE_TexAnim(
         m_animator,
         "Idle",
@@ -31,7 +43,7 @@ Player::Player(Scene &scene)
     idleAnim->SetCycleCount(0);
 
     part = atlas->GetPart("Falling");
-    AssertNew(part);
+    AssertNew(part)
 	RE_TexAnim *fallingAnim = new RE_TexAnim(
         m_animator,
 		"Falling",
@@ -41,7 +53,7 @@ Player::Player(Scene &scene)
 	fallingAnim->SetCycleTime(0.2f);
 
     part = atlas->GetPart("Running");
-    AssertNew(part);
+    AssertNew(part)
     RE_TexAnim *runningAnim = new RE_TexAnim(
         m_animator,
 		"Running",
@@ -51,7 +63,7 @@ Player::Player(Scene &scene)
     runningAnim->SetCycleTime(1.f);
 
     part = atlas->GetPart("Dying");
-    AssertNew(part);
+    AssertNew(part)
     RE_TexAnim *dyingAnim = new RE_TexAnim(
         m_animator,
 		"Dying",
@@ -61,7 +73,7 @@ Player::Player(Scene &scene)
     dyingAnim->SetCycleTime(1.f);
 
     part = atlas->GetPart("Skidding");
-    AssertNew(part);
+    AssertNew(part)
     RE_TexAnim *skiddingAnim = new RE_TexAnim(
         m_animator,
 		"Skidding", 
@@ -99,7 +111,7 @@ void Player::Start()
     PE_ColliderDef colliderDef;
 
     PE_CapsuleShape capsule(PE_Vec2(0.0f, 0.35f), PE_Vec2(0.0f, 0.85f), 0.35f);
-    colliderDef.friction = 1.f;
+    colliderDef.friction = 2.f;
     colliderDef.filter.categoryBits = CATEGORY_PLAYER;
     //colliderDef.filter.maskBits = CATEGORY_TERRAIN;
     colliderDef.shape = &capsule;
@@ -121,7 +133,6 @@ void Player::Update()
             shield = true;
         }
         
-        printf("%d \n", shield);
         controls.shieldon = false;
 
     }
@@ -141,6 +152,10 @@ void Player::Render()
 
     // Met à jour les animations du joueur
     m_animator.Update(m_scene.GetTime());
+    if (timer_start)
+    {
+        m_shieldAanimator.Update(m_scene.GetTime());
+    }
 
     float scale = camera->GetWorldToViewScale();
     SDL_RendererFlip flip = m_state == State::DYING ? SDL_FLIP_VERTICAL : (m_facingRight ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL);
@@ -156,6 +171,10 @@ void Player::Render()
     
     // Dessine l'animation du joueur
     m_animator.RenderCopyExF(&rect, RE_Anchor::SOUTH, 0., Vec2(0.5f, 0.5f), flip);
+    if (timer_start)
+    {
+        m_shieldAanimator.RenderCopyExF(&rect, RE_Anchor::SOUTH, 0., Vec2(0.5f, 0.5f), SDL_FLIP_NONE);
+    }
 }
 
 void Player::FixedUpdate()
@@ -381,6 +400,7 @@ void Player::FixedUpdate()
             SetShield(false);
             timer_shield = 0;
             timer_start = false;
+            m_shieldAanimator.StopAnimations();
         }
     }
 }
@@ -561,7 +581,7 @@ void Player::Damage()
 
                 SetShield(true);
                 timer_start = true;
-                
+                m_shieldAanimator.PlayAnimation("Shield");
             }
         
     }

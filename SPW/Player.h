@@ -51,6 +51,7 @@ private:
     State m_state = State::IDLE;
 
     RE_Animator m_animator;
+    RE_Animator m_shieldAanimator; //We need a second animator to overlay.
 
     float m_hDirection = 0.f;
     bool m_jump = false;

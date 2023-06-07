@@ -3,9 +3,9 @@
     "geometry": {
         "rowCount": 4,
         "colCount": 8,
-        "width": 80,
-        "height": 110,
-        "border": 5
+        "width":    80,
+        "height":   110,
+        "border":   5
     },
     "parts": [
         {"name": "Falling",  "frames": [8,9,10,11,12,13,14,15]},
@@ -13,6 +13,6 @@
         {"name": "Idle",     "frames": [16]},
         {"name": "Dying",    "frames": [17]},
         {"name": "Skidding", "frames": [18]},
-	    {"name": "Shield", "frames": [24, 25, 26, 27, 28, 29, 30, 31]}
+	{"name": "Shield",   "frames": [24, 25, 26, 27, 28, 29, 30, 31]}
     ]
 }
