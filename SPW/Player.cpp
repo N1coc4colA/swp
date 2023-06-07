@@ -253,7 +253,7 @@ void Player::FixedUpdate()
                         body->ApplyImpulse((PE_Vec2{-2.f, 2.f}) * 45.f);
                     } 
                 } else {
-                    body->ApplyImpulse(PE_Vec2::up * 45.f);
+                    body->ApplyImpulse(PE_Vec2::up * 50.f);
                 }
                 m_animator.PlayAnimation("Skidding");
 	            m_jump = false;
