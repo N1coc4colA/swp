@@ -3,6 +3,8 @@
 #include "Camera.h"
 #include "LevelScene.h"
 #include "Graphics.h"
+#include "Bulletlaunch.h"
+
 
 Boss::Boss(Scene &scene)
 	: Enemy(scene)
@@ -48,7 +50,7 @@ void Boss::Start()
     PE_ColliderDef colliderDef;
     colliderDef.friction = 0.005f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
-    colliderDef.filter.maskBits = CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
+    colliderDef.filter.maskBits = CATEGORY_COLLECTABLE |CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
     colliderDef.shape = &circle;
     PE_Collider *collider = body->CreateCollider(colliderDef);
 
@@ -107,6 +109,26 @@ void Boss::FixedUpdate()
     else {
         SetCloser(false);
     }
+
+    m_timer_shoot++;
+    if (m_timer_shoot == 119)
+    {
+        PE_Vec2 mvt;
+        PE_Vec2 positionbullet;
+        if ((player->GetPosition().x - position.x) > 0) {
+            mvt = PE_Vec2{ 4.f, 0.f };
+            positionbullet += {2.f, 3.f};
+        }
+        else {
+            mvt = PE_Vec2{ -4.f, 0.f };
+            positionbullet -= {2.f, -3.f};
+        }
+        printf("%f %f\n", position.x,position.y);
+        Bulletlaunch* bullet = new Bulletlaunch(m_scene,true,mvt);
+        bullet->SetStartPosition(positionbullet);
+        m_timer_shoot = 0;
+    }
+
     
 }
 
@@ -145,6 +167,7 @@ void Boss::OnRespawn()
 
 void Boss::Damage(GameBody *damager)
 {
+    
     if (heart_count <=1) {
         SetEnabled(false);
         m_scene.setLevelEnded();
@@ -154,6 +177,9 @@ void Boss::Damage(GameBody *damager)
         player->Bounce();
         Remove_life();
 	}
+    else {
+        Remove_life();
+    }
 }
 
 void Boss::OnCollisionStay(GameCollision &collision)
