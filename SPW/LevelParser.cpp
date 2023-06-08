@@ -13,6 +13,7 @@
 #include "Snake.h"
 #include "Boss.h"
 #include "Oneway.h"
+#include "Bullet.h"
 
 
 #include <fstream>
@@ -254,6 +255,12 @@ void LevelParser::InitScene(LevelScene &scene) const
                 heart->SetStartPosition(position);
                 break;
             }
+            case 'P':
+            {
+                Bullet* bullet = new Bullet(scene);
+                bullet->SetStartPosition(position);
+                break;
+            }
             case 's':
             {
                 Shield* shield = new Shield(scene);
@@ -264,16 +271,16 @@ void LevelParser::InitScene(LevelScene &scene) const
             {
                 Checkpoint* checkpoint = new Checkpoint(scene);
                 checkpoint->SetStartPosition(position);
-                    if (checkPointCount < chkP)
-                    {
-                        checkpoint->empty = true;
-                    }
-                    else if (chkP == chkP)
-                    {
-                        //Set as current one.
-                        scene.m_player->SetStartPosition(position + PE_Vec2{0.f, 2.f});
-                        checkpoint->empty = true;
-                    }
+                if (checkPointCount < chkP)
+                {
+                    checkpoint->empty = true;
+                }
+                else if (chkP == chkP)
+                {
+                    //Set as current one.
+                    scene.m_player->SetStartPosition(position + PE_Vec2{0.f, 2.f});
+                    checkpoint->empty = true;
+                }
                 break;
             }
             case 'M':
