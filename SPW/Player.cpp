@@ -7,7 +7,8 @@
 #include  "Brick.h"
 #include  "Bonus.h"
 #include "Shield.h"
-
+#include "Bullet.h"
+#include "Bulletlaunch.h"
 
 Player::Player(Scene &scene)
 	: GameBody(scene, Layer::PLAYER)
@@ -142,7 +143,7 @@ void Player::Update()
     }
     if (m_capacity) {
         if (!m_capacitylaunch) {
-            m_capacitylaunch = true;
+            m_capacitylaunch = controls.specialPressed;
             
         }
     }
@@ -243,7 +244,14 @@ void Player::FixedUpdate()
 
     // Détermine l'état du joueur et change l'animation si nécessaire
 	State tmpState = m_state;
-    
+    if (m_capacitylaunch) {
+        Bulletlaunch* bullet = new Bulletlaunch(m_scene);
+        bullet->SetStartPosition(position);
+        m_capacitylaunch = false;
+    }
+
+
+
 	if (m_onGround) {
 	    m_jumpedOnce = false;
 	    if (m_jump) {
