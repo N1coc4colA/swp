@@ -165,7 +165,7 @@ void Player::Render()
         m_scene.Quit();
    }
 
-    SDL_FRect rect = { 0, 0, 1.4f * scale, rect.w = 2.f * scale };
+    SDL_FRect rect = { 0, 0, 1.375f * scale, rect.w = 1.f * scale };
     PE_Vec2 pos = GetPosition();
 	//pos.y += 0.1f;
     camera->WorldToView(pos, rect.x, rect.y);

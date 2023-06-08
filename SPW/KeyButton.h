@@ -27,7 +27,6 @@ public:
 
     void Update() override;
     void Render() override;
-    void FixedUpdate() override;
 
     void SetText(const std::string &);
     void SetKey(SDL_Scancode sc);
@@ -54,7 +53,15 @@ protected:
 
 inline void KeyButton::SetBorders(UIBorders *borders)
 {
-    if (m_borders) delete m_borders;
+    if (m_borders)
+    {
+        delete m_borders;
+    }
     m_borders = borders;
 }
 
+
+inline bool KeyButton::IsButtonEnabled() const
+{
+    return m_currState != State::DISABLED;
+}

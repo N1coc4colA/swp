@@ -9,7 +9,8 @@ enum class AtlasID : uint32_t
     LOGO,
     PLAYER,
     TERRAIN,
-    UI
+    UI,
+    BOSS
 };
 enum class FontID : uint32_t
 {

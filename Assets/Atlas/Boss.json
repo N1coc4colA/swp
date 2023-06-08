@@ -1,0 +1,16 @@
+{
+    "texture": "Boss.png",
+    "geometry": {
+        "rowCount": 4,
+        "colCount": 4,
+        "width": 80,
+        "height": 80,
+        "border": 1
+    },
+    "parts": [
+        {"name": "BossIdle", "frames": [0]},
+        {"name": "BossMoving", "frames": [0,1,2,3,4,5]},
+        {"name": "BossAttacking", "frames": [6,7,8,9]},
+        {"name": "BossBullet", "frames": [10,11,12,13,14]},
+    ]
+}

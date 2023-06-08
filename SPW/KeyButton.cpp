@@ -32,38 +32,28 @@ void KeyButton::Update()
 
     MouseInput &mouse = m_scene.GetInputManager().GetMouse();
     ControlsInput &kbInput = m_scene.GetInputManager().GetControls();
-
-    if (listening && kbInput.current != SDL_SCANCODE_UNKNOWN)
-    {
-        key = kbInput.current;
-        onChange(key);
-        listening = false;
-        kbInput.disableDirectStroke = false;
-        regenerateText();
-    }
     
     m_prevState = m_currState;
 
     if (m_currState != State::DISABLED)
     {
-        SDL_FPoint mousePos = { mouse.viewPos.x, mouse.viewPos.y };
+        const SDL_FPoint mousePos = { mouse.viewPos.x, mouse.viewPos.y };
 
         if (Contains(mousePos))
         {
+            if (listening && kbInput.current != SDL_SCANCODE_UNKNOWN)
+            {
+                key = kbInput.current;
+                onChange(key);
+                listening = false;
+                kbInput.disableDirectStroke = false;
+                regenerateText();
+            }
+            
             if (mouse.leftDown)
             {
                 m_currState = State::DOWN;
-            }
-            else if (mouse.leftReleased)
-            {
-                m_scene.GetAssetManager().PlaySound(
-                    SoundID::SYSTEM_SELECT,
-                    ChannelID::SYSTEM_1
-                );
-
-                // Evite le déclanchement de plusieurs boutons 
-                mouse.leftReleased = false;
-
+                
                 //Now listen to the keys!
                 if (listening)
                 {
@@ -76,6 +66,17 @@ void KeyButton::Update()
                     listening = true;
                     kbInput.disableDirectStroke = true;
                 }
+            }
+            else if (mouse.leftReleased)
+            {
+                m_scene.GetAssetManager().PlaySound(
+                    SoundID::SYSTEM_SELECT,
+                    ChannelID::SYSTEM_1
+                );
+
+                // Evite le déclanchement de plusieurs boutons 
+                mouse.leftReleased = false;
+
 
                 m_currState = State::HOVER;
             }
@@ -96,6 +97,16 @@ void KeyButton::Update()
                 kbInput.disableDirectStroke = false;
                 regenerateText();
             }
+        }
+    } else
+    {
+        if (listening)
+        {
+            onChange(key);
+            key = kbInput.current;
+            listening = false;
+            kbInput.disableDirectStroke = false;
+            regenerateText();
         }
     }
 
@@ -124,20 +135,26 @@ void KeyButton::Update()
 void KeyButton::Render()
 {
     SDL_Renderer *renderer = m_scene.GetRenderer();
-    SDL_Texture *texture = nullptr;
 
     if (m_atlasPart)
     {
-        texture = m_atlasPart->GetTexture();
+        SDL_Texture *texture = m_atlasPart->GetTexture();
 
-        SDL_FRect dstRect = GetCanvasRect();
+        const SDL_FRect dstRect = GetCanvasRect();
+        const SDL_FRect borderRect = {dstRect.x + dstRect.w/2, dstRect.y, dstRect.w/2, dstRect.h};
+        const SDL_FRect borderRectEnd = {dstRect.x + dstRect.w - dstRect.h, dstRect.y, dstRect.h, dstRect.h};
+        const SDL_FRect borderRectBegin = {dstRect.x + dstRect.w/2, dstRect.y, dstRect.h, dstRect.h};
         const SDL_Rect *srcRect = nullptr;
 
-        if (m_currState == State::DISABLED) {
-            srcRect = m_atlasPart->GetSrcRect(3);
+        if (m_currState == State::DOWN || listening) {
+            srcRect = m_atlasPart->GetSrcRect(1);
         } else {
             srcRect = m_atlasPart->GetSrcRect(2);
         }
+        
+        SDL_RenderCopyF(renderer, texture, m_atlasPart->GetSrcRect(1), &borderRect);
+        SDL_RenderCopyF(renderer, texture, m_atlasPart->GetSrcRect(1), &borderRectBegin);
+        SDL_RenderCopyF(renderer, texture, m_atlasPart->GetSrcRect(1), &borderRectEnd);
 
         if (m_borders)
         {
@@ -170,8 +187,6 @@ void KeyButton::regenerateText()
         usedKey->Delete();
     }
 
-    std::cout << "Actual key: \"" << SDL_GetScancodeName(key) << "\"" << std::endl;
-
     if (!text.empty())
     {
         description = new Text(
@@ -179,6 +194,9 @@ void KeyButton::regenerateText()
             text,
             m_scene.GetAssetManager().GetFont(FontID::NORMAL),
             m_scene.GetAssetManager().GetColor(ColorID::BLACK));
+        description->SetParent(this);
+        description->SetAnchor(RE_Anchor::WEST);
+        description->GetLocalRect().offsetMin.Set(10.f, 0.f);
     } else
     {
         description = nullptr;
@@ -190,6 +208,11 @@ void KeyButton::regenerateText()
             SDL_GetScancodeName(key),
             m_scene.GetAssetManager().GetFont(FontID::NORMAL),
             m_scene.GetAssetManager().GetColor(ColorID::BLACK));
+        usedKey->SetParent(this);
+        usedKey->GetLocalRect().anchorMin.Set(0.75f, 0.5f);
+        usedKey->GetLocalRect().anchorMax.Set(0.75f, 0.5f);
+        usedKey->GetLocalRect().offsetMax.Set(-10.f, 0.f);
+        usedKey->SetAnchor(RE_Anchor::CENTER);
     } else
     {
         usedKey = nullptr;
@@ -200,9 +223,4 @@ void KeyButton::SetKey(SDL_Scancode sc)
 {
     key = sc;
     regenerateText();
-}
-
-
-void KeyButton::FixedUpdate()
-{
 }
