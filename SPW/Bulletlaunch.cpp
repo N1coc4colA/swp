@@ -159,6 +159,7 @@ void Bulletlaunch::OnCollisionEnter(GameCollision &collision)
         SetEnabled(false);
     }
     if (otherCollider->CheckCategory(CATEGORY_ENEMY)){
+        
         if (!m_enemie) {
             if (Snake* snake = dynamic_cast<Snake*>(collision.gameBody)) {
 
@@ -189,10 +190,13 @@ void Bulletlaunch::OnCollisionEnter(GameCollision &collision)
                 assert(false);
                 return;
             }
-
+         
             printf("dameke\n");
             enemy->Damage(this);
             SetEnabled(false);
+        }
+        else {
+           
         }
     }
 }

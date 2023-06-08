@@ -116,16 +116,16 @@ void Boss::FixedUpdate()
         PE_Vec2 mvt;
         PE_Vec2 positionbullet;
         if ((player->GetPosition().x - position.x) > 0) {
-            mvt = PE_Vec2{ 4.f, 0.f };
-            positionbullet += {2.f, 3.f};
+            mvt = PE_Vec2{ 1.4f, 0.f };
+            //positionbullet += {2.f, 3.f};
         }
         else {
-            mvt = PE_Vec2{ -4.f, 0.f };
-            positionbullet -= {2.f, -3.f};
+            mvt = PE_Vec2{ -1.4f, 0.f };
+            //positionbullet -= {2.f, -3.f};
         }
-        printf("%f %f\n", position.x,position.y);
+        //printf("%f %f\n", position.x,position.y);
         Bulletlaunch* bullet = new Bulletlaunch(m_scene,true,mvt);
-        bullet->SetStartPosition(positionbullet);
+        bullet->SetStartPosition(position+mvt);
         m_timer_shoot = 0;
     }
 
@@ -184,6 +184,7 @@ void Boss::Damage(GameBody *damager)
 
 void Boss::OnCollisionStay(GameCollision &collision)
 {
+    
     PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
 
@@ -197,6 +198,7 @@ void Boss::OnCollisionStay(GameCollision &collision)
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
+        printf("carabistoulle\n");
         Player *player = dynamic_cast<Player *>(collision.gameBody);
         if (player == nullptr)
         {
@@ -213,6 +215,7 @@ void Boss::OnCollisionStay(GameCollision &collision)
     {
         if (Boss *boss = dynamic_cast<Boss*>(collision.gameBody))
         {
+            printf("carabistoulle\n");
             boss->Bounce(manifold.normal * 40.f);
             Bounce(manifold.normal * 4.f);
         }
