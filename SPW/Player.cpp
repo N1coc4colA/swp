@@ -143,7 +143,7 @@ void Player::Update()
     if (m_capacity) {
         if (!m_capacitylaunch) {
             m_capacitylaunch = true;
-            printf("ok\n");
+            
         }
     }
     
