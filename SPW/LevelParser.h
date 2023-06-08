@@ -3,6 +3,7 @@
 #include "Settings.h"
 
 class LevelScene;
+class HubScene;
 
 class LevelParser
 {
@@ -11,6 +12,7 @@ public:
     ~LevelParser();
 
     void InitScene(LevelScene &scene) const;
+    void InitScene(HubScene &scene) const;
 
     std::string themeName;
     std::string savePath;

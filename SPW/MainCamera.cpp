@@ -1,9 +1,20 @@
 #include "MainCamera.h"
 #include "LevelScene.h"
+#include "HubScene.h"
+
 
 #include <iostream>
 
 MainCamera::MainCamera(LevelScene &scene) :
+    Camera(scene), m_center()
+{
+    m_name = "MainCamera";
+
+    m_center.SetSmoothTime(0.15f);
+    m_center.SetMaxSpeed(1000.0f);
+}
+
+MainCamera::MainCamera(HubScene &scene) :
     Camera(scene), m_center()
 {
     m_name = "MainCamera";

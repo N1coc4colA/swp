@@ -4,11 +4,13 @@
 #include "Camera.h"
 
 class LevelScene;
+class HubScene;
 
 class DebugCamera : public Camera
 {
 public:
     DebugCamera(LevelScene &scene, const Camera &trackedCam);
+    DebugCamera(HubScene &scene, const Camera &trackedCam);
 
     virtual void Update() override;
 

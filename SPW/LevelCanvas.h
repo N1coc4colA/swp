@@ -5,20 +5,23 @@
 #include "PauseMenu.h"
 
 class LevelScene;
+class HubScene;
 
 class LevelCanvas : public UIObject
 {
 public:
     LevelCanvas(LevelScene &scene);
+    LevelCanvas(HubScene &scene);
 
-    virtual void Update() override;
-    virtual void OnRespawn() override;
-    virtual void Render() override;
+    void Update() override;
+    void OnRespawn() override;
+    void Render() override;
 
     void OpenPauseMenu();
     void ClosePauseMenu();
 
 private:
     PauseMenu *m_pauseMenu;
-    LevelScene &m_levelScene;
+    LevelScene *m_levelScene;
+    HubScene *m_hubScene;
 };

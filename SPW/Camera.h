@@ -7,7 +7,7 @@ class Camera : public GameObject
 {
 public:
     Camera(Scene &scene);
-    virtual ~Camera();
+    ~Camera() override;
 
     PE_AABB GetWorldView() const;
     void SetWorldView(const PE_AABB &worldView);

@@ -15,6 +15,7 @@
 #include "Oneway.h"
 #include "Bullet.h"
 #include "FallingBlock.h"
+#include "HubScene.h"
 
 
 #include <fstream>
@@ -165,6 +166,163 @@ LevelParser::~LevelParser()
         }
         delete[] m_matrix;
     }
+}
+
+void LevelParser::InitScene(HubScene &scene) const
+{
+    // Crée la TileMap
+    StaticMap *map = new StaticMap(scene, m_width, m_height);
+
+    // So we can restart at the beginning.
+    const int chkP = (levelDone) ? -1 : lastCheckPoint;
+    int checkPointCount = 0;
+    
+    for (int x = 0; x < m_width; ++x)
+    {
+        for (int y = 0; y < m_height; ++y)
+        {
+            PE_Vec2 position((float)x, (float)y);
+            switch (m_matrix[x][y])
+            {
+            case '#':
+                map->SetTile(x, y, Tile::Type::GROUND);
+                break;
+            case 'W':
+                map->SetTile(x, y, Tile::Type::WOOD);
+                break;
+            case '=':
+                map->SetTile(x, y, Tile::Type::ONE_WAY);
+                break;
+            case 'A':
+                map->SetTile(x, y, Tile::Type::SPIKE);
+                break;
+            case '\\':
+                map->SetTile(x, y, Tile::Type::STEEP_SLOPE_L);
+                break;
+            case '/':
+                map->SetTile(x, y, Tile::Type::STEEP_SLOPE_R);
+                break;
+            case 'L':
+                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_L1);
+                break;
+            case 'l':
+                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_L2);
+                break;
+            case 'r':
+                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_R1);
+                break;
+            case 'R':
+                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_R2);
+                break;
+            case 'S':
+            {
+                Player *player = scene.GetPlayer();
+                player->SetStartPosition(position);
+                break;
+            }
+            case 'F':
+            {
+                LevelEnd *levelEnd = new LevelEnd(scene);
+                levelEnd->SetStartPosition(position);
+                break;
+            }
+            case 'e':
+            {
+                Nut *nut = new Nut(scene);
+                nut->SetStartPosition(position);
+                break;
+            }
+            case 'o':
+            {
+                Firefly* firefly = new Firefly(scene);
+                firefly->SetStartPosition(position);
+                break;
+            }
+            case 'O':
+            {
+                Oneway* oneway = new Oneway(scene, 1, position, -1);
+                oneway->SetStartPosition(position);
+                break;
+            }
+            case 'H':
+            {
+                Heart* heart = new Heart(scene);
+                heart->SetStartPosition(position);
+                break;
+            }
+            case 'P':
+            {
+                Bullet* bullet = new Bullet(scene);
+                bullet->SetStartPosition(position);
+                break;
+            }
+            case 's':
+            {
+                Shield* shield = new Shield(scene);
+                shield->SetStartPosition(position);
+                break;
+            }
+            case 'C':
+            {
+                Checkpoint* checkpoint = new Checkpoint(scene);
+                checkpoint->SetStartPosition(position);
+                checkpoint->m_id = checkPointCount;
+                if (checkPointCount < chkP)
+                {
+                    checkpoint->empty = true;
+                }
+                else if (chkP == checkPointCount)
+                {
+                    //Set as current one.
+                    scene.m_player->SetStartPosition(position + PE_Vec2{0.f, 2.f});
+                    checkpoint->empty = true;
+                }
+                checkPointCount++;
+                break;
+            }
+            case 'M':
+            {
+                Bonus* bonus = new Bonus(scene);
+                bonus->SetStartPosition(position);
+                break;
+            }
+            case 'b':
+            {
+                Brick *brick = new Brick(scene);
+                brick->SetStartPosition(position);
+                break;
+            }
+            case '6':
+            {
+                Snake* snake = new Snake(scene,3,position,-1,Layer::ENEMYHOUSE);
+                snake->SetStartPosition(position);
+                
+                break;
+            }
+            case '9':
+            {
+                Snake* snake = new Snake(scene, 3, position, 1, Layer::ENEMYHOUSE);
+                snake->SetStartPosition(position);
+
+                break;
+            }
+            case 'f':
+            {
+                FallingBlock *falling = new FallingBlock(scene);
+                falling->SetStartPosition(position);
+
+                break;
+            }
+            default:
+                break;
+            }
+        }
+    }
+    map->InitTiles();
+
+    const PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
+    Camera *camera = scene.GetActiveCamera();
+    camera->SetWorldBounds(bounds);
 }
 
 void LevelParser::InitScene(LevelScene &scene) const

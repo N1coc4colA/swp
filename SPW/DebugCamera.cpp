@@ -1,14 +1,29 @@
 #include "DebugCamera.h"
 #include "LevelScene.h"
+#include "HubScene.h"
 
-DebugCamera::DebugCamera(LevelScene &scene, const Camera &trackedCam) :
-    Camera(scene), m_trackedCam(trackedCam), m_track(true)
+DebugCamera::DebugCamera(LevelScene &scene, const Camera &trackedCam)
+    : Camera(scene)
+    , m_track(true)
+    , m_trackedCam(trackedCam)
 {
     m_name = "DebugCamera";
 
     m_worldView = trackedCam.GetWorldView();
     m_worldView.Scale(m_worldView.GetCenter(), 2.0f);
 }
+
+DebugCamera::DebugCamera(HubScene &scene, const Camera &trackedCam)
+    : Camera(scene)
+    , m_track(true)
+    , m_trackedCam(trackedCam)
+{
+    m_name = "DebugCamera";
+
+    m_worldView = trackedCam.GetWorldView();
+    m_worldView.Scale(m_worldView.GetCenter(), 2.0f);
+}
+
 
 void DebugCamera::Update()
 {
