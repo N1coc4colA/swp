@@ -3,6 +3,7 @@
 #include "Camera.h"
 #include "LevelScene.h"
 #include "Graphics.h"
+#include "Bulletlaunch.h"
 
 Nut::Nut(Scene &scene)
 	: Enemy(scene)
@@ -58,7 +59,7 @@ void Nut::Start()
     PE_ColliderDef colliderDef;
     colliderDef.friction = 0.005f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
-    colliderDef.filter.maskBits = CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
+    colliderDef.filter.maskBits = CATEGORY_COLLECTABLE | CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
     colliderDef.shape = &circle;
     PE_Collider *collider = body->CreateCollider(colliderDef);
 
@@ -186,6 +187,9 @@ void Nut::Damage(GameBody *damager)
         player->Bounce();
 	    m_state = State::DYING;
 	}
+    if (Bulletlaunch* bullet = dynamic_cast<Bulletlaunch*>(damager)) {
+        m_state = State::DYING;
+    }
 }
 
 void Nut::OnCollisionStay(GameCollision &collision)
@@ -200,6 +204,7 @@ void Nut::OnCollisionStay(GameCollision &collision)
         return;
     }
     
+        
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {

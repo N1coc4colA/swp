@@ -98,7 +98,7 @@ void Snake::Start()
     PE_ColliderDef colliderDef;
     colliderDef.friction = 0.005f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
-    colliderDef.filter.maskBits = CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
+    colliderDef.filter.maskBits = CATEGORY_COLLECTABLE |CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
     colliderDef.shape = &box;
     m_collider = body->CreateCollider(colliderDef);
     

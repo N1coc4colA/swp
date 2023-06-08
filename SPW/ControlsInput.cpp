@@ -12,6 +12,7 @@ ControlsInput::ControlsInput() :
 void ControlsInput::OnPreEventProcess()
 {
     jumpPressed = false;
+    specialPressed = false;
     
 }
 
