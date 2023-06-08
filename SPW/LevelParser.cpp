@@ -14,6 +14,7 @@
 #include "Boss.h"
 #include "Oneway.h"
 #include "Bullet.h"
+#include "FallingBlock.h"
 
 
 #include <fstream>
@@ -42,7 +43,7 @@ LevelParser::LevelParser(const std::string &path)
     char *buffer = new char[fileSize];
     fread(buffer, 1, fileSize, levelFile);
     fclose(levelFile);
-    levelFile = NULL;
+    levelFile = nullptr;
     
     //Parse the theme name
     int i = 0;
@@ -282,7 +283,6 @@ void LevelParser::InitScene(LevelScene &scene) const
                     scene.m_player->SetStartPosition(position + PE_Vec2{0.f, 2.f});
                     checkpoint->empty = true;
                 }
-                std::cout << "Current check point: " << checkPointCount << std::endl;
                 checkPointCount++;
                 break;
             }
@@ -312,6 +312,13 @@ void LevelParser::InitScene(LevelScene &scene) const
 
                 break;
             }
+            case 'f':
+            {
+                FallingBlock *falling = new FallingBlock(scene);
+                falling->SetStartPosition(position);
+
+                break;
+            }
             default:
                 break;
             }
@@ -319,7 +326,7 @@ void LevelParser::InitScene(LevelScene &scene) const
     }
     map->InitTiles();
 
-    PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
+    const PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
     Camera *camera = scene.GetActiveCamera();
     camera->SetWorldBounds(bounds);
 }

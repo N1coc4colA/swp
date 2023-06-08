@@ -47,7 +47,9 @@
         {"x": 430, "y": 335, "w":  80, "h": 160},
         
         {"x": 430, "y": 520, "w":  80, "h": 80},
-        {"x":   5, "y": 775, "w": 320, "h": 40}
+        {"x":   5, "y": 775, "w": 320, "h": 40},
+
+	{"x": 430, "y": 600, "w":  80, "h": 80}
     ],
     "parts": [
         {"name": "Terrain",         "frames": [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17]},
@@ -60,6 +62,7 @@
         {"name": "CheckpointEmpty", "frames": [39]},
         {"name": "LevelEnd",        "frames": [40]},
         {"name": "Spike",           "frames": [41]},
-        {"name": "MovingPlatform",  "frames": [42]}
+        {"name": "MovingPlatform",  "frames": [42]},
+	{"name": "Falling",         "frames": [43]}
     ]
 }

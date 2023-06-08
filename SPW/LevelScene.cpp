@@ -127,8 +127,6 @@ LevelScene::~LevelScene()
 {
     // Now lookup and save!
     int maxSaved = -1;
-    int count = 0;
-    bool ended = false;
     for (auto it : m_objectManager) {
         if (Checkpoint *chkP = dynamic_cast<Checkpoint *>(it))
         {
@@ -136,11 +134,10 @@ LevelScene::~LevelScene()
             {
                 maxSaved = chkP->m_id;
             }
-            count++;
         }
     }
     
-    LevelParser::saveSave(m_levelSavePath, ended, maxSaved);
+    LevelParser::saveSave(m_levelSavePath, m_levelEnded, maxSaved);
 }
 
 inline void LevelScene::SetPaused(bool isPaused)
