@@ -113,6 +113,9 @@ RE_Atlas *AssetManager::GetAtlas(AtlasID atlasID)
         case AtlasID::BOSS:
             path.assign("../Assets/Atlas/Boss.json");
             break;
+        case AtlasID::SPECIAL:
+            path.assign("../Assets/Atlas/Special.json");
+            break;
         default:
             assert(false);
             break;

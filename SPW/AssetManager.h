@@ -10,7 +10,8 @@ enum class AtlasID : uint32_t
     PLAYER,
     TERRAIN,
     UI,
-    BOSS
+    BOSS,
+    SPECIAL
 };
 enum class FontID : uint32_t
 {
