@@ -52,6 +52,7 @@ void Nut::Start()
     PE_Body *body = world.CreateBody(bodyDef);
     SetBody(body);
 
+    
     // Crée le collider
     PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 0.45f);
     PE_ColliderDef colliderDef;
@@ -108,6 +109,20 @@ void Nut::FixedUpdate()
         return;
     }
 
+    if (m_state == State::DYING)
+    {
+        m_animator.PlayAnimation("Dying");
+        m_timer += m_scene.GetFixedTimeStep();
+        if (m_timer >= 2.f)
+        {
+            SetEnabled(false);
+        } else
+        {
+            body->SetVelocity({0.f, -3.f});
+        }
+        return;
+    }
+
     PE_Vec2 mvt = (player->GetPosition().x - position.x) < 0
             ? PE_Vec2{-2.f, 0.f}
             : PE_Vec2{2.f, 0.f};
@@ -150,6 +165,7 @@ void Nut::OnRespawn()
 {
     m_state = State::IDLE;
     m_isBounced = false;
+    m_timer = 0.f;
 
     SetToRespawn(true);
     SetBodyEnabled(true);
@@ -168,7 +184,7 @@ void Nut::Damage(GameBody *damager)
 {
 	if (Player *player = dynamic_cast<Player *>(damager)) {
         player->Bounce();
-        SetEnabled(false);
+	    m_state = State::DYING;
 	}
 }
 
@@ -183,8 +199,7 @@ void Nut::OnCollisionStay(GameCollision &collision)
         
         return;
     }
-
-
+    
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {

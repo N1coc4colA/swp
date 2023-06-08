@@ -77,6 +77,18 @@ void KeyButton::Update()
                 // Evite le déclanchement de plusieurs boutons 
                 mouse.leftReleased = false;
 
+                //Now listen to the keys!
+                /*if (listening)
+                {
+                    onChange(key);
+                    listening = false;
+                    kbInput.disableDirectStroke = false;
+                    regenerateText();
+                } else
+                {
+                    listening = true;
+                    kbInput.disableDirectStroke = true;
+                }*/
 
                 m_currState = State::HOVER;
             }
@@ -91,8 +103,11 @@ void KeyButton::Update()
             
             if (listening)
             {
+                if (kbInput.current != SDL_SCANCODE_UNKNOWN)
+                {
+                    key = kbInput.current;
+                }
                 onChange(key);
-                key = kbInput.current;
                 listening = false;
                 kbInput.disableDirectStroke = false;
                 regenerateText();
@@ -102,8 +117,11 @@ void KeyButton::Update()
     {
         if (listening)
         {
+            if (kbInput.current != SDL_SCANCODE_UNKNOWN)
+            {
+                key = kbInput.current;
+            }
             onChange(key);
-            key = kbInput.current;
             listening = false;
             kbInput.disableDirectStroke = false;
             regenerateText();

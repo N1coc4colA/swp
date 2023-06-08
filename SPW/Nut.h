@@ -35,4 +35,5 @@ private:
     State m_state = State::IDLE;
     bool m_isBounced = false;
     PE_Vec2 m_bounce;
+    float m_timer = 0.f;
 };
