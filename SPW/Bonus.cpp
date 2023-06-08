@@ -5,6 +5,11 @@
 #include "Firefly.h"
 #include "Shield.h"
 
+
+#include <cstdlib>
+#include <random>
+
+
 Bonus::Bonus(Scene &scene) :
     GameBody(scene, Layer::TERRAIN_FOREGROUND), m_animator(), m_hit(false)
 {
@@ -105,7 +110,10 @@ void Bonus::Give_Bonus()
 {
     if (m_active)
     {
-        int Id_bonus = rand() % 3;
+        std::random_device rd; // obtain a random number from hardware
+        std::mt19937 gen(rd()); // seed the generator
+        std::uniform_int_distribution<> distr(0, 2);
+        int Id_bonus = distr(gen);
         
         //printf("%d\n", Id_bonus);
         if(Id_bonus==0) {
