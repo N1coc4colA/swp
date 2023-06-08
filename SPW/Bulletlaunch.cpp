@@ -6,13 +6,14 @@
 #include "LevelScene.h"
 #include "Enemy.h"
 #include "Snake.h"
+#include "Boss.h"
 
-Bulletlaunch::Bulletlaunch(Scene &scene) :
+Bulletlaunch::Bulletlaunch(Scene &scene, bool Enemie,PE_Vec2 senstir) :
     Collectable(scene, Layer::COLLECTABLE)
 {
     m_name = "Bulletlaunch";
-    
-
+    m_senstir = senstir;
+    m_enemie = Enemie;
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::BOSS);
     AssertNew(atlas);
@@ -36,12 +37,14 @@ void Bulletlaunch::Start()
     m_animator.PlayAnimation("IDLE");
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
-    bodyDef.type = PE_BodyType::KINEMATIC;
+    bodyDef.type = PE_BodyType::DYNAMIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
     bodyDef.name = "Bullet";
     bodyDef.damping.SetZero();
+
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
+    body->SetGravityScale(0.f);
 
     // Crée le collider
     PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 0.45f);
@@ -82,7 +85,7 @@ void Bulletlaunch::OnRespawn()
     SetEnabled(true);
 
     PE_Body* body = GetBody();
-    body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
+    body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.5f));
     body->SetVelocity(PE_Vec2::zero);
     body->ClearForces();
 
@@ -135,17 +138,14 @@ void Bulletlaunch::FixedUpdate()
         body->SetAwake(false);
         return;
     }
-
-    PE_Vec2 mvt = (player->GetPosition().x - position.x) < 0
-        ? PE_Vec2{4.f, 0.f}
-    : PE_Vec2{ -4.f, 0.f };
-    ;
-    body->SetVelocity(mvt);
-    /*if (m_state == State::IDLE)
-    {
-        m_state = State::RUNNING;
-        m_animator.PlayAnimation("RUNNING");
-    }*/
+    if (m_enemie) {
+        
+        body->SetVelocity(m_senstir);
+    }
+    else{
+        body->SetVelocity(m_senstir);
+    }
+    
     
   
 
@@ -155,31 +155,45 @@ void Bulletlaunch::OnCollisionEnter(GameCollision &collision)
 {
     const PE_Manifold& manifold = collision.manifold;
     PE_Collider* otherCollider = collision.otherCollider;
-
+    if (otherCollider->CheckCategory(CATEGORY_TERRAIN)) {
+        SetEnabled(false);
+    }
     if (otherCollider->CheckCategory(CATEGORY_ENEMY)){
-        printf("frout");
-        if (Snake* snake = dynamic_cast<Snake*>(collision.gameBody)) {
+        if (!m_enemie) {
+            if (Snake* snake = dynamic_cast<Snake*>(collision.gameBody)) {
 
-            if (snake == nullptr)
+                if (snake == nullptr)
+                {
+                    assert(false);
+                    return;
+                }
+
+                SetEnabled(false);
+                return;
+            }
+            if (Boss* boss = dynamic_cast<Boss*>(collision.gameBody)) {
+
+                if (boss == nullptr)
+                {
+                    
+                    assert(false);
+                    return;
+                }
+                boss->Damage(this);
+                SetEnabled(false);
+                return;
+            }
+            Enemy* enemy = dynamic_cast<Enemy*>(collision.gameBody);
+            if (enemy == nullptr)
             {
                 assert(false);
                 return;
             }
 
+            printf("dameke\n");
+            enemy->Damage(this);
             SetEnabled(false);
-            return;
         }
-        Enemy* enemy = dynamic_cast<Enemy*>(collision.gameBody);
-        if (enemy == nullptr)
-        {
-            assert(false);
-            return;
-        }
-        
-        
-        enemy->Damage(this);
-        SetEnabled(false);
-
     }
 }
 

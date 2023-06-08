@@ -7,7 +7,7 @@
 class Bulletlaunch : public Collectable
 {
 public:
-    Bulletlaunch(Scene &scene);
+    Bulletlaunch(Scene &scene,bool Enemie, PE_Vec2 senstir);
     
     ~Bulletlaunch();
     void Start() override;
@@ -27,5 +27,7 @@ private:
     };
 
     State m_state = State::IDLE;
+    bool m_enemie;
+    PE_Vec2 m_senstir;
 };
 

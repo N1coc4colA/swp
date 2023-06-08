@@ -245,7 +245,14 @@ void Player::FixedUpdate()
     // Détermine l'état du joueur et change l'animation si nécessaire
 	State tmpState = m_state;
     if (m_capacitylaunch) {
-        Bulletlaunch* bullet = new Bulletlaunch(m_scene);
+        PE_Vec2 mvt;
+        if (m_facingRight) {
+            mvt = { 4.f,0.f };
+        }
+        else {
+            mvt = { -4.f,0.f };
+        }
+        Bulletlaunch* bullet = new Bulletlaunch(m_scene,false,mvt);
         bullet->SetStartPosition(position);
         m_capacitylaunch = false;
     }

@@ -236,6 +236,7 @@ void StaticMap::Start()
             colliderDef.shape = &polygon;
             colliderDef.friction = 0.5f;
             colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
+            
             colliderDef.userData.id = 0;
             
             switch (tile.type)

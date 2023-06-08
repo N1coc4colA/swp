@@ -12,16 +12,16 @@ Bullet::Bullet(Scene &scene) :
     
 
     // Animation "Base"
-    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::BOSS);
+    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
     AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("BossBullet");
+    RE_AtlasPart* part = atlas->GetPart("Firefly");
     AssertNew(part);
     RE_TexAnim* anim = new RE_TexAnim(m_animator, "IDLE",part);
     anim->SetCycleCount(0);
 
-    atlas = scene.GetAssetManager().GetAtlas(AtlasID::BOSS);
+    atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
     AssertNew(atlas);
-    part = atlas->GetPart("BossBullet");
+    part = atlas->GetPart("Firefly");
     AssertNew(part);
     RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "RUNNING", part);
     RunningAnim->SetCycleCount(-1);

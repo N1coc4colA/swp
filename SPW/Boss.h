@@ -42,6 +42,8 @@ private:
     PE_Vec2 m_bounce;
     int heart_count = 5;
     bool m_player_closer;
+    int m_timer_shoot = 0;
+    int m_timer_shield = 0;
 };
 
 inline int Boss::Get_life() {
