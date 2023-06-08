@@ -32,6 +32,7 @@ public:
     void SetShield(bool res);
     void StartTimerShield();
     bool GetShield();
+    void Setcapacity(bool res);
 
 private:
     void WakeUpSurroundings();
@@ -70,8 +71,8 @@ private:
     bool m_canDash = false;
     PE_Vec2 m_dashDirection;
     bool m_drifting = false;
-   
-
+    bool m_capacity = false;
+    bool m_capacitylaunch = false;
    
    
     
@@ -108,6 +109,10 @@ inline void Player::SetShield(bool res) {
 
 inline bool Player::GetShield() {
     return shield;
+}
+
+inline void Player::Setcapacity(bool res) {
+    m_capacity = res;
 }
 
 

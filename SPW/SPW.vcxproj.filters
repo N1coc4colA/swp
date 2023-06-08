@@ -204,6 +204,9 @@
     <ClCompile Include="Oneway.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="Bullet.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -364,6 +367,9 @@
     </ClInclude>
     <ClInclude Include="Oneway.h">
       <Filter>Fichiers sources\GameObject\GameBody\Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="Bullet.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
