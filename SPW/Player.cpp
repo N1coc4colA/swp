@@ -125,14 +125,17 @@ void Player::Update()
 
     // Sauvegarde les contrôles du joueur pour modifier
     // sa physique au prochain FixedUpdate()
-    //printf("%d %d\n", controls.shieldon,forcedshield);
+    
     if (controls.shieldon) {
-        if (shield) {
-            shield = false;
-        }
-        else {
-            shield = true;
-        }
+        if(!timer_start)
+            if (shield) {
+                shield = false;
+                
+            }
+            else {
+                shield = true;
+                
+            }
         
         controls.shieldon = false;
 
@@ -190,6 +193,7 @@ void Player::FixedUpdate()
     // Tue le joueur s'il tombe dans un trou
     if (position.y < -2.0f)
     {
+        
         m_scene.Respawn();
         return;
     }
@@ -395,6 +399,8 @@ void Player::FixedUpdate()
 
     // Définit la nouvelle vitesse du corps
     
+
+
     if (timer_start) {
         timer_shield += m_scene.GetFixedTimeStep();
         if (timer_shield >= 2.f) {
