@@ -18,6 +18,9 @@ enum class Layer : uint32_t
     TERRAIN_FOREGROUND,
     COLLECTABLE,
     ENEMY,
+    ENEMYBODY,
+    ENEMYHEAD,
+    ENEMYHOUSE,
     PLAYER,
     FOREGROUND,
     UI_BACKGROUND,
@@ -73,7 +76,7 @@ private:
 
     void AddChild(GameObject *child);
     void RemoveChild(GameObject *child);
-
+    void Setlayer(Layer);
 
     bool m_enabled;
     Layer m_layer;
@@ -203,4 +206,9 @@ inline void GameObject::SubFlags(GameObject::Flag flags)
 inline bool GameObject::TestFlag(GameObject::Flag flag) const
 {
     return (flag == (m_flags & flag));
+}
+
+
+inline void GameObject::Setlayer(Layer monlayer) {
+    m_layer = monlayer;
 }

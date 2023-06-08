@@ -18,18 +18,11 @@ Shield::Shield(Scene &scene) :
     AssertNew(part);
     RE_TexAnim* anim = new RE_TexAnim(m_animator, "shield",part);
     anim->SetCycleCount(0);
-
-    atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
-    AssertNew(atlas);
-    part = atlas->GetPart("Shield");
-    AssertNew(part);
-    RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "RUNNING", part);
-    RunningAnim->SetCycleCount(-1);
-    RunningAnim->SetCycleTime(1);
 }
 
 void Shield::Start()
 {
+    SetToRespawn(true);
     m_animator.PlayAnimation("shield");
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
@@ -72,8 +65,12 @@ void Shield::Render()
 
 void Shield::OnRespawn()
 {
+    m_state = State::IDLE;
+
+    SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);
+
     PE_Body* body = GetBody();
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);
@@ -128,20 +125,11 @@ void Shield::FixedUpdate()
         body->SetAwake(false);
         return;
     }
-
     PE_Vec2 mvt = (player->GetPosition().x - position.x) < 0
         ? PE_Vec2{-2.f, 0.f}
     : PE_Vec2{ 2.f, 0.f };
     ;
     body->SetVelocity(mvt);
-    if (m_state == State::IDLE)
-    {
-        m_state = State::RUNNING;
-        m_animator.PlayAnimation("RUNNING");
-    }
-    
-  
-
 }
 
 void Shield::OnCollisionEnter(GameCollision &collision)

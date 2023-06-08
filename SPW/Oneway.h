@@ -3,21 +3,19 @@
 #include "Settings.h"
 #include "Enemy.h"
 
-class Snake
+class Oneway
     : public Enemy
 {
 public:
-    Snake(Scene &scene, int size,PE_Vec2 pos,int sens, Layer layer);
-    ~Snake();
+    Oneway(Scene &scene, int size,PE_Vec2 pos,int sens);
+    ~Oneway();
 
     void Start() override;
     void FixedUpdate() override;
     void Render() override;
     void OnRespawn() override;
 
-    void Damage(GameBody *damager) override;
-
-    void OnCollisionStay(GameCollision &collision) override;
+    
 
     
 
@@ -35,12 +33,11 @@ private:
     bool m_isBounced = false;
     PE_Vec2 m_bounce;
     PE_Collider *m_collider;
-    Snake *m_snakes;
+    Oneway *m_oneways;
     PE_Vec2 m_posmax;
     PE_Vec2 m_posstart;
     bool m_retour;
     int m_size;
     int m_sens;
     PE_Vec2 position;
-    
 };

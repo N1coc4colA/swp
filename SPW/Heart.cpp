@@ -30,6 +30,7 @@ Heart::Heart(Scene &scene) :
 
 void Heart::Start()
 {
+    SetToRespawn(true);
     m_animator.PlayAnimation("IDLE");
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
@@ -72,8 +73,12 @@ void Heart::Render()
 
 void Heart::OnRespawn()
 {
+    m_state = State::IDLE;
+
+    SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);
+
     PE_Body* body = GetBody();
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);
@@ -134,11 +139,11 @@ void Heart::FixedUpdate()
     : PE_Vec2{ 2.f, 0.f };
     ;
     body->SetVelocity(mvt);
-    if (m_state == State::IDLE)
+    /*if (m_state == State::IDLE)
     {
         m_state = State::RUNNING;
         m_animator.PlayAnimation("RUNNING");
-    }
+    }*/
     
   
 

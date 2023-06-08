@@ -99,6 +99,10 @@ inline int Player::GetLifeCount() const
 
 inline void Player::SetShield(bool res) {
     shield = res;
+    if (shield) {
+        m_shieldAanimator.PlayAnimation("Shield");
+    }
+    
 }
 
 inline bool Player::GetShield() {
