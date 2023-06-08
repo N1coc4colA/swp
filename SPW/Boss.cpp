@@ -11,11 +11,11 @@ Boss::Boss(Scene &scene)
     m_name = "Boss";
 
     
-    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
+    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::BOSS);
     AssertNew(atlas);
 
     // Animation "Idle"
-    RE_AtlasPart* part = atlas->GetPart("Boss");
+    RE_AtlasPart* part = atlas->GetPart("BossIdle");
     AssertNew(part);
     RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "Idle", part);
     idleAnim->SetCycleCount(0);

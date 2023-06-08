@@ -107,24 +107,24 @@ void Bonus::Give_Bonus()
     {
         int Id_bonus = rand() % 3;
         
-        printf("%d\n", Id_bonus);
+        //printf("%d\n", Id_bonus);
         if(Id_bonus==0) {
-                printf("ici\n");
+                //printf("ici\n");
                 Heart* heart = new Heart(m_scene);
                 heart->SetStartPosition(GetPosition());
         }
         else if(Id_bonus == 1) {
-            printf("here\n");
+            //printf("here\n");
             Shield * shield = new Shield(m_scene);
             shield->SetStartPosition(GetPosition());
          }
         else if (Id_bonus == 2) {
-            printf("where\n");
+            //printf("where\n");
             Firefly* firefly = new Firefly(m_scene);
             firefly->SetStartPosition(GetPosition());
         }
             
-      
+        Set_BonusEmpty();
         
     }
 }
