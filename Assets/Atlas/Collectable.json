@@ -10,6 +10,7 @@
     "parts": [
         {"name": "Firefly", "frames": [0,1,2,3,4,5,6,7]},
         {"name": "Heart", "frames": [8]},
-	    {"name": "Shield", "frames": [9]}
+        {"name": "Wheat", "frames": [10]},
+	{"name": "Shield", "frames": [9]}
     ]
 }

@@ -5,6 +5,9 @@
 #include "ObjectManager.h"
 #include "AssetManager.h"
 
+#include <functional>
+
+
 class Camera;
 
 struct SceneStats
@@ -118,6 +121,8 @@ public:
     );
     GameBody *OverlapArea(const PE_AABB &area, int maskBits);
 
+    std::function<void()> setLevelEnded = []() {};
+    
 protected:
     friend class GameObject;
 

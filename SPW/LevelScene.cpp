@@ -3,8 +3,8 @@
 #include "MainCamera.h"
 #include "DebugCamera.h"
 #include "Background.h"
-#include "Boss.h"
-#include "PauseMenu.h"
+#include "Checkpoint.h"
+
 
 
 LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &level)
@@ -15,6 +15,8 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &le
     m_inputManager.GetMouse().SetEnabled(true);
     m_inputManager.GetControls().SetEnabled(true);
     m_inputManager.GetDebug().SetEnabled(true);
+
+    setLevelEnded = [this]() {this->m_levelEnded = true;};
 
     // Crée le Player
     m_player = new Player(*this);
@@ -123,6 +125,22 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &le
 
 LevelScene::~LevelScene()
 {
+    // Now lookup and save!
+    int maxSaved = -1;
+    int count = 0;
+    bool ended = false;
+    for (auto it : m_objectManager) {
+        if (Checkpoint *chkP = dynamic_cast<Checkpoint *>(it))
+        {
+            if (chkP->empty && maxSaved < chkP->m_id)
+            {
+                maxSaved = chkP->m_id;
+            }
+            count++;
+        }
+    }
+    
+    LevelParser::saveSave(m_levelSavePath, ended, maxSaved);
 }
 
 inline void LevelScene::SetPaused(bool isPaused)

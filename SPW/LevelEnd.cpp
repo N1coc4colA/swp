@@ -59,6 +59,7 @@ void LevelEnd::OnCollisionEnter(GameCollision &collision)
 {
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
+        m_scene.setLevelEnded();
         m_scene.Quit();
     }
 }

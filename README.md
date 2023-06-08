@@ -43,6 +43,7 @@
  - Features many ennemies
  - One boss
  - Many levels (worlds)
+ - Saving world's progress
 ```
 
 
