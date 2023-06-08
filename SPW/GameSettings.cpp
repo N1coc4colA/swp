@@ -45,6 +45,7 @@ void GameSettings::load()
         >> left
         >> right
         >> down
+        >> special
         >> pause
         >> soundGlobal
         >> soundCollectable
@@ -61,6 +62,7 @@ void GameSettings::load()
         right = SDL_SCANCODE_RIGHT;
         down = SDL_SCANCODE_DOWN;
         pause = SDL_SCANCODE_S;
+        special = SDL_SCANCODE_M;
         soundGlobal = 0.5f;
         soundCollectable = 0.4f;
         soundEnemy = 0.5f;
@@ -83,6 +85,7 @@ void GameSettings::save() const
         << left
         << right
         << down
+        << special
         << pause
         << soundGlobal
         << soundCollectable

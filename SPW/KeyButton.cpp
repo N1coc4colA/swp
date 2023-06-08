@@ -205,7 +205,7 @@ void KeyButton::regenerateText()
     {
         usedKey = new Text(
             m_scene,
-            SDL_GetScancodeName(key),
+            SDL_GetKeyName(SDL_GetKeyFromScancode(key)),
             m_scene.GetAssetManager().GetFont(FontID::NORMAL),
             m_scene.GetAssetManager().GetColor(ColorID::BLACK));
         usedKey->SetParent(this);
