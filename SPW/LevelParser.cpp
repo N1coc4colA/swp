@@ -134,11 +134,9 @@ LevelParser::LevelParser(const std::string &path)
                 {
                     break;
                 }
-                std::cout << std::endl;
             }
             else
             {
-                std::cout << c;
                 m_matrix[x][y] = c;
                 x++;
             }
