@@ -118,7 +118,7 @@ void Nut::FixedUpdate()
             SetEnabled(false);
         } else
         {
-            body->SetVelocity({0.f, -3.f});
+            body->SetVelocity({0.f, -5.f});
         }
         return;
     }

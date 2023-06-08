@@ -15,12 +15,14 @@
 #include "Oneway.h"
 
 
+#include <fstream>
+
+
 LevelParser::LevelParser(const std::string &path)
 {
     // Split it by ending to get the file name.
-    std::string lvlConf = "./" + path.substr(path.find_last_not_of('\\')) + ".save";
-    std::cout << "Level save: " << lvlConf << std::endl;
-    std::cout << "path: " << path << std::endl;
+    savePath = "." + path.substr(path.find_last_of('/')) + ".save";
+    loadSave();
     
     FILE *levelFile = fopen(path.c_str(), "rb");
     AssertNew(levelFile)
@@ -300,4 +302,29 @@ void LevelParser::InitScene(LevelScene &scene) const
     PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
     Camera *camera = scene.GetActiveCamera();
     camera->SetWorldBounds(bounds);
+}
+
+void LevelParser::loadSave()
+{
+    if (savePath.size() < 7)
+    {
+        std::wcerr << "Invalid save path: \"" << savePath.c_str() << "\"" << std::endl;
+        return;
+    }
+    std::ifstream input(savePath, std::ios_base::in | std::ios_base::binary);
+    if (input.is_open())
+    {
+        input >> levelDone >> lastCheckPoint;
+    } else
+    {
+        std::wcerr << "Map has no save file." << std::endl;
+        levelDone = false;
+        lastCheckPoint = -1;
+        saveSave(savePath, levelDone, lastCheckPoint);
+    }
+}
+
+void LevelParser::saveSave(const std::string &path, bool finished, int lastCheckPointDone)
+{
+    // TODO
 }
