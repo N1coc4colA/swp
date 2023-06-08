@@ -171,7 +171,7 @@ void LevelParser::InitScene(LevelScene &scene) const
     StaticMap *map = new StaticMap(scene, m_width, m_height);
 
     // So we can restart at the beginning.
-    const int chkP = (levelDone) ? 0 : lastCheckPoint;
+    const int chkP = (levelDone) ? -1 : lastCheckPoint;
     int checkPointCount = 0;
     
     for (int x = 0; x < m_width; ++x)

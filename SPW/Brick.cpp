@@ -48,6 +48,7 @@ void Brick::FixedUpdate()
     PE_Body *body = GetBody();
     if (m_active)
     {
+        body->SetGravityScale(0.f);
         body->SetVelocity({0.f, (GetStartPosition() - body->GetPosition()).y});
     } else {
         body->SetGravityScale(1.f);
