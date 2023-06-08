@@ -4,17 +4,26 @@
 #include "LevelScene.h"
 #include "Graphics.h"
 
-Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
+Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens, Layer layer)
 	: Enemy(scene)
 	, m_animator(),m_size(size),m_sens(sens), m_fixedCount(0)
 {
+    if (m_size == 0) {
+        SetLayer(Layer::ENEMYHOUSE);
+    } else if(m_size ==3) {
+        SetLayer(Layer::ENEMYHEAD);
+    }else{
+        SetLayer(Layer::ENEMYBODY);
+    }
+
     m_name = "Snake";
     m_snakes = nullptr;
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::ENEMY);
     AssertNew(atlas);
-   
+    
     // Animation "Idle"
     if (m_size == 0) {
+        
         RE_AtlasPart* part = atlas->GetPart("SerpentHouse");
         AssertNew(part);
         m_state = State::HOUSE;
@@ -22,6 +31,7 @@ Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
         idleAnim->SetCycleCount(0);
     }
     else if(m_size ==3){
+        
         RE_AtlasPart* part = atlas->GetPart("SerpentHead");
         AssertNew(part);
         m_state = State::HEAD;
@@ -29,6 +39,7 @@ Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
         idleAnim->SetCycleCount(0);
     }
     else {
+        
         RE_AtlasPart* part = atlas->GetPart("SerpentBody");
         AssertNew(part);
         m_state = State::BODY;
@@ -36,7 +47,7 @@ Snake::Snake(Scene &scene, int size, PE_Vec2 pos, int sens)
         idleAnim->SetCycleCount(0);
     }
     if (m_size >= 1) {
-        Snake* m_snakes = new Snake(scene, m_size-1,pos,m_sens);
+        Snake* m_snakes = new Snake(scene, m_size-1,pos,m_sens, Layer::ENEMYHOUSE);
         m_snakes->SetStartPosition(pos);
     }
 
@@ -80,6 +91,7 @@ void Snake::Start()
     bodyDef.damping.SetZero();
     PE_Body *body = world.CreateBody(bodyDef);
     SetBody(body);
+    
     m_retour = true;
     // Crée le collider
     PE_PolygonShape box(-0.5f, 0.f, 0.5f, 1.f);
@@ -147,20 +159,40 @@ void Snake::Render()
 
 void Snake::OnRespawn()
 {
-    
+    if (m_size == 0) {
+        m_state = State::HOUSE;
+    }
+    else if (m_size == 3) {
+        
+        m_state = State::HEAD;
+    }
+    else {
+        m_state = State::BODY;
+    }
+    m_state = State::HEAD;
     m_isBounced = false;
 
     SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);
 
-    PE_Body *body = GetBody();
-    body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
+    PE_Body* body = GetBody();
+    //body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);
     body->ClearForces();
 
     m_animator.StopAnimations();
-    m_animator.PlayAnimation("Idle");
+    if (m_size == 0) {
+        m_animator.PlayAnimation("House");
+    }
+    else if (m_size == 3) {
+
+        m_animator.PlayAnimation("Head");
+    }
+    else {
+        m_animator.PlayAnimation("Body");
+    }
+    
 }
 
 void Snake::Damage(GameBody *damager)

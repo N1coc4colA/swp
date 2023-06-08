@@ -12,6 +12,7 @@
 #include "Shield.h"
 #include "Snake.h"
 #include "Boss.h"
+#include "Oneway.h"
 
 
 LevelParser::LevelParser(const std::string &path)
@@ -133,9 +134,11 @@ LevelParser::LevelParser(const std::string &path)
                 {
                     break;
                 }
+                std::cout << std::endl;
             }
             else
             {
+                std::cout << c;
                 m_matrix[x][y] = c;
                 x++;
             }
@@ -231,6 +234,13 @@ void LevelParser::InitScene(LevelScene &scene) const
                 // TODO : Créer une luciolle
                 break;
             }
+            case 'O':
+            {
+                Oneway* oneway = new Oneway(scene, 1, position, -1);
+                oneway->SetStartPosition(position);
+                // TODO : Créer une luciolle
+                break;
+            }
             case 'H':
             {
                 Heart* heart = new Heart(scene);
@@ -265,14 +275,14 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case '6':
             {
-                Snake* snake = new Snake(scene,3,position,-1);
+                Snake* snake = new Snake(scene,3,position,-1,Layer::ENEMYHOUSE);
                 snake->SetStartPosition(position);
                 
                 break;
             }
             case '9':
             {
-                Snake* snake = new Snake(scene, 3, position, 1);
+                Snake* snake = new Snake(scene, 3, position, 1, Layer::ENEMYHOUSE);
                 snake->SetStartPosition(position);
 
                 break;
@@ -284,7 +294,7 @@ void LevelParser::InitScene(LevelScene &scene) const
     }
     map->InitTiles();
 
-    const PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
+    PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
     Camera *camera = scene.GetActiveCamera();
     camera->SetWorldBounds(bounds);
 }

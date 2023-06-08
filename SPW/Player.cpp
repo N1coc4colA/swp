@@ -565,7 +565,7 @@ void Player::Damage()
 {
     
         if (!shield) {
-            if (m_state == State::DYING) {
+            if (m_state == State::DYING or m_state == State::DEAD) {
                 Kill();
             }
 
@@ -574,6 +574,7 @@ void Player::Damage()
                 m_lifeCount--;
                 m_heartCount = m_heartstart;
                 Kill();
+                m_state = State::DYING;
 
 
 
