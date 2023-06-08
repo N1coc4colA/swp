@@ -40,6 +40,8 @@ private:
     float m_stepDelay = 0.f;
 
     std::string m_levelSavePath;
+
+    friend class LevelParser;
 };
 
 inline Player *LevelScene::GetPlayer() const

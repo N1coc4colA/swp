@@ -20,4 +20,6 @@ public:
 private:
     RE_Animator m_animator;
     bool m_active = true;
+
+    friend class Player;
 };

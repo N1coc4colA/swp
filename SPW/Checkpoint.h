@@ -16,4 +16,6 @@ private:
     RE_Animator m_animator;
     bool m_isActive;
     bool empty;
+
+    friend class LevelParser;
 };

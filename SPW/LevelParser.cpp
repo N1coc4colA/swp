@@ -264,9 +264,15 @@ void LevelParser::InitScene(LevelScene &scene) const
             {
                 Checkpoint* checkpoint = new Checkpoint(scene);
                 checkpoint->SetStartPosition(position);
-                    if (chkP == lastCheckPoint)
+                    if (checkPointCount < chkP)
+                    {
+                        checkpoint->empty = true;
+                    }
+                    else if (chkP == chkP)
                     {
                         //Set as current one.
+                        scene.m_player->SetStartPosition(position + PE_Vec2{0.f, 2.f});
+                        checkpoint->empty = true;
                     }
                 break;
             }

@@ -469,6 +469,20 @@ void Player::OnCollisionEnter(GameCollision &collision)
     const PE_Manifold &manifold = collision.manifold;
     PE_Collider *otherCollider = collision.otherCollider;
 
+
+    if (otherCollider->CheckCategory(CATEGORY_TERRAIN))
+    {
+        if (Brick *brick = dynamic_cast<Brick *>(collision.gameBody))
+        {
+            if (brick->m_active)
+            {
+                collision.SetEnabled(false);
+                collision.ResolveUp();
+                return;
+            }
+        }
+    }
+    
     // Collision avec un ennemi
     if (otherCollider->CheckCategory(CATEGORY_ENEMY))
     {
@@ -534,9 +548,8 @@ void Player::OnCollisionStay(GameCollision &collision)
             {
                 m_canDash = true;
                 m_dashDirection = collision.manifold.normal;
-                //collision.SetEnabled(false);
-                //collision.ResolveUp();
             }
+            //collision.ResolveUp();
         }
         else if (angleUp <= 50.f)
         {
@@ -552,7 +565,6 @@ void Player::OnCollisionStay(GameCollision &collision)
         else if (Bonus* bonus = dynamic_cast<Bonus*>(collision.gameBody))
         {
             bonus->Give_Bonus();
-            
         }
     }
 }

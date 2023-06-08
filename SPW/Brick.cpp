@@ -103,10 +103,12 @@ void Brick::OnCollisionStay(GameCollision &collision)
     if (!m_active)
     {
         collision.SetEnabled(false);
+        collision.ResolveUp();
         return;
     }
     if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
         collision.ResolveUp();
+        collision.SetEnabled(false);
     }
 }

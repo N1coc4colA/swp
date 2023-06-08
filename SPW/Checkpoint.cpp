@@ -80,6 +80,5 @@ void Checkpoint::OnCollisionEnter(GameCollision &collision)
         PE_Vec2 position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
         player->SetStartPosition(position); 
         empty = true;
-
     }
 }
