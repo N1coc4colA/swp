@@ -8,9 +8,9 @@ class Checkpoint : public GameBody
 public:
     Checkpoint(Scene &scene);
 
-    virtual void Start() override;
-    virtual void Render() override;
-    virtual void OnCollisionEnter(GameCollision &collision) override;
+    void Start() override;
+    void Render() override;
+    void OnCollisionEnter(GameCollision &collision) override;
 
 private:
     RE_Animator m_animator;
