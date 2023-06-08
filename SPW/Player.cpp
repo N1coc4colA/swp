@@ -193,15 +193,13 @@ void Player::FixedUpdate()
     // Tue le joueur s'il tombe dans un trou
     if (position.y < -2.0f)
     {
-        
         m_scene.Respawn();
         return;
     }
 
     if (m_state == State::DEAD) {
-        
         Kill();
-        
+        return;
     }
 
     //--------------------------------------------------------------------------
@@ -303,7 +301,7 @@ void Player::FixedUpdate()
                         body->ApplyImpulse((PE_Vec2{-2.f, 2.f}) * 45.f);
                     } 
                 } else {
-                    body->ApplyImpulse(PE_Vec2::up * 50.f);
+                    body->ApplyImpulse(PE_Vec2::up * 55.f);
                 }
                 m_animator.PlayAnimation("Skidding");
 	            m_jump = false;
@@ -366,7 +364,7 @@ void Player::FixedUpdate()
     }
     body->SetVelocity(mvt);
     
-    const RayHit result1 = m_scene.RayCast(GetPosition(), PE_Vec2::up, 1.3f, CATEGORY_TERRAIN, false);
+    const RayHit result1 = m_scene.RayCast(GetPosition(), PE_Vec2::up, 1.5f, CATEGORY_TERRAIN, false);
     if (result1.collider)
     {
         if (result1.collider->GetUserData().id == 2)
@@ -390,6 +388,10 @@ void Player::FixedUpdate()
     }
 
     // TODO : Rebond sur les ennemis
+    if (m_bounce)
+    {
+        
+    }
 
     // Remarques :
     // Le facteur de gravité peut être modifié avec l'instruction
@@ -457,7 +459,9 @@ void Player::DrawGizmos()
     graphics.DrawVector(0.1f * PE_Vec2::down, originR);
     graphics.DrawVector(PE_Vec2::left * 0.8f, position);
     graphics.DrawVector(PE_Vec2::right * 0.8f, position);
-    graphics.DrawVector(PE_Vec2::up * 1.3f, position);
+    
+    SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
+    graphics.DrawVector(PE_Vec2::up * 1.5f, position);
 }
 
 void Player::OnCollisionEnter(GameCollision &collision)
@@ -534,7 +538,7 @@ void Player::OnCollisionStay(GameCollision &collision)
                 //collision.ResolveUp();
             }
         }
-        else if (angleUp <= 55.f)
+        else if (angleUp <= 50.f)
         {
             // Résoud la collision en déplaçant le joueur vers le haut
             // Evite de "glisser" sur les pentes si le joueur ne bouge pas
@@ -569,21 +573,16 @@ void Player::AddHeart()
 
 void Player::Damage()
 {
-    
         if (!shield) {
             if (m_state == State::DYING or m_state == State::DEAD) {
                 Kill();
             }
-
             else if (m_heartCount == 1) {
                 m_heartCount--;
                 m_lifeCount--;
                 m_heartCount = m_heartstart;
                 Kill();
                 m_state = State::DYING;
-
-
-
             }
             else {
                 m_heartCount--;
@@ -604,9 +603,9 @@ void Player::Kill()
 class WakeUpCallback : public PE_QueryCallback
 {
 public:
-    inline WakeUpCallback() {}
+    WakeUpCallback() = default;
     
-    inline virtual bool ReportCollider(PE_Collider *collider)
+    inline bool ReportCollider(PE_Collider *collider) override
     {
         collider->GetBody()->SetAwake(true);
         return true;

@@ -7,12 +7,13 @@ class Brick : public GameBody
 {
 public:
     Brick(Scene &scene);
-    ~Brick() override;
+    ~Brick() override = default;
     
     void Start() override;
     void Render() override;
     void OnRespawn() override;
     void OnCollisionStay(GameCollision &collision) override;
+    void FixedUpdate() override;
 
     void touchedFromBottom();
     

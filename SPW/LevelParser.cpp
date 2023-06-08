@@ -170,6 +170,10 @@ void LevelParser::InitScene(LevelScene &scene) const
     // Crée la TileMap
     StaticMap *map = new StaticMap(scene, m_width, m_height);
 
+    // So we can restart at the beginning.
+    const int chkP = (levelDone) ? 0 : lastCheckPoint;
+    int checkPointCount = 0;
+    
     for (int x = 0; x < m_width; ++x)
     {
         for (int y = 0; y < m_height; ++y)
@@ -236,34 +240,34 @@ void LevelParser::InitScene(LevelScene &scene) const
             {
                 Firefly* firefly = new Firefly(scene);
                 firefly->SetStartPosition(position);
-                // TODO : Créer une luciolle
                 break;
             }
             case 'O':
             {
                 Oneway* oneway = new Oneway(scene, 1, position, -1);
                 oneway->SetStartPosition(position);
-                // TODO : Créer une luciolle
                 break;
             }
             case 'H':
             {
                 Heart* heart = new Heart(scene);
                 heart->SetStartPosition(position);
-                // TODO : Créer un coeur
                 break;
             }
             case 's':
             {
                 Shield* shield = new Shield(scene);
                 shield->SetStartPosition(position);
-                // TODO : Créer un shield
                 break;
             }
             case 'C':
             {
                 Checkpoint* checkpoint = new Checkpoint(scene);
                 checkpoint->SetStartPosition(position);
+                    if (chkP == lastCheckPoint)
+                    {
+                        //Set as current one.
+                    }
                 break;
             }
             case 'M':
@@ -324,7 +328,19 @@ void LevelParser::loadSave()
     }
 }
 
-void LevelParser::saveSave(const std::string &path, bool finished, int lastCheckPointDone)
+void LevelParser::saveSave(const std::string &savePath, bool finished, int lastCheckPointDone)
 {
-    // TODO
+    if (savePath.size() < 7)
+    {
+        std::wcerr << "Invalid save path: \"" << savePath.c_str() << "\"" << std::endl;
+        return;
+    }
+    std::ofstream output(savePath, std::ios_base::in | std::ios_base::binary);
+    if (output.is_open())
+    {
+        output << finished << lastCheckPointDone;
+    } else
+    {
+        std::wcerr << "Unable to save map!" << std::endl;
+    }
 }

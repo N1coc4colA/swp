@@ -38,6 +38,8 @@ private:
     bool m_paused = false;
     int m_camIndex = 0;
     float m_stepDelay = 0.f;
+
+    std::string m_levelSavePath;
 };
 
 inline Player *LevelScene::GetPlayer() const

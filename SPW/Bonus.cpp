@@ -129,7 +129,8 @@ void Bonus::Give_Bonus()
     }
 }
 
-void Bonus::Set_BonusEmpty(){
+void Bonus::Set_BonusEmpty()
+{
     m_active = false;
     m_state = State::EMPTY;
     m_animator.PlayAnimation("EMPTY");

@@ -28,6 +28,7 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &le
     // Parse le niveau
     LevelParser parser(level.path);
     parser.InitScene(*this);
+    m_levelSavePath = parser.savePath;
 
     // Canvas
     m_canvas = new LevelCanvas(*this);
