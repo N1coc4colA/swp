@@ -17,6 +17,11 @@
 
 LevelParser::LevelParser(const std::string &path)
 {
+    // Split it by ending to get the file name.
+    std::string lvlConf = "./" + path.substr(path.find_last_not_of('\\')) + ".save";
+    std::cout << "Level save: " << lvlConf << std::endl;
+    std::cout << "path: " << path << std::endl;
+    
     FILE *levelFile = fopen(path.c_str(), "rb");
     AssertNew(levelFile)
 

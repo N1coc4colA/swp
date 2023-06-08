@@ -6,6 +6,7 @@
 #include "Boss.h"
 #include "PauseMenu.h"
 
+
 LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &level)
     : Scene(renderer, mainTime, level.themeID)
     , m_cameras()
