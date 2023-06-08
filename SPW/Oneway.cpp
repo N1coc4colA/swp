@@ -136,7 +136,7 @@ void Oneway::OnRespawn()
     SetEnabled(true);
 
     PE_Body *body = GetBody();
-    body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
+    body->SetPosition(m_posstart);
     body->SetVelocity(PE_Vec2::zero);
     body->ClearForces();
 

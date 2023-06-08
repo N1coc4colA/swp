@@ -70,6 +70,7 @@ private:
     bool m_canDash = false;
     PE_Vec2 m_dashDirection;
     bool m_drifting = false;
+   
 
    
    
