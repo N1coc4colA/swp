@@ -252,7 +252,7 @@ void Player::FixedUpdate()
         else {
             mvt = { -4.f,0.f };
         }
-        Bulletlaunch* bullet = new Bulletlaunch(m_scene,false,mvt);
+        Bulletlaunch* bullet = new Bulletlaunch(m_scene, false,mvt);
         bullet->SetStartPosition(position);
         m_capacitylaunch = false;
     }
@@ -561,7 +561,15 @@ void Player::OnCollisionStay(GameCollision &collision)
     else if (otherCollider->CheckCategory(CATEGORY_TERRAIN))
     {
         const float angleUp = PE_AngleDeg(manifold.normal, PE_Vec2::up);
-        if (angleUp > 55.f && angleUp < 125.f) // Also check that it's we can dash on it.
+        const float angleDown = PE_AngleDeg(manifold.normal, PE_Vec2::down);
+        if (Brick *brick = dynamic_cast<Brick *>(collision.gameBody))
+        {
+            if (angleDown <= 45.f)
+            {
+                brick->touchedFromBottom();
+                collision.SetEnabled(false);
+            }
+        } else if (angleUp > 55.f && angleUp < 125.f) // Also check that it's we can dash on it.
         {
             if (collision.collider->GetUserData().id == 3)
             {
@@ -576,11 +584,6 @@ void Player::OnCollisionStay(GameCollision &collision)
             // Résoud la collision en déplaçant le joueur vers le haut
             // Evite de "glisser" sur les pentes si le joueur ne bouge pas
             collision.ResolveUp();
-        }
-        else if (Brick *brick = dynamic_cast<Brick *>(collision.gameBody))
-        {
-            brick->touchedFromBottom();
-            collision.SetEnabled(false);
         }
         else if (Bonus* bonus = dynamic_cast<Bonus*>(collision.gameBody))
         {

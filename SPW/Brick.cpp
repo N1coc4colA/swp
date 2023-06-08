@@ -25,7 +25,7 @@ void Brick::Start()
     PE_World &world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::STATIC;
-    bodyDef.position = GetStartPosition();
+    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
     bodyDef.name = "Brick";
     bodyDef.damping.SetZero();
     PE_Body *body = world.CreateBody(bodyDef);
