@@ -271,16 +271,19 @@ void LevelParser::InitScene(LevelScene &scene) const
             {
                 Checkpoint* checkpoint = new Checkpoint(scene);
                 checkpoint->SetStartPosition(position);
+                checkpoint->m_id = checkPointCount;
                 if (checkPointCount < chkP)
                 {
                     checkpoint->empty = true;
                 }
-                else if (chkP == chkP)
+                else if (chkP == checkPointCount)
                 {
                     //Set as current one.
                     scene.m_player->SetStartPosition(position + PE_Vec2{0.f, 2.f});
                     checkpoint->empty = true;
                 }
+                std::cout << "Current check point: " << checkPointCount << std::endl;
+                checkPointCount++;
                 break;
             }
             case 'M':
@@ -348,12 +351,12 @@ void LevelParser::saveSave(const std::string &savePath, bool finished, int lastC
         std::wcerr << "Invalid save path: \"" << savePath.c_str() << "\"" << std::endl;
         return;
     }
-    std::ofstream output(savePath, std::ios_base::in | std::ios_base::binary);
+    std::ofstream output(savePath, std::ios_base::out | std::ios_base::binary);
     if (output.is_open())
     {
         output << finished << lastCheckPointDone;
     } else
     {
-        std::wcerr << "Unable to save map!" << std::endl;
+        std::wcerr << "Unable to save map at \"" << savePath.c_str() << "\"" << std::endl;
     }
 }

@@ -14,10 +14,10 @@ public:
     LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &level);
     LevelScene(LevelScene const&) = delete;
     LevelScene& operator=(LevelScene const&) = delete;
-    virtual ~LevelScene();
+    ~LevelScene() override;
 
-    virtual bool Update() override;
-    virtual void OnRespawn() override;
+    bool Update() override;
+    void OnRespawn() override;
 
     Player *GetPlayer() const;
     Boss* GetBoss() const;
@@ -40,6 +40,8 @@ private:
     float m_stepDelay = 0.f;
 
     std::string m_levelSavePath;
+
+    bool m_levelEnded = false;
 
     friend class LevelParser;
 };
