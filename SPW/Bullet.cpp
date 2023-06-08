@@ -14,14 +14,14 @@ Bullet::Bullet(Scene &scene) :
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
     AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("Firefly");
+    RE_AtlasPart* part = atlas->GetPart("Wheat");
     AssertNew(part);
     RE_TexAnim* anim = new RE_TexAnim(m_animator, "IDLE",part);
     anim->SetCycleCount(0);
 
     atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
     AssertNew(atlas);
-    part = atlas->GetPart("Firefly");
+    part = atlas->GetPart("Wheat");
     AssertNew(part);
     RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "RUNNING", part);
     RunningAnim->SetCycleCount(-1);

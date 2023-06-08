@@ -24,6 +24,7 @@ public:
     int Get_life();
     void SetCloser(bool);
     bool GetCloser();
+    void SetShield(bool res);
 
 
 private:
@@ -43,7 +44,9 @@ private:
     int heart_count = 5;
     bool m_player_closer;
     int m_timer_shoot = 0;
+    int m_timer_bigshoot = 0;
     int m_timer_shield = 0;
+    bool m_shield = false;
 };
 
 inline int Boss::Get_life() {

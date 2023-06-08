@@ -19,14 +19,14 @@ Bulletlaunch::Bulletlaunch(Scene &scene, bool Enemie,PE_Vec2 senstir) :
     AssertNew(atlas);
     RE_AtlasPart* part = atlas->GetPart("BossBullet");
     AssertNew(part);
-    RE_TexAnim* anim = new RE_TexAnim(m_animator, "IDLE",part);
+    RE_TexAnim* anim = new RE_TexAnim(m_animator, "boss",part);
     anim->SetCycleCount(0);
 
-    atlas = scene.GetAssetManager().GetAtlas(AtlasID::BOSS);
+    atlas = scene.GetAssetManager().GetAtlas(AtlasID::SPECIAL);
     AssertNew(atlas);
-    part = atlas->GetPart("BossBullet");
+    part = atlas->GetPart("Attack");
     AssertNew(part);
-    RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "RUNNING", part);
+    RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "player", part);
     RunningAnim->SetCycleCount(-1);
     RunningAnim->SetCycleTime(1);
 }
@@ -34,7 +34,12 @@ Bulletlaunch::Bulletlaunch(Scene &scene, bool Enemie,PE_Vec2 senstir) :
 void Bulletlaunch::Start()
 {
     SetToRespawn(false);
-    m_animator.PlayAnimation("IDLE");
+    if (m_enemie) {
+        m_animator.PlayAnimation("boss");
+    }
+    else{
+        m_animator.PlayAnimation("player");
+    }
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::DYNAMIC;
@@ -90,7 +95,12 @@ void Bulletlaunch::OnRespawn()
     body->ClearForces();
 
     m_animator.StopAnimations();
-    m_animator.PlayAnimation("IDLE");
+    if (m_enemie) {
+        m_animator.PlayAnimation("boss");
+    }
+    else {
+        m_animator.PlayAnimation("player");
+    }
 }
 
 Bulletlaunch::~Bulletlaunch()
@@ -130,7 +140,7 @@ void Bulletlaunch::FixedUpdate()
     Player* player = levelScene->GetPlayer();
 
     float dist = PE_Distance(position, player->GetPosition());
-
+    
     if (dist > 24.0f)
     {
         // La distance entre de joueur et la noisette vient de dépasser 24 tuiles.
@@ -158,25 +168,20 @@ void Bulletlaunch::OnCollisionEnter(GameCollision &collision)
     if (otherCollider->CheckCategory(CATEGORY_TERRAIN)) {
         SetEnabled(false);
     }
-    if (otherCollider->CheckCategory(CATEGORY_ENEMY)){
-        
-        if (!m_enemie) {
-            if (Snake* snake = dynamic_cast<Snake*>(collision.gameBody)) {
-
+    if (!m_enemie) {
+        if (otherCollider->CheckCategory(CATEGORY_ENEMY)){
+            if (Snake* snake = dynamic_cast<Snake*>(collision.gameBody)){
                 if (snake == nullptr)
                 {
                     assert(false);
                     return;
                 }
-
                 SetEnabled(false);
                 return;
             }
             if (Boss* boss = dynamic_cast<Boss*>(collision.gameBody)) {
-
                 if (boss == nullptr)
                 {
-                    
                     assert(false);
                     return;
                 }
@@ -190,13 +195,20 @@ void Bulletlaunch::OnCollisionEnter(GameCollision &collision)
                 assert(false);
                 return;
             }
-         
-            printf("dameke\n");
             enemy->Damage(this);
             SetEnabled(false);
         }
-        else {
-           
+        
+    }
+    else {       
+        LevelScene * lvlScn = dynamic_cast<LevelScene*>(&m_scene);
+        if (lvlScn == nullptr)
+            return;
+        
+        Player* player = lvlScn->GetPlayer();
+        if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER)){
+            SetEnabled(false);
+            player->Damage();
         }
     }
 }

@@ -12,6 +12,6 @@
         {"name": "Running",  "frames": [0,1,2,3,4,5]},
         {"name": "Idle",     "frames": [16]},
         {"name": "Dying",    "frames": [17]},
-        {"name": "Attack",   "frames": [19]},
+        {"name": "Attack",   "frames": [19]}
     ]
 }

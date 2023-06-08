@@ -4,6 +4,7 @@
 #include "LevelScene.h"
 #include "Graphics.h"
 #include "Bulletlaunch.h"
+#include "Bullet.h"
 
 
 Boss::Boss(Scene &scene)
@@ -21,6 +22,13 @@ Boss::Boss(Scene &scene)
     AssertNew(part);
     RE_TexAnim* idleAnim = new RE_TexAnim(m_animator, "Idle", part);
     idleAnim->SetCycleCount(0);
+
+    atlas = scene.GetAssetManager().GetAtlas(AtlasID::BOSS);
+    AssertNew(atlas);
+    part = atlas->GetPart("BossShield");
+    AssertNew(part);
+    RE_TexAnim* shieldAnim = new RE_TexAnim(m_animator, "shield", part);
+    shieldAnim->SetCycleCount(0);
 
 }
 
@@ -109,26 +117,60 @@ void Boss::FixedUpdate()
     else {
         SetCloser(false);
     }
-
+    if (m_shield) {
+        m_animator.PlayAnimation("shield");
+    }
+    else {
+        m_animator.PlayAnimation("Idle");
+    }
+    m_timer_bigshoot++;
     m_timer_shoot++;
-    if (m_timer_shoot == 119)
+    m_timer_shield++;
+    printf("%d\n", m_shield);
+    if (m_timer_shoot == 150)
     {
         PE_Vec2 mvt;
-        PE_Vec2 positionbullet;
+        
         if ((player->GetPosition().x - position.x) > 0) {
-            mvt = PE_Vec2{ 1.4f, 0.f };
+            mvt = PE_Vec2{ 1.75f, 0.f };
             //positionbullet += {2.f, 3.f};
         }
         else {
-            mvt = PE_Vec2{ -1.4f, 0.f };
+            mvt = PE_Vec2{ -1.75f, 0.f };
             //positionbullet -= {2.f, -3.f};
         }
-        //printf("%f %f\n", position.x,position.y);
+        
         Bulletlaunch* bullet = new Bulletlaunch(m_scene,true,mvt);
         bullet->SetStartPosition(position+mvt);
         m_timer_shoot = 0;
     }
 
+    if (m_timer_bigshoot == 500) {
+        PE_Vec2 mvt = PE_Vec2{ 1.75f, 0.f };
+        Bulletlaunch* bullet = new Bulletlaunch(m_scene, true, mvt);
+        bullet->SetStartPosition(position + mvt);
+        mvt = PE_Vec2{ -1.75f, 0.f };
+        Bulletlaunch* bullet2 = new Bulletlaunch(m_scene, true, mvt);
+        bullet2->SetStartPosition(position + mvt);
+        mvt = PE_Vec2{ 0.f, 1.75f };
+        Bulletlaunch* bullet3 = new Bulletlaunch(m_scene, true, mvt);
+        bullet3->SetStartPosition(position + mvt);
+        mvt = PE_Vec2{ 1.75f, 1.75f };
+        Bulletlaunch* bullet4 = new Bulletlaunch(m_scene, true, mvt);
+        bullet4->SetStartPosition(position + mvt);
+        mvt = PE_Vec2{ -1.75f, 1.75f };
+        Bulletlaunch* bullet5 = new Bulletlaunch(m_scene, true, mvt);
+        bullet5->SetStartPosition(position + mvt);
+        m_timer_bigshoot = 0;
+
+    }
+    if (m_timer_shield < 300 && m_timer_shield>75) {
+        SetShield(false);
+    }
+    if (m_timer_shield == 300) {
+        SetShield(true);
+        m_timer_shield = 0;
+    }
     
 }
 
@@ -167,18 +209,24 @@ void Boss::OnRespawn()
 
 void Boss::Damage(GameBody *damager)
 {
-    
-    if (heart_count <=1) {
-        SetEnabled(false);
-        m_scene.setLevelEnded();
-        m_scene.Quit();
+    if (!m_shield) {
+        if (heart_count <= 1) {
+            SetEnabled(false);
+            m_scene.setLevelEnded();
+            m_scene.Quit();
+        }
+        if (Player* player = dynamic_cast<Player*>(damager)) {
+            player->Bounce();
+            Remove_life();
+        }
+        else {
+            Remove_life();
+        }
     }
-	if (Player *player = dynamic_cast<Player *>(damager)) {
-        player->Bounce();
-        Remove_life();
-	}
     else {
-        Remove_life();
+        if (Player* player = dynamic_cast<Player*>(damager)) {
+            player->Bounce();
+        }
     }
 }
 
@@ -246,4 +294,8 @@ void Boss::SetCloser(bool res) {
 
 bool Boss::GetCloser() {
     return m_player_closer;
+}
+
+void Boss::SetShield(bool res) {
+    m_shield = res;
 }
