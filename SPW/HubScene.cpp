@@ -31,7 +31,6 @@ HubScene::HubScene(SDL_Renderer *renderer, RE_Timer &mainTime)
 
     // Canvas
     m_canvas = new LevelCanvas(*this);
-
         
     // Crée le fond
     Background *background = new Background(*this, Layer::BACKGROUND);
@@ -41,6 +40,7 @@ HubScene::HubScene(SDL_Renderer *renderer, RE_Timer &mainTime)
     background->SetWorldDimensions(worldDim);
     background->SetTexture(0, m_textures[0], PE_Vec2::zero);
 }
+
 
 void HubScene::SetPaused(bool isPaused)
 {

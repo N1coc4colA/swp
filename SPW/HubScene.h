@@ -22,6 +22,11 @@ public:
 
     PE_Vec2 worldDim;
 
+    inline operator Scene *()
+    {
+        return this;
+    }
+    
 private:
     std::array<Camera *, 2> m_cameras;
     Player *m_player;

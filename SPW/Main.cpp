@@ -141,19 +141,25 @@ int main(int argc, char *argv[])
             {
                 levelID = Scene::tricked;
             }
-            assert(0 <= levelID && levelID < (int)levels.size());
-            
-#else
-        case GameState::SELECTOR:
-        
-        case GameState::LEVEL:
             if (levelID == 100)
             {
-                levelID = 1;
-            }
-            assert(0 <= levelID && levelID < (int)levels.size());
+                scene = new TitleScene(renderer, time, levels);
+                state = GameState::MAIN_MENU;
+            } else {
+                assert(0 <= levelID && levelID < (int)levels.size());
+            
+#else
+            case GameState::SELECTOR:
+        
+            case GameState::LEVEL:
+                if (levelID == 100)
+                {
+                    levelID = 1;
+                }
+        assert(0 <= levelID && levelID < (int)levels.size());
 #endif
-            scene = new LevelScene(renderer, time, levels[levelID]);
+                scene = new LevelScene(renderer, time, levels[levelID]);
+            }
             break;
 
         case GameState::MAIN_MENU:

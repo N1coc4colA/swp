@@ -80,6 +80,12 @@ void LevelCanvas::OpenPauseMenu()
             //We have a pause menu only in the LevelScene case.
             m_pauseMenu = new PauseMenu(*m_levelScene);
             m_pauseMenu->SetParent(this);
+        } else if (m_hubScene)
+        {
+            //We have a pause menu only in the LevelScene case.
+            m_pauseMenu = new PauseMenu(*m_hubScene);
+            m_pauseMenu->SetParent(this);
+            
         }
     }
 }
