@@ -126,7 +126,6 @@ void Boss::FixedUpdate()
     m_timer_bigshoot++;
     m_timer_shoot++;
     m_timer_shield++;
-    printf("%d\n", m_shield);
     if (m_timer_shoot == 150)
     {
         PE_Vec2 mvt;
@@ -193,7 +192,7 @@ void Boss::OnRespawn()
 {
     m_state = State::IDLE;
     m_isBounced = false;
-
+    Reset_life();
     SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);
@@ -246,7 +245,7 @@ void Boss::OnCollisionStay(GameCollision &collision)
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
-        printf("carabistoulle\n");
+        
         Player *player = dynamic_cast<Player *>(collision.gameBody);
         if (player == nullptr)
         {
@@ -259,14 +258,6 @@ void Boss::OnCollisionStay(GameCollision &collision)
             player->Damage();
         }
         return;
-    } else if (otherCollider->CheckCategory(CATEGORY_ENEMY))
-    {
-        if (Boss *boss = dynamic_cast<Boss*>(collision.gameBody))
-        {
-            printf("carabistoulle\n");
-            boss->Bounce(manifold.normal * 40.f);
-            Bounce(manifold.normal * 4.f);
-        }
     }
 }
 
