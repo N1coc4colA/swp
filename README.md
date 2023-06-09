@@ -5,6 +5,7 @@
  - Shield item
  - Life item
  - Fireflies
+ - Angry mode
 ```
 
 ## Settings
@@ -28,6 +29,8 @@
  - Mystery boxes
  - Camera does not go out of the map
  - Cube that disappears after a certain amount of time
+ - Falling blocks
+ - Teleportation portals
 ```
 
 ## Gameplay
@@ -45,6 +48,7 @@
  - One boss
  - Many levels (worlds)
  - Saving world's progress
+ - In angry mode you can throw bullets
 ```
 
 
@@ -55,4 +59,7 @@
  - Change sound volumes
  - Enhanced game menu
  - Animations on all creatures and items
+ - Boss can dash
+ - Boss sends bullets
+ - Has an hub to choose the map
 ```
