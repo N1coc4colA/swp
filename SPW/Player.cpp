@@ -395,7 +395,7 @@ void Player::FixedUpdate()
                     {
                         body->ApplyImpulse(PE_Vec2::up * 25.f);
                     } else {
-                        body->ApplyImpulse(PE_Vec2::up * 55.f);
+                        body->ApplyImpulse(PE_Vec2::up * 65.f);
                     }
                     m_dashed = false;
                 }
