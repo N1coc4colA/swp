@@ -4,8 +4,8 @@
 #include "Collectable.h"
 #include "Enemy.h"
 #include "Graphics.h"
-#include  "Brick.h"
-#include  "Bonus.h"
+#include "Brick.h"
+#include "Bonus.h"
 #include "Shield.h"
 #include "Bullet.h"
 #include "Bulletlaunch.h"
@@ -89,10 +89,6 @@ Player::Player(Scene &scene)
     m_debugColor.b = 0;
 }
 
-Player::~Player()
-{
-}
-
 void Player::Start()
 {
     // Joue l'animation par défaut
@@ -127,19 +123,12 @@ void Player::Update()
     // Sauvegarde les contrôles du joueur pour modifier
     // sa physique au prochain FixedUpdate()
     
-    if (controls.shieldon) {
-        if(!timer_start)
-            if (shield) {
-                shield = false;
-                
-            }
-            else {
-                shield = true;
-                
-            }
-        
+    if (controls.shieldon)
+    {
+        if(!timer_start) {
+            shield = !shield;
+        }
         controls.shieldon = false;
-
     }
     if (m_capacity) {
         if (!m_capacitylaunch) {
@@ -465,9 +454,6 @@ void Player::DrawGizmos()
     const PE_Vec2 position = GetPosition();
     const PE_Vec2 velocity = GetVelocity();
 
-    
-    //const RayHit result1 = m_scene.RayCast(, 1, CATEGORY_TERRAIN, true);
-
     // Dessine en blanc le vecteur vitesse du joueur
     SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
     graphics.DrawVector(0.5f * velocity, position);
@@ -660,3 +646,10 @@ void Player::WakeUpSurroundings()
     world.QueryAABB(callback, aabb);
 }
 
+void Player::SetShield(bool res)
+{
+    shield = res;
+    if (shield) {
+        m_shieldAanimator.PlayAnimation("Shield");
+    }
+}

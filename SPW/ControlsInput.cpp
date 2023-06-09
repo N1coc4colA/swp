@@ -4,8 +4,7 @@
 
 
 ControlsInput::ControlsInput() :
-    InputGroup(), hAxis(0.0f),
-    jumpDown(false), jumpPressed(false), goDownDown(false)
+    InputGroup()
 {
 }
 
@@ -108,6 +107,7 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
         {
             // Descente d'une plateforme
             goDownDown = true;
+            vAxis = -1.f;
         } else if (scanCode == GameSettings::get()->right)
         {
             // Deplacement à droite
@@ -121,12 +121,10 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
             // Saut
             jumpDown = true;
             jumpPressed = true;
+            vAxis = 1.f;
         } else if (scanCode == GameSettings::get()->shield)
         {
             shieldon = true;
-            
-            
-            
         } else if (scanCode == GameSettings::get()->special)
         {
             specialPressed = true;
@@ -144,12 +142,20 @@ void ControlsInput::OnEventProcess(SDL_Event evt)
         if (scanCode == GameSettings::get()->down)
         {
             // Descente d'une plateforme
-            goDownDown = true;
+            goDownDown = false;
+            if (vAxis < 0.f)
+            {
+                vAxis = 0.f;
+            }
         }
         else if (scanCode == GameSettings::get()->jump)
         {
             // Saut
             jumpDown = false;
+            if (vAxis > 0.f)
+            {
+                vAxis = 0.f;
+            }
         }
         else if (scanCode == GameSettings::get()->shield)
         {

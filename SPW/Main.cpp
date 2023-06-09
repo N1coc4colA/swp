@@ -2,11 +2,14 @@
 #include "LevelScene.h"
 #include "TitleScene.h"
 #include "GameSettings.h"
+#include "HubScene.h"
 
 //#define FHD
 //#define FULLSCREEN
-#define SKIP_MENU
-#define DEFAUT_LEVEL 0
+//#define SKIP_MENU
+//#define DEFAUT_LEVEL 0
+//#define USE_BASIC_MENU
+
 
 #ifdef FHD
 #define WINDOW_WIDTH   FHD_WIDTH
@@ -19,10 +22,13 @@
 #define LOGICAL_WIDTH  FHD_WIDTH
 #define LOGICAL_HEIGHT FHD_HEIGHT
 
+
+
 enum class GameState
 {
     MAIN_MENU,
-	LEVEL
+	LEVEL,
+    SELECTOR
 };
 
 int main(int argc, char *argv[])
@@ -113,10 +119,10 @@ int main(int argc, char *argv[])
     std::vector<LevelData> levels(LevelData::Init());
     int levelID = 0;
 
-#ifdef SKIP_MENU
-    state = GameState::MAIN_MENU;//GameState::LEVEL;
-    levelID = DEFAUT_LEVEL;
-#endif
+//#ifdef SKIP_MENU
+//    state = GameState::LEVEL;
+//    levelID = DEFAUT_LEVEL;
+//#endif
 
     while (quitGame == false)
     {
@@ -125,8 +131,28 @@ int main(int argc, char *argv[])
         // Construction de la scène
         switch (state)
         {
+#ifndef USE_BASIC_MENU
+        case GameState::SELECTOR:
+            scene = new HubScene(renderer, time);
+            break;
+            
         case GameState::LEVEL:
-            assert(0 <= levelID && levelID < levels.size());
+            if (Scene::usesTrick)
+            {
+                levelID = Scene::tricked;
+            }
+            assert(0 <= levelID && levelID < (int)levels.size());
+            
+#else
+        case GameState::SELECTOR:
+        
+        case GameState::LEVEL:
+            if (levelID == 100)
+            {
+                levelID = 1;
+            }
+            assert(0 <= levelID && levelID < (int)levels.size());
+#endif
             scene = new LevelScene(renderer, time, levels[levelID]);
             break;
 
@@ -169,9 +195,18 @@ int main(int argc, char *argv[])
         switch (state)
         {
         case GameState::LEVEL:
+#ifndef USE_BASIC_MENU
             state = GameState::MAIN_MENU;
+#else
+            state = GameState::MAIN_MENU;
+#endif
             break;
 
+        case GameState::SELECTOR:
+            state = scene->requiresLevelLoad ? GameState::LEVEL : GameState::MAIN_MENU;
+            levelID = Scene::usesTrick ? Scene::tricked : levelID;
+            break;
+            
         case GameState::MAIN_MENU:
         default:
             levelID = ((TitleScene *)scene)->GetLevelID();
@@ -179,7 +214,11 @@ int main(int argc, char *argv[])
             {
                 quitGame = true;
             }
+#ifndef USE_BASIC_MENU
+            state = (levelID == 100) ? GameState::SELECTOR : GameState::LEVEL;
+#else
             state = GameState::LEVEL;
+#endif
             break;
         }
 
@@ -188,6 +227,7 @@ int main(int argc, char *argv[])
             delete scene;
             scene = nullptr;
         }
+        scene->usesTrick = false;
     }
 
     gSettings.save();

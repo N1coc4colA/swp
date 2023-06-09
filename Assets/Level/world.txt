@@ -1,0 +1,36 @@
+World
+################################
+################################
+#.....................C........#
+#....A.............WWW.........#
+#..................W...........#
+#....W.............W...........#
+#....WWWWWWWWWWWWWWWWWWWWW.....#
+#....W.......W...........W.....#
+#....W.......WB..........W.....#
+#....W.......W...........W.....#
+#....W...................W.....#
+#....W.S.................W.....#
+#........................W....D#
+#........................WWWWW.#
+################################
+################################
+
+LEGENDE :
+  [.] = case vide
+  [S] = point de départ du monde
+  [F] = Arrivee
+  [#] = sol
+  [W] = bloc (buche de bois)
+  [=] = bloc one-way
+  [o] = pièce (luciolle)
+  [e] = ennemi (noisette magique)
+  [A] = ennemi statique (pique)
+  [M] = Box mystere 
+  [6] = Serpent <-
+  [9] = Serpent -> 
+  [b] = Brick cassable
+  [C] = Checkpoint
+  [s] = Shield
+  [H] = Coeur
+  [E] = Boss

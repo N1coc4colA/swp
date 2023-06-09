@@ -4,6 +4,8 @@
 
 class LevelScene;
 class HubScene;
+class StaticMap;
+
 
 class LevelParser
 {

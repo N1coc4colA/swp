@@ -1,0 +1,20 @@
+{
+    "texture": "World.png",
+    "geometry": {
+        "rowCount": 3,
+        "colCount": 3,
+        "width": 80,
+        "height": 80,
+        "border": 0
+    },
+    "parts": [
+        {"name": "Demo", "frames": [0]},
+        {"name": "Mountains", "frames": [1]},
+        {"name": "What", "frames": [3]},
+        {"name": "Grass", "frames": [6]},
+        {"name": "Desert", "frames": [4]},
+        {"name": "Where", "frames": [2]},
+        {"name": "Wall", "frames": [7]},
+        {"name": "Pavement", "frames": [5]}
+    ]
+}

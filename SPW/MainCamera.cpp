@@ -23,17 +23,25 @@ MainCamera::MainCamera(HubScene &scene) :
     m_center.SetMaxSpeed(1000.0f);
 }
 
-MainCamera::~MainCamera()
-{
-}
-
 void MainCamera::Update()
 {
-    LevelScene &levelScene = dynamic_cast<LevelScene &>(m_scene);
-    PE_Body *playerBody = levelScene.GetPlayer()->GetBody();
+    if (const LevelScene *levelScene = dynamic_cast<LevelScene *>(&m_scene))
+    {
+        PE_Body *playerBody = levelScene->GetPlayer()->GetBody();
 
-    m_center.SetTarget(playerBody->GetPosition());
-    m_center.Update(levelScene.GetTime());
+        m_center.SetTarget(playerBody->GetPosition());
+        m_center.Update(levelScene->GetTime());
+    } else if (const HubScene *hubScene = dynamic_cast<HubScene *>(&m_scene))
+    {
+        PE_Body *playerBody = hubScene->GetPlayer()->GetBody();
+
+        m_center.SetTarget(playerBody->GetPosition());
+        m_center.Update(hubScene->GetTime());
+    } else
+    {
+        assert(false);
+        abort();
+    }
 
     PE_Vec2 shift(-3.0f, 0.0f);
     TranslateWorldView(m_center - m_worldView.GetCenter() - shift);

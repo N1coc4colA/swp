@@ -16,6 +16,7 @@
 #include "Bullet.h"
 #include "FallingBlock.h"
 #include "HubScene.h"
+#include "LevelBlock.h"
 
 
 #include <fstream>
@@ -181,38 +182,35 @@ void LevelParser::InitScene(HubScene &scene) const
     {
         for (int y = 0; y < m_height; ++y)
         {
+            LevelBlock *lb;
             PE_Vec2 position((float)x, (float)y);
             switch (m_matrix[x][y])
             {
-            case '#':
+            case '#': //Walls
                 map->SetTile(x, y, Tile::Type::GROUND);
                 break;
-            case 'W':
+            case 'W': //Ways/Pavements
                 map->SetTile(x, y, Tile::Type::WOOD);
                 break;
-            case '=':
-                map->SetTile(x, y, Tile::Type::ONE_WAY);
-                break;
             case 'A':
-                map->SetTile(x, y, Tile::Type::SPIKE);
+                lb = new LevelBlock(scene, Tile::Type::GENTLE_SLOPE_L1);
+                lb->SetStartPosition(position);
+                lb->SetId(0);
                 break;
-            case '\\':
-                map->SetTile(x, y, Tile::Type::STEEP_SLOPE_L);
+            case 'B':
+                lb = new LevelBlock(scene, Tile::Type::GENTLE_SLOPE_L2);
+                lb->SetStartPosition(position);
+                lb->SetId(1);
                 break;
-            case '/':
-                map->SetTile(x, y, Tile::Type::STEEP_SLOPE_R);
+            case 'C':
+                lb = new LevelBlock(scene, Tile::Type::GENTLE_SLOPE_R1);
+                lb->SetStartPosition(position);
+                lb->SetId(2);
                 break;
-            case 'L':
-                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_L1);
-                break;
-            case 'l':
-                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_L2);
-                break;
-            case 'r':
-                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_R1);
-                break;
-            case 'R':
-                map->SetTile(x, y, Tile::Type::GENTLE_SLOPE_R2);
+            case 'D':
+                lb = new LevelBlock(scene, Tile::Type::GENTLE_SLOPE_R2);
+                lb->SetStartPosition(position);
+                lb->SetId(3);
                 break;
             case 'S':
             {
@@ -220,104 +218,13 @@ void LevelParser::InitScene(HubScene &scene) const
                 player->SetStartPosition(position);
                 break;
             }
-            case 'F':
-            {
-                LevelEnd *levelEnd = new LevelEnd(scene);
-                levelEnd->SetStartPosition(position);
-                break;
-            }
-            case 'e':
-            {
-                Nut *nut = new Nut(scene);
-                nut->SetStartPosition(position);
-                break;
-            }
-            case 'o':
-            {
-                Firefly* firefly = new Firefly(scene);
-                firefly->SetStartPosition(position);
-                break;
-            }
-            case 'O':
-            {
-                Oneway* oneway = new Oneway(scene, 1, position, -1);
-                oneway->SetStartPosition(position);
-                break;
-            }
-            case 'H':
-            {
-                Heart* heart = new Heart(scene);
-                heart->SetStartPosition(position);
-                break;
-            }
-            case 'P':
-            {
-                Bullet* bullet = new Bullet(scene);
-                bullet->SetStartPosition(position);
-                break;
-            }
-            case 's':
-            {
-                Shield* shield = new Shield(scene);
-                shield->SetStartPosition(position);
-                break;
-            }
-            case 'C':
-            {
-                Checkpoint* checkpoint = new Checkpoint(scene);
-                checkpoint->SetStartPosition(position);
-                checkpoint->m_id = checkPointCount;
-                if (checkPointCount < chkP)
-                {
-                    checkpoint->empty = true;
-                }
-                else if (chkP == checkPointCount)
-                {
-                    //Set as current one.
-                    scene.m_player->SetStartPosition(position + PE_Vec2{0.f, 2.f});
-                    checkpoint->empty = true;
-                }
-                checkPointCount++;
-                break;
-            }
-            case 'M':
-            {
-                Bonus* bonus = new Bonus(scene);
-                bonus->SetStartPosition(position);
-                break;
-            }
-            case 'b':
-            {
-                Brick *brick = new Brick(scene);
-                brick->SetStartPosition(position);
-                break;
-            }
-            case '6':
-            {
-                Snake* snake = new Snake(scene,3,position,-1,Layer::ENEMYHOUSE);
-                snake->SetStartPosition(position);
-                
-                break;
-            }
-            case '9':
-            {
-                Snake* snake = new Snake(scene, 3, position, 1, Layer::ENEMYHOUSE);
-                snake->SetStartPosition(position);
-
-                break;
-            }
-            case 'f':
-            {
-                FallingBlock *falling = new FallingBlock(scene);
-                falling->SetStartPosition(position);
-
-                break;
-            }
             default:
                 break;
             }
         }
     }
+    map->setIsWorld(true);
+    map->setupAssets();
     map->InitTiles();
 
     const PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);
@@ -482,6 +389,7 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
         }
     }
+    map->setupAssets();
     map->InitTiles();
 
     const PE_AABB bounds(0.0f, 0.0f, (float)m_width, 24.0f * 9.0f / 16.0f);

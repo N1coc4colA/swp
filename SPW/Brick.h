@@ -3,11 +3,11 @@
 #include "Settings.h"
 #include "GameBody.h"
 
+
 class Brick : public GameBody
 {
 public:
     Brick(Scene &scene);
-    ~Brick() override = default;
 
     void Start() override;
     void Render() override;

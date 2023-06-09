@@ -161,11 +161,13 @@
     <ClCompile Include="GameSettings.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Heart.cpp" />
+    <ClCompile Include="HubPlayer.cpp" />
     <ClCompile Include="HubScene.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="InputGroup.cpp" />
     <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="KeyButton.cpp" />
+    <ClCompile Include="LevelBlock.cpp" />
     <ClCompile Include="LevelCanvas.cpp" />
     <ClCompile Include="LevelData.cpp" />
     <ClCompile Include="LevelEnd.cpp" />
@@ -220,11 +222,13 @@
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Heart.h" />
+    <ClInclude Include="HubPlayer.h" />
     <ClInclude Include="HubScene.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="InputGroup.h" />
     <ClInclude Include="InputManager.h" />
     <ClInclude Include="KeyButton.h" />
+    <ClInclude Include="LevelBlock.h" />
     <ClInclude Include="LevelCanvas.h" />
     <ClInclude Include="LevelData.h" />
     <ClInclude Include="LevelEnd.h" />

@@ -9,10 +9,9 @@
 class HubScene : public Scene
 {
 public:
-    HubScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &level);
+    HubScene(SDL_Renderer *renderer, RE_Timer &mainTime);
     HubScene(HubScene const&) = delete;
     HubScene& operator=(HubScene const&) = delete;
-    ~HubScene() override;
 
     bool Update() override;
     void OnRespawn() override;

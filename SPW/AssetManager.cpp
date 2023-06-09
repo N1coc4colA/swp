@@ -116,6 +116,9 @@ RE_Atlas *AssetManager::GetAtlas(AtlasID atlasID)
         case AtlasID::SPECIAL:
             path.assign("../Assets/Atlas/Special.json");
             break;
+        case AtlasID::WORLD:
+            path.assign("../Assets/Atlas/World.json");
+            break;
         default:
             assert(false);
             break;
@@ -215,6 +218,10 @@ std::vector<SDL_Texture *> &AssetManager::GetBackgrounds(ThemeID theme)
         case ThemeID::DESERT:
             folder.assign("../Assets/Theme_Desert");
             layerCount = 7;
+            break;
+        case ThemeID::WORLD:
+            folder.assign("../Assets/Theme_World");
+            layerCount = 1;
             break;
         case ThemeID::MOUNTAINS:
         default:

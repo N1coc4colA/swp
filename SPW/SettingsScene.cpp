@@ -61,8 +61,8 @@ SettingsScene::SettingsScene(TitleScene& scene)
         "Son collectables",
         "Son ennemis",
         "Son joueur",
-        "Son controles 1",
-        "Son controles 2"
+        u8"Son contrôles 1",
+        u8"Son contrôles 2"
     };
 
     std::function<void (float)> sliderSetters[6] = {
@@ -107,7 +107,7 @@ SettingsScene::SettingsScene(TitleScene& scene)
         GameSettings::get()->soundSystem2,
     };
     
-    std::function<void (SDL_Scancode)> keySetters[7] = {
+    std::function<void (SDL_Scancode)> keySetters[8] = {
         [](SDL_Scancode v)
         {
             GameSettings::get()->shield = v;
@@ -126,6 +126,10 @@ SettingsScene::SettingsScene(TitleScene& scene)
         },
         [](SDL_Scancode v)
         {
+            GameSettings::get()->down = v;
+        },
+        [](SDL_Scancode v)
+        {
             GameSettings::get()->special = v;
         },
         [](SDL_Scancode v)
@@ -138,22 +142,24 @@ SettingsScene::SettingsScene(TitleScene& scene)
         },
     };
     
-    SDL_Scancode keyValues[7] = {
+    SDL_Scancode keyValues[8] = {
         GameSettings::get()->shield,
         GameSettings::get()->jump,
         GameSettings::get()->left,
         GameSettings::get()->right,
+        GameSettings::get()->down,
         GameSettings::get()->special,
         GameSettings::get()->down,
         GameSettings::get()->pause,
     };
 
-    const char *keyDescriptions[7] = {
+    const char *keyDescriptions[8] = {
         "Shield",
         "Saut",
         "Gauche",
         "Droite",
-        "Speciale",
+        "Bas",
+        u8"Spéciale",
         "Base",
         "Pause"
     };
@@ -184,7 +190,7 @@ SettingsScene::SettingsScene(TitleScene& scene)
         slider->SetText(sliderLabel, Slider::State::DOWN);
     }
 
-    for (i = 0; i < 7; i++, curY += buttonH + sep)
+    for (i = 0; i < 8; i++, curY += buttonH + sep)
     {
         KeyButton *kb = new KeyButton(scene, buttonPart);
         kb->GetLocalRect().anchorMin.Set(0.f, 0.f);

@@ -72,7 +72,7 @@ void Text::Render()
         dstRect.h = (float)h;
         dstRect.w = (float)w;
 
-        RE_RenderCopyF(renderer, texture, NULL, &dstRect, m_anchor);
+        RE_RenderCopyF(renderer, texture, nullptr, &dstRect, m_anchor);
     }
 }
 

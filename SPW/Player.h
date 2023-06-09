@@ -3,13 +3,15 @@
 #include "Settings.h"
 #include "GameBody.h"
 
+#ifndef PLAYER_DAMAGE_ANGLE
 #define PLAYER_DAMAGE_ANGLE 55.0f
+#endif
+
 
 class Player : public GameBody
 {
 public:
     Player(Scene &scene);
-    virtual ~Player();
 
     void Start() override;
     void Update() override;
@@ -31,10 +33,10 @@ public:
     void Bounce();
     void SetShield(bool res);
     void StartTimerShield();
-    bool GetShield();
+    bool GetShield() const;
     void Setcapacity(bool res);
 
-private:
+protected:
     void WakeUpSurroundings();
 
     enum class State
@@ -73,9 +75,6 @@ private:
     bool m_drifting = false;
     bool m_capacity = false;
     bool m_capacitylaunch = false;
-   
-   
-    
 };
 
 
@@ -99,24 +98,19 @@ inline int Player::GetLifeCount() const
     return m_lifeCount;
 }
 
-inline void Player::SetShield(bool res) {
-    shield = res;
-    if (shield) {
-        m_shieldAanimator.PlayAnimation("Shield");
-    }
-    
-}
-
-inline bool Player::GetShield() {
+inline bool Player::GetShield() const
+{
     return shield;
 }
 
-inline void Player::Setcapacity(bool res) {
+inline void Player::Setcapacity(bool res)
+{
     m_capacity = res;
 }
 
 
-inline void Player::StartTimerShield() {
+inline void Player::StartTimerShield()
+{
     timer_start = true;
 }
 

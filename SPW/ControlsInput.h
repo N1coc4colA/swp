@@ -13,6 +13,7 @@ public:
     void Reset() override;
 
     float hAxis = 0.f;
+    float vAxis = 0.f;
     bool shieldon=false;
     bool jumpDown = false;
     bool jumpPressed = false;

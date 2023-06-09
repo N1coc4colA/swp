@@ -41,7 +41,7 @@ LevelSelection::LevelSelection(TitleScene &scene) :
 
     AssetManager &assets = scene.GetAssetManager();
     RE_Atlas *atlas = assets.GetAtlas(AtlasID::UI);
-    AssertNew(atlas);
+    AssertNew(atlas)
 
     // Création du titre
     TTF_Font *font = assets.GetFont(FontID::LARGE);
@@ -55,7 +55,7 @@ LevelSelection::LevelSelection(TitleScene &scene) :
 
     // Création des boutons
     RE_AtlasPart *buttonPart = atlas->GetPart("Button");
-    AssertNew(buttonPart);
+    AssertNew(buttonPart)
     SDL_Color colorUp = assets.GetColor(ColorID::NORMAL);
     SDL_Color colorHover = assets.GetColor(ColorID::BLACK);
     SDL_Color colorDown = assets.GetColor(ColorID::NORMAL);
@@ -64,7 +64,7 @@ LevelSelection::LevelSelection(TitleScene &scene) :
     const std::vector<LevelData> &levels = scene.GetLevels();
 
     float curY = topSkip;
-    for (int i = 0; i < levels.size(); i++, curY += buttonH + sep)
+    for (size_t i = 0; i < levels.size(); i++, curY += buttonH + sep)
     {
         Button *button = new Button(scene, buttonPart);
         button->GetLocalRect().anchorMin.Set(0.0f, 0.0f);
@@ -73,7 +73,7 @@ LevelSelection::LevelSelection(TitleScene &scene) :
         button->GetLocalRect().offsetMax.Set(0.0f, curY + buttonH);
         button->SetParent(this);
         button->SetBorders(new UIBorders(25, 25, 25, 25));
-        button->SetListener(new LevelSelectionNS::SelectionListener(scene, i));
+        button->SetListener(new LevelSelectionNS::SelectionListener(scene, (int)i));
 
         Text *buttonLabel = new Text(scene, levels[i].name, font, colorUp);
         button->SetText(buttonLabel, Button::State::UP);

@@ -12,9 +12,8 @@ class MainCamera : public Camera
 public:
     MainCamera(LevelScene &scene);
     MainCamera(HubScene &scene);
-    virtual ~MainCamera();
 
-    virtual void Update() override;
+    void Update() override;
 
 protected:
     DampedVec2 m_center;

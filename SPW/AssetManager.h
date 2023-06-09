@@ -11,7 +11,8 @@ enum class AtlasID : uint32_t
     TERRAIN,
     UI,
     BOSS,
-    SPECIAL
+    SPECIAL,
+    WORLD
 };
 enum class FontID : uint32_t
 {
@@ -31,7 +32,8 @@ enum class ThemeID : uint32_t
     LAKE,
     SKY,
     LOST,
-    DESERT
+    DESERT,
+    WORLD,
 };
 
 enum class SoundID : uint32_t

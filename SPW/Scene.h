@@ -123,6 +123,15 @@ public:
 
     std::function<void()> setLevelEnded = []() {};
     
+    void SetLevelID(int levelID);
+    int GetLevelID() const;
+    
+    bool shutingDown = false;
+    inline static bool requiresLevelLoad = false;
+    
+    inline static bool usesTrick = false;
+    inline static int tricked = 100;
+
 protected:
     friend class GameObject;
 
@@ -183,6 +192,8 @@ protected:
     bool m_quit;
 
     SceneListener m_collisionListener;
+    
+    int m_selectedLevel = -1;
 };
 
 inline SDL_Renderer *Scene::GetRenderer()
@@ -212,6 +223,7 @@ inline void Scene::Respawn()
 
 inline void Scene::Quit()
 {
+    shutingDown = true;
     m_quit = true;
 }
 
@@ -234,3 +246,14 @@ inline const RE_Timer &Scene::GetTime() const
 {
     return m_time;
 }
+
+inline void Scene::SetLevelID(int levelID)
+{
+    m_selectedLevel = levelID;
+}
+
+inline int Scene::GetLevelID() const
+{
+    return m_selectedLevel;
+}
+

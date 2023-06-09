@@ -20,7 +20,6 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &le
 
     // Crée le Player
     m_player = new Player(*this);
-    m_player->SetName("Player");
 
     // Crée les caméras
     m_cameras[0] = new MainCamera(*this);

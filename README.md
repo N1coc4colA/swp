@@ -27,6 +27,7 @@
  - Slopes
  - Mystery boxes
  - Camera does not go out of the map
+ - Cube that disappears after a certain amount of time
 ```
 
 ## Gameplay

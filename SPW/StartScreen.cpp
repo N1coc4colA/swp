@@ -4,6 +4,8 @@
 #include "SettingsScene.h"
 #include "Image.h"
 #include "Button.h"
+#include "HubScene.h"
+
 
 namespace StartScreenNS
 {
@@ -15,6 +17,7 @@ namespace StartScreenNS
         {
             m_titleScene.Quit();
         }
+        
     private:
         TitleScene &m_titleScene;
     };
@@ -26,12 +29,17 @@ namespace StartScreenNS
             m_titleScene(titleScene), m_startScreen(startScreen)
         {
         }
+        
         void OnPress() override
         {
-            LevelSelection *levelSelection = new LevelSelection(m_titleScene);
-            levelSelection->SetParent(m_startScreen.GetParent());
-            m_startScreen.Delete();
+            m_titleScene.SetLevelID(100);
+            m_titleScene.Quit();
+            
+            //LevelSelection *levelSelection = new LevelSelection(m_titleScene);
+            //levelSelection->SetParent(m_startScreen.GetParent());
+            //m_startScreen.Delete();
         }
+        
     private:
         TitleScene &m_titleScene;
         StartScreen &m_startScreen;
@@ -45,12 +53,14 @@ namespace StartScreenNS
             , m_startScreen(startScreen)
         {
         }
+        
         void OnPress() override
         {
             SettingsScene *s = new SettingsScene(m_titleScene);
             s->SetParent(m_startScreen.GetParent());
             m_startScreen.Delete();
         }
+        
     private:
         TitleScene &m_titleScene;
         StartScreen &m_startScreen;
@@ -74,9 +84,9 @@ StartScreen::StartScreen(TitleScene &scene) :
     m_rect.offsetMax.Set(+0.5f * panelW, +0.5f * panelH);
 
     RE_Atlas *logoAtlas = assets.GetAtlas(AtlasID::LOGO);
-    AssertNew(logoAtlas);
+    AssertNew(logoAtlas)
     RE_Atlas *uiAtlas = assets.GetAtlas(AtlasID::UI);
-    AssertNew(uiAtlas);
+    AssertNew(uiAtlas)
 
     // Création du logo
     RE_AtlasPart *logoPart = logoAtlas->GetPart("Logo");
@@ -91,7 +101,7 @@ StartScreen::StartScreen(TitleScene &scene) :
 
     // Création des boutons
     RE_AtlasPart *buttonPart = uiAtlas->GetPart("Button");
-    AssertNew(buttonPart);
+    AssertNew(buttonPart)
     SDL_Color colorUp = assets.GetColor(ColorID::NORMAL);
     SDL_Color colorHover = assets.GetColor(ColorID::BLACK);
     SDL_Color colorDown = assets.GetColor(ColorID::NORMAL);

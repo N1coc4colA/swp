@@ -23,23 +23,6 @@ StaticMap::StaticMap(Scene &scene, int width, int height)
         }
     }
 
-    RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
-
-    m_brickPart = atlas->GetPart("Brick");
-    AssertNew(m_brickPart)
-    
-    m_woodPart = atlas->GetPart("Wood");
-    AssertNew(m_woodPart)
-
-    m_oneWayPart = atlas->GetPart("OneWay");
-    AssertNew(m_oneWayPart)
-
-    m_terrainPart = atlas->GetPart("Terrain");
-    AssertNew(m_terrainPart)
-
-    m_spikePart = atlas->GetPart("Spike");
-    AssertNew(m_spikePart)
-
     // Couleur des colliders en debug
     m_debugColor.r = 255;
     m_debugColor.g = 200;
@@ -57,6 +40,42 @@ StaticMap::~StaticMap()
         delete[] m_tiles;
     }
 }
+
+void StaticMap::setupAssets()
+{
+    
+    if (m_isWorld)
+    {
+        RE_Atlas *atlas = m_scene.GetAssetManager().GetAtlas(AtlasID::WORLD);
+        m_terrainPart = atlas->GetPart("Grass");
+        AssertNew(m_terrainPart)
+        
+        m_woodPart = atlas->GetPart("Pavement");
+        AssertNew(m_woodPart)
+        
+        m_brickPart = atlas->GetPart("Wall");
+        AssertNew(m_brickPart)
+    } else
+    {
+        RE_Atlas *atlas = m_scene.GetAssetManager().GetAtlas(AtlasID::TERRAIN);
+
+        m_brickPart = atlas->GetPart("Brick");
+        AssertNew(m_brickPart)
+    
+        m_woodPart = atlas->GetPart("Wood");
+        AssertNew(m_woodPart)
+
+        m_oneWayPart = atlas->GetPart("OneWay");
+        AssertNew(m_oneWayPart)
+
+        m_terrainPart = atlas->GetPart("Terrain");
+        AssertNew(m_terrainPart)
+
+        m_spikePart = atlas->GetPart("Spike");
+        AssertNew(m_spikePart)
+    }
+}
+
 
 void StaticMap::SetTile(int x, int y, Tile::Type type)
 {
@@ -143,6 +162,31 @@ void StaticMap::InitTiles()
     }
 }
 
+void StaticMap::InitWorldTiles()
+{
+    for (int x = 0; x < m_width; x++)
+    {
+        for (int y = 0; y < m_height; y++)
+        {
+            Tile &tile = m_tiles[x][y];
+            Tile::Type type = GetTileType(x, y);
+
+            switch (type)
+            {
+            case Tile::Type::GROUND: //Grass
+                tile.partIdx = 7;
+                break;
+            case Tile::Type::WOOD: //Ways/Pavements
+                tile.partIdx = 5;
+                break;
+            default:
+                tile.partIdx = 6;
+                break;
+            }
+        }
+    }
+}
+
 void StaticMap::Render()
 {
     SDL_Renderer *renderer = m_scene.GetRenderer();
@@ -174,29 +218,50 @@ void StaticMap::Render()
             dst.w = scale * 1.0f;
             dst.h = scale * 1.0f;
 
-            switch (tile.type)
+
+            if (m_isWorld)
             {
-            case Tile::Type::GROUND:
-            case Tile::Type::STEEP_SLOPE_L:
-            case Tile::Type::STEEP_SLOPE_R:
-            case Tile::Type::GENTLE_SLOPE_L1:
-            case Tile::Type::GENTLE_SLOPE_L2:
-            case Tile::Type::GENTLE_SLOPE_R1:
-            case Tile::Type::GENTLE_SLOPE_R2:
-                m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
-                break;
-            case Tile::Type::WOOD:
-                m_woodPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
-                break;
-            case Tile::Type::ONE_WAY:
-                m_oneWayPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
-                break;
-            case Tile::Type::SPIKE:
-                m_spikePart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
-                break;
-            default:
-                break;
+                switch (tile.type)
+                {
+                case Tile::Type::GROUND:
+                    m_brickPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                    break;
+                case Tile::Type::WOOD:
+                    m_woodPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                    break;
+                case Tile::Type::EMPTY:
+                    m_terrainPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                    break;
+                default:
+                    break;
+                }
+            } else
+            {
+                switch (tile.type)
+                {
+                case Tile::Type::GROUND:
+                case Tile::Type::STEEP_SLOPE_L:
+                case Tile::Type::STEEP_SLOPE_R:
+                case Tile::Type::GENTLE_SLOPE_L1:
+                case Tile::Type::GENTLE_SLOPE_L2:
+                case Tile::Type::GENTLE_SLOPE_R1:
+                case Tile::Type::GENTLE_SLOPE_R2:
+                    m_terrainPart->RenderCopyF(tile.partIdx, &dst, RE_Anchor::SOUTH_WEST);
+                    break;
+                case Tile::Type::WOOD:
+                    m_woodPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                    break;
+                case Tile::Type::ONE_WAY:
+                    m_oneWayPart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                    break;
+                case Tile::Type::SPIKE:
+                    m_spikePart->RenderCopyF(0, &dst, RE_Anchor::SOUTH_WEST);
+                    break;
+                default:
+                    break;
+                }
             }
+            
         }
     }
 }
@@ -238,73 +303,93 @@ void StaticMap::Start()
             colliderDef.filter.categoryBits = CATEGORY_TERRAIN;
             
             colliderDef.userData.id = 0;
-            
-            switch (tile.type)
+
+            if (m_isWorld)
             {
-            case Tile::Type::GENTLE_SLOPE_L1:
-                vertices[0] = position + PE_Vec2{0.f, 0.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.f};
-                vertices[2] = position + PE_Vec2{1.f, 1.f};
-                vertices[3] = position + PE_Vec2{0.f, 0.5f};
-                polygon.SetVertices(vertices, 4);
-                break;
-            case Tile::Type::GENTLE_SLOPE_L2:
-                vertices[0] = position + PE_Vec2{1.f, 0.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.5f};
-                vertices[2] = position + PE_Vec2{0.f, 0.f};
-                polygon.SetVertices(vertices, 3);
-                break;
-            case Tile::Type::GENTLE_SLOPE_R1:
-                vertices[0] = position + PE_Vec2{0.f, 0.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.f};
-                vertices[2] = position + PE_Vec2{0.f, 0.5f};
-                polygon.SetVertices(vertices, 3);
-                break;
-            case Tile::Type::GENTLE_SLOPE_R2:
-                vertices[0] = position + PE_Vec2{0.f, 0.f};
-                vertices[1] = position + PE_Vec2{1.f, 0.f};
-                vertices[2] = position + PE_Vec2{1.f, 0.5f};
-                vertices[3] = position + PE_Vec2{0.f, 1.f};
-                polygon.SetVertices(vertices, 4);
-                break;
-            case Tile::Type::STEEP_SLOPE_L:
-                vertices[0] = position + PE_Vec2{1.f, 1.f};
-                vertices[1] = position + PE_Vec2{0.f, 0.f};
-                vertices[2] = position + PE_Vec2{1.f, 0.f};
-                polygon.SetVertices(vertices, 3);
-                break;
-            case Tile::Type::STEEP_SLOPE_R:
-                vertices[0] = position + PE_Vec2{0.f, 0.f};
-                vertices[1] = position + PE_Vec2{0.f, 1.f};
-                vertices[2] = position + PE_Vec2{1.f, 0.f};
-                polygon.SetVertices(vertices, 3);
-                break;
-            case Tile::Type::ONE_WAY:
-                colliderDef.isOneWay = true;
-                polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
-                break;
+                switch (tile.type)
+                {
+                case Tile::Type::GROUND:
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                    colliderDef.userData.id = 0;
+                    break;
+                case Tile::Type::WOOD:
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                    colliderDef.userData.id = 1;
+                    break;
+                default:
+                    break;
+                }
 
-            case Tile::Type::BRICK:
-                colliderDef.userData.id = 2;
-            case Tile::Type::GROUND:
-            case Tile::Type::WOOD:
-                colliderDef.userData.id = 3;
-                polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
-                break;
+            } else
+            {
+                switch (tile.type)
+                {
+                case Tile::Type::GENTLE_SLOPE_L1:
+                    vertices[0] = position + PE_Vec2{0.f, 0.f};
+                    vertices[1] = position + PE_Vec2{1.f, 0.f};
+                    vertices[2] = position + PE_Vec2{1.f, 1.f};
+                    vertices[3] = position + PE_Vec2{0.f, 0.5f};
+                    polygon.SetVertices(vertices, 4);
+                    break;
+                case Tile::Type::GENTLE_SLOPE_L2:
+                    vertices[0] = position + PE_Vec2{1.f, 0.f};
+                    vertices[1] = position + PE_Vec2{1.f, 0.5f};
+                    vertices[2] = position + PE_Vec2{0.f, 0.f};
+                    polygon.SetVertices(vertices, 3);
+                    break;
+                case Tile::Type::GENTLE_SLOPE_R1:
+                    vertices[0] = position + PE_Vec2{0.f, 0.f};
+                    vertices[1] = position + PE_Vec2{1.f, 0.f};
+                    vertices[2] = position + PE_Vec2{0.f, 0.5f};
+                    polygon.SetVertices(vertices, 3);
+                    break;
+                case Tile::Type::GENTLE_SLOPE_R2:
+                    vertices[0] = position + PE_Vec2{0.f, 0.f};
+                    vertices[1] = position + PE_Vec2{1.f, 0.f};
+                    vertices[2] = position + PE_Vec2{1.f, 0.5f};
+                    vertices[3] = position + PE_Vec2{0.f, 1.f};
+                    polygon.SetVertices(vertices, 4);
+                    break;
+                case Tile::Type::STEEP_SLOPE_L:
+                    vertices[0] = position + PE_Vec2{1.f, 1.f};
+                    vertices[1] = position + PE_Vec2{0.f, 0.f};
+                    vertices[2] = position + PE_Vec2{1.f, 0.f};
+                    polygon.SetVertices(vertices, 3);
+                    break;
+                case Tile::Type::STEEP_SLOPE_R:
+                    vertices[0] = position + PE_Vec2{0.f, 0.f};
+                    vertices[1] = position + PE_Vec2{0.f, 1.f};
+                    vertices[2] = position + PE_Vec2{1.f, 0.f};
+                    polygon.SetVertices(vertices, 3);
+                    break;
+                case Tile::Type::ONE_WAY:
+                    colliderDef.isOneWay = true;
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                    break;
 
-            case Tile::Type::SPIKE:
-                colliderDef.userData.id = 1;
+                case Tile::Type::BRICK:
+                    colliderDef.userData.id = 2;
+                case Tile::Type::GROUND:
+                case Tile::Type::WOOD:
+                    colliderDef.userData.id = 3;
+                    polygon.SetAsBox(PE_AABB(position, position + PE_Vec2(1.0f, 1.0f)));
+                    break;
 
-                vertices[0] = position + PE_Vec2(0.1f, 0.0f);
-                vertices[1] = position + PE_Vec2(0.9f, 0.0f);
-                vertices[2] = position + PE_Vec2(0.5f, 0.8f);
-                polygon.SetVertices(vertices, 3);
-                break;
+                case Tile::Type::SPIKE:
+                    colliderDef.userData.id = 1;
 
-            default:
-                newCollider = false;
-                break;
+                    vertices[0] = position + PE_Vec2(0.1f, 0.0f);
+                    vertices[1] = position + PE_Vec2(0.9f, 0.0f);
+                    vertices[2] = position + PE_Vec2(0.5f, 0.8f);
+                    polygon.SetVertices(vertices, 3);
+                    break;
+
+                default:
+                    newCollider = false;
+                    break;
+                }
             }
+        
             if (newCollider)
             {
                 tile.collider = body->CreateCollider(colliderDef);
@@ -336,21 +421,39 @@ void StaticMap::Start()
 
 void StaticMap::OnCollisionStay(GameCollision &collision)
 {
-    if (collision.collider->GetUserData().id == 1 && collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+    if (m_scene.shutingDown)
     {
-        Player *player = dynamic_cast<Player *>(collision.gameBody);
-        if (player == nullptr)
-        {
-            assert(false);
-            return;
-        }
-        
-        player->Damage();
-        player->Bounce();
+        collision.ResolveUp();
+        collision.SetEnabled(false);
+        SetEnabled(false);
+        return;
     }
-    if (collision.collider->GetUserData().id == 2 && collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+    
+    if (m_isWorld)
     {
-        std::cout << "Contact!" << std::endl;
+        if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+        {
+        }
+        collision.ResolveUp();
+        collision.SetEnabled(false);
+    } else
+    {
+        if (collision.collider->GetUserData().id == 1 && collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+        {
+            Player *player = dynamic_cast<Player *>(collision.gameBody);
+            if (player == nullptr)
+            {
+                assert(false);
+                return;
+            }
+        
+            player->Damage();
+            player->Bounce();
+        }
+        if (collision.collider->GetUserData().id == 2 && collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
+        {
+            std::cout << "Contact!" << std::endl;
+        }
     }
 }
 

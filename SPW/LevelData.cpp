@@ -11,13 +11,23 @@ std::vector<LevelData> LevelData::Init()
 
     data.push_back(LevelData(
         u8"Montagnes",
-        u8"../Assets/Level/Level01.txt",
+        u8"../Assets/Level/0_Demo.txt",
         ThemeID::MOUNTAINS
     ));
     data.push_back(LevelData(
         u8"Démo",
-        u8"../Assets/Level/LevelDemo.txt",
+        u8"../Assets/Level/1_Mountains.txt",
         ThemeID::SKY
+        ));
+    data.push_back(LevelData(
+        u8"Montagnes",
+        u8"../Assets/Level/2_Desert.txt",
+        ThemeID::MOUNTAINS
+        ));
+    data.push_back(LevelData(
+        u8"Montagnes",
+        u8"../Assets/Level/3_Lost.txt",
+        ThemeID::MOUNTAINS
     ));
     return data;
 }
