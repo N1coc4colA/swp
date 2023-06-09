@@ -129,7 +129,6 @@ void Bonus::Give_Bonus()
         }
             
         Set_BonusEmpty();
-        
     }
 }
 

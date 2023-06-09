@@ -144,19 +144,24 @@ void Boss::FixedUpdate()
     }
     PE_Vec2 moove = {0.f,0.f};
     m_timermoove++;
-    if (m_timermoove == 200) {
-        if ((player->GetPosition().x - position.x) < 0) {
-            moove = PE_Vec2{ -250.f, 0.f };
+
+    if (m_timermoove > 200)
+    {
+        if (m_timermoove < 230)
+        {
+            if ((player->GetPosition().x - position.x) < 0) {
+                moove = PE_Vec2{ -70.f, 0.f };
+            }
+            else {
+                moove = PE_Vec2{ 70.f, 0.f };
+            }
+        } else
+        {
+            m_timermoove = 0;
         }
-        else {
-            moove = PE_Vec2{ 250.f, 0.f };
-        }
-        m_timermoove = 0;
     }
     
     body->SetVelocity(mvt+moove);
-   
-
 
     m_timer_bigshoot++;
     m_timer_shoot++;
@@ -271,7 +276,6 @@ void Boss::OnCollisionStay(GameCollision &collision)
         return;
     }
 
-
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
@@ -289,7 +293,6 @@ void Boss::OnCollisionStay(GameCollision &collision)
         }
         return;
     }
-    
 }
 
 void Boss::Bounce(const PE_Vec2 &v)
@@ -306,18 +309,22 @@ void Boss::Bounce(const PE_Vec2 &v)
     }
 }
 
-void Boss::Remove_life() {
+void Boss::Remove_life()
+{
     heart_count--;
 }
 
-void Boss::SetCloser(bool res) {
+void Boss::SetCloser(bool res)
+{
     m_player_closer = res;
 }
 
-bool Boss::GetCloser() {
+bool Boss::GetCloser()
+{
     return m_player_closer;
 }
 
-void Boss::SetShield(bool res) {
+void Boss::SetShield(bool res)
+{
     m_shield = res;
 }
