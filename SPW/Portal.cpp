@@ -12,18 +12,19 @@ Portal::Portal(Scene& scene, int index) :
     m_index = index;
     
     // Animation "Base"
-    RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
-    AssertNew(atlas);
-    RE_AtlasPart* part = atlas->GetPart("Heart");
+   
+        RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::PORTAL);
+        AssertNew(atlas);
+        RE_AtlasPart* part = atlas->GetPart("Green");
+        AssertNew(part);
+        RE_TexAnim* anim = new RE_TexAnim(m_animator, "vert", part);
+        anim->SetCycleCount(0);
+   
+    
+    
+    part = atlas->GetPart("Red");
     AssertNew(part);
-    RE_TexAnim* anim = new RE_TexAnim(m_animator, "IDLE", part);
-    anim->SetCycleCount(0);
-
-    atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
-    AssertNew(atlas);
-    part = atlas->GetPart("Heart");
-    AssertNew(part);
-    RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "RUNNING", part);
+    RE_TexAnim* RunningAnim = new RE_TexAnim(m_animator, "rouge", part);
     RunningAnim->SetCycleCount(-1);
     RunningAnim->SetCycleTime(1);
 }
@@ -32,13 +33,17 @@ void Portal::Start()
 {
 
     SetToRespawn(true);
-
-    m_animator.PlayAnimation("IDLE");
+    if (m_index == 1) {
+        m_animator.PlayAnimation("vert");
+    }
+    else {
+        m_animator.PlayAnimation("rouge");
+    }
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::STATIC;
     bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
-    bodyDef.name = "Heart";
+    bodyDef.name = "Portal";
     bodyDef.damping.SetZero();
     PE_Body* body = world.CreateBody(bodyDef);
     SetBody(body);
@@ -87,7 +92,12 @@ void Portal::OnRespawn()
     body->ClearForces();
 
     m_animator.StopAnimations();
-    m_animator.PlayAnimation("IDLE");
+    if (m_index == 1) {
+        m_animator.PlayAnimation("vert");
+    }
+    else {
+        m_animator.PlayAnimation("rouge");
+    }
 }
 
 Portal::~Portal()
@@ -152,7 +162,6 @@ void Portal::OnCollisionEnter(GameCollision& collision)
     if (m_index == 1) {
         if (collision.otherCollider->CheckCategory(CATEGORY_PLAYER))
         {
-            
             player->positionportal = m_scene.portal2->GetPosition() + PE_Vec2{1.5f, 0.f};
             player->takeportal = true;
         }
