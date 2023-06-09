@@ -5,6 +5,8 @@
 #include "Graphics.h"
 #include "Bulletlaunch.h"
 #include "Bullet.h"
+#include <cstdlib>
+#include <random>
 
 
 Boss::Boss(Scene &scene)
@@ -56,7 +58,7 @@ void Boss::Start()
     // Crée le collider
     PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 1.f);
     PE_ColliderDef colliderDef;
-    colliderDef.friction = 100000.f;
+    colliderDef.friction = 0.005f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
     colliderDef.filter.maskBits = CATEGORY_COLLECTABLE |CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
     colliderDef.shape = &circle;
@@ -123,6 +125,32 @@ void Boss::FixedUpdate()
     else {
         m_animator.PlayAnimation("Idle");
     }
+    
+    PE_Vec2 mvt = { 0.f,0.f };
+    if ((player->GetPosition().x - position.x) < 0) {
+        mvt= PE_Vec2{ -5.f, 0.f };
+    }
+    else {
+        mvt = PE_Vec2{ 5.f, 0.f };
+    }
+    
+    
+    
+    PE_Vec2 moove = {0.f,0.f};
+    m_timermoove++;
+    if (m_timermoove == 200) {
+        if ((player->GetPosition().x - position.x) < 0) {
+            moove = PE_Vec2{ -250.f, 0.f };
+        }
+        else {
+            moove = PE_Vec2{ 250.f, 0.f };
+        }
+        m_timermoove = 0;
+    }
+    body->SetVelocity(mvt+moove);
+   
+
+
     m_timer_bigshoot++;
     m_timer_shoot++;
     m_timer_shield++;
@@ -131,11 +159,11 @@ void Boss::FixedUpdate()
         PE_Vec2 mvt;
         
         if ((player->GetPosition().x - position.x) > 0) {
-            mvt = PE_Vec2{ 1.75f, 0.f };
+            mvt = PE_Vec2{ 2.3f, 0.f };
             //positionbullet += {2.f, 3.f};
         }
         else {
-            mvt = PE_Vec2{ -1.75f, 0.f };
+            mvt = PE_Vec2{ -2.3f, 0.f };
             //positionbullet -= {2.f, -3.f};
         }
         

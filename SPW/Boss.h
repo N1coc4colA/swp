@@ -47,6 +47,7 @@ private:
     int m_timer_shoot = 0;
     int m_timer_bigshoot = 0;
     int m_timer_shield = 0;
+    int m_timermoove = 0;
     bool m_shield = false;
 };
 
