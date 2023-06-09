@@ -116,7 +116,7 @@ LevelParser::LevelParser(const std::string &path)
         }
         else
         {
-            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (unsigned int)c << ")" << std::endl;
+            std::wcerr << "INFO - Invalid char (" << c << ") - (" << (char)c << ")" << std::endl;
         }
     }
 
