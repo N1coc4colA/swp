@@ -239,13 +239,18 @@ void Player::Render()
 
 void Player::FixedUpdate()
 {
+
+    
     PE_Body *body = GetBody();
     const PE_Vec2 position = body->GetPosition();
     PE_Vec2 velocity = body->GetLocalVelocity();
 
     // Réveille les corps autour du joueur
     WakeUpSurroundings();
-
+    if (takeportal) {
+        body->SetPosition(positionportal);
+        takeportal = false;
+    }
     // Tue le joueur s'il tombe dans un trou
     if (position.y < -2.0f)
     {

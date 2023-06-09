@@ -183,6 +183,7 @@
     <ClCompile Include="Oneway.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Portal.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SettingsScene.cpp" />
     <ClCompile Include="Shield.cpp" />
@@ -243,6 +244,7 @@
     <ClInclude Include="Oneway.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Portal.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="SettingsScene.h" />

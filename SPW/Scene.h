@@ -4,7 +4,7 @@
 #include "inputManager.h"
 #include "ObjectManager.h"
 #include "AssetManager.h"
-
+//#include "Portal.h"
 #include <functional>
 
 
@@ -26,9 +26,12 @@ struct SceneStats
 
     /// @brief Nombre de corps présents dans le moteur physique.
     int bodyCount;
+
+    
 };
 
 class Scene;
+
 class SceneListener : public PE_CollisionListener
 {
 public:
@@ -36,6 +39,9 @@ public:
     virtual void OnCollisionEnter(PE_CollisionPair &collision) override;
     virtual void OnCollisionStay(PE_CollisionPair &collision) override;
     virtual void OnCollisionExit(PE_CollisionPair &collision) override;
+
+    //Portal* portal1;
+    //Portal* portal2;
 };
 
 class GameCollision
@@ -84,7 +90,7 @@ public:
     PE_Vec2 hitPoint;
     float fraction;
 };
-
+class Portal;
 class Scene
 {
 public:
@@ -131,6 +137,8 @@ public:
     
     inline static bool usesTrick = false;
     inline static int tricked = 100;
+    Portal* portal1 = nullptr;
+    Portal* portal2 = nullptr;
 
 protected:
     friend class GameObject;

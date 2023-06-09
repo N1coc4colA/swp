@@ -35,6 +35,8 @@ public:
     void StartTimerShield();
     bool GetShield() const;
     void Setcapacity(bool res);
+    PE_Vec2 positionportal;
+    bool takeportal;
 
 protected:
     void WakeUpSurroundings();

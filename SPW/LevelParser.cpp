@@ -17,6 +17,7 @@
 #include "FallingBlock.h"
 #include "HubScene.h"
 #include "LevelBlock.h"
+#include "Portal.h"
 
 
 #include <fstream>
@@ -363,6 +364,23 @@ void LevelParser::InitScene(LevelScene &scene) const
                 brick->SetStartPosition(position);
                 break;
             }
+            case 'z':
+            {
+                
+                scene.portal1 = new Portal(scene,1);
+                scene.portal1->SetStartPosition(position);
+
+                break;
+            }
+            case 'Z':
+            {
+
+                scene.portal2 = new Portal(scene,2);
+                scene.portal2->SetStartPosition(position);
+
+                break;
+            }
+            
             case '6':
             {
                 Snake* snake = new Snake(scene,3,position,-1,Layer::ENEMYHOUSE);

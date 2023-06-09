@@ -210,6 +210,13 @@
     <ClCompile Include="Bulletlaunch.cpp">
       <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
     </ClCompile>
+    <ClCompile Include="FallingBlock.cpp" />
+    <ClCompile Include="HubPlayer.cpp" />
+    <ClCompile Include="HubScene.cpp" />
+    <ClCompile Include="LevelBlock.cpp" />
+    <ClCompile Include="Portal.cpp">
+      <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Settings.h">
@@ -376,6 +383,21 @@
     </ClInclude>
     <ClInclude Include="Bulletlaunch.h">
       <Filter>Fichiers sources\GameObject\GameBody\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="FallingBlock.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="HubPlayer.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="HubScene.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="LevelBlock.h">
+      <Filter>Fichiers sources</Filter>
+    </ClInclude>
+    <ClInclude Include="Portal.h">
+      <Filter>Fichiers sources\GameObject\GameBody\Collectable</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

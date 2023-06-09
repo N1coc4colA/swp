@@ -8,6 +8,8 @@
 
 class Boss;
 
+
+
 class LevelScene : public Scene
 {
 public:
@@ -26,6 +28,7 @@ public:
     void SetPaused(bool isPaused);
 
     PE_Vec2 worldDim;
+    
 
 private:
     std::array<Camera *, 2> m_cameras;
