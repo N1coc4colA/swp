@@ -164,7 +164,7 @@ SettingsScene::SettingsScene(TitleScene& scene)
         "Pause"
     };
 
-    float curY = 100.f;
+    float curY = 90.f;
     int i;
     for (i = 0; i < 6; i++, curY += buttonH + sep)
     {
