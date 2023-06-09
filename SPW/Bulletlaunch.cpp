@@ -213,6 +213,16 @@ void Bulletlaunch::OnCollisionEnter(GameCollision &collision)
             SetEnabled(false);
             player->Damage();
         }
+        if (Boss* boss = dynamic_cast<Boss*>(collision.gameBody)) {
+            if (boss == nullptr)
+            {
+                assert(false);
+                return;
+            }
+           
+            SetEnabled(false);
+            return;
+        }
     }
 }
 

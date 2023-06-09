@@ -289,6 +289,7 @@ void Boss::OnCollisionStay(GameCollision &collision)
         }
         return;
     }
+    
 }
 
 void Boss::Bounce(const PE_Vec2 &v)

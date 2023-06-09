@@ -284,6 +284,7 @@ void Player::FixedUpdate()
     RayHit hitL = m_scene.RayCast(originL, PE_Vec2::down, 0.1f, CATEGORY_TERRAIN, true);
     RayHit hitR = m_scene.RayCast(originR, PE_Vec2::down, 0.1f, CATEGORY_TERRAIN, true);
 
+
     if (hitL.collider != nullptr)
     {
         // Le rayon gauche à touché le sol
