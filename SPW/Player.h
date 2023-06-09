@@ -78,6 +78,7 @@ protected:
     bool m_capacity = false;
     bool m_capacitylaunch = false;
     bool m_dashed = false;
+    bool m_forceGround = false;
 };
 
 

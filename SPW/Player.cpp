@@ -284,17 +284,23 @@ void Player::FixedUpdate()
     RayHit hitR = m_scene.RayCast(originR, PE_Vec2::down, 0.1f, CATEGORY_TERRAIN, true);
 
 
-    if (hitL.collider != nullptr)
+    if (hitL.collider)
     {
         // Le rayon gauche à touché le sol
         m_onGround = true;
         gndNormal = hitL.normal;
     }
-    if (hitR.collider != nullptr)
+    if (hitR.collider)
     {
         // Le rayon droit à touché le sol
         m_onGround = true;
         gndNormal = hitR.normal;
+    }
+    if (m_forceGround)
+    {
+        m_onGround = true;
+        gndNormal = PE_Vec2::up;
+        m_forceGround = false;
     }
     
     //--------------------------------------------------------------------------
@@ -678,6 +684,7 @@ void Player::OnCollisionStay(GameCollision &collision)
             // Résoud la collision en déplaçant le joueur vers le haut
             // Evite de "glisser" sur les pentes si le joueur ne bouge pas
             collision.ResolveUp();
+            m_forceGround = true;
         }
         else if (Bonus* bonus = dynamic_cast<Bonus*>(collision.gameBody))
         {

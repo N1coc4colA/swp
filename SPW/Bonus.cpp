@@ -27,9 +27,6 @@ Bonus::Bonus(Scene &scene) :
     AssertNew(part)
     RE_TexAnim* emptyanim = new RE_TexAnim(m_animator, "EMPTY", part);
     emptyanim->SetCycleCount(0);
-
-  
-
 }
 
 void Bonus::Start()
