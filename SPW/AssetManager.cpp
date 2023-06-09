@@ -119,6 +119,9 @@ RE_Atlas *AssetManager::GetAtlas(AtlasID atlasID)
         case AtlasID::WORLD:
             path.assign("../Assets/Atlas/World.json");
             break;
+        case AtlasID::PORTAL:
+            path.assign("../Assets/Atlas/Portals.json");
+            break;
         default:
             assert(false);
             break;

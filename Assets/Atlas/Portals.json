@@ -1,0 +1,14 @@
+{
+    "texture": "Portals.png",
+    "geometry": {
+        "rowCount": 3,
+        "colCount": 4,
+        "width": 80,
+        "height": 80,
+        "border": 1
+    },
+    "parts": [
+        {"name": "Green", "frames": [0,1,2,3,4,0]},
+        {"name": "Red",   "frames": [4,0,1,2,3,4]}
+    ]
+}

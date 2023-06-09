@@ -12,7 +12,8 @@ enum class AtlasID : uint32_t
     UI,
     BOSS,
     SPECIAL,
-    WORLD
+    WORLD,
+    PORTAL,
 };
 enum class FontID : uint32_t
 {
