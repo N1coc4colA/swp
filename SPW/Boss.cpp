@@ -56,7 +56,7 @@ void Boss::Start()
     // Crée le collider
     PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 1.f);
     PE_ColliderDef colliderDef;
-    colliderDef.friction = 0.005f;
+    colliderDef.friction = 100000.f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
     colliderDef.filter.maskBits = CATEGORY_COLLECTABLE |CATEGORY_ENEMY | CATEGORY_PLAYER | CATEGORY_TERRAIN;
     colliderDef.shape = &circle;
@@ -145,19 +145,19 @@ void Boss::FixedUpdate()
     }
 
     if (m_timer_bigshoot == 500) {
-        PE_Vec2 mvt = PE_Vec2{ 1.75f, 0.f };
+        PE_Vec2 mvt = PE_Vec2{ 2.3f, 0.f };
         Bulletlaunch* bullet = new Bulletlaunch(m_scene, true, mvt);
         bullet->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ -1.75f, 0.f };
+        mvt = PE_Vec2{ 2.3f, 0.f };
         Bulletlaunch* bullet2 = new Bulletlaunch(m_scene, true, mvt);
         bullet2->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ 0.f, 1.75f };
+        mvt = PE_Vec2{ 0.f, 2.3f };
         Bulletlaunch* bullet3 = new Bulletlaunch(m_scene, true, mvt);
         bullet3->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ 1.75f, 1.75f };
+        mvt = PE_Vec2{ 2.3f, 2.3f };
         Bulletlaunch* bullet4 = new Bulletlaunch(m_scene, true, mvt);
         bullet4->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ -1.75f, 1.75f };
+        mvt = PE_Vec2{ -2.3f, 2.3f };
         Bulletlaunch* bullet5 = new Bulletlaunch(m_scene, true, mvt);
         bullet5->SetStartPosition(position + mvt);
         m_timer_bigshoot = 0;
