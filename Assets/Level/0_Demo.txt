@@ -24,3 +24,13 @@ LEGENDE :
   [o] = pièce (luciolle)
   [e] = ennemi (noisette magique)
   [A] = ennemi statique (pique)
+  [f] = bloc cassable par le dessus
+  [b] = brick cassable par le dessous
+  [C] = Checkpoint
+  [z] = portail1
+  [Z] = portail2
+  [6] = snake <-
+  [9] = snake ->
+  [E] = Boss
+  [O] = plateforme
+  [P] = capacity bullet
