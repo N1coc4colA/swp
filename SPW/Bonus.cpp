@@ -28,6 +28,8 @@ Bonus::Bonus(Scene &scene) :
     RE_TexAnim* emptyanim = new RE_TexAnim(m_animator, "EMPTY", part);
     emptyanim->SetCycleCount(0);
 
+  
+
 }
 
 void Bonus::Start()
@@ -95,6 +97,7 @@ void Bonus::Render()
 
 void Bonus::OnRespawn()
 {
+    SetToRespawn(true);
     m_active = true;
     m_state = State::FULL;
     m_animator.PlayAnimation("FULL");
@@ -114,22 +117,18 @@ void Bonus::Give_Bonus()
         std::mt19937 gen(rd()); // seed the generator
         std::uniform_int_distribution<> distr(0, 2);
         int Id_bonus = distr(gen);
-        
-        //printf("%d\n", Id_bonus);
+       
         if(Id_bonus==0) {
-                //printf("ici\n");
-                Heart* heart = new Heart(m_scene);
+                Heart *heart = new Heart(m_scene,false);
                 heart->SetStartPosition(GetPosition());
         }
         else if(Id_bonus == 1) {
-            //printf("here\n");
-            Shield * shield = new Shield(m_scene);
-            shield->SetStartPosition(GetPosition());
+            Shield * m_shield = new Shield(m_scene,false);
+            m_shield->SetStartPosition(GetPosition());
          }
         else if (Id_bonus == 2) {
-            //printf("where\n");
-            Firefly* firefly = new Firefly(m_scene);
-            firefly->SetStartPosition(GetPosition());
+            Firefly* m_firefly = new Firefly(m_scene,false);
+            m_firefly->SetStartPosition(GetPosition());
         }
             
         Set_BonusEmpty();

@@ -5,11 +5,11 @@
 #include "Camera.h"
 #include "LevelScene.h"
 
-Shield::Shield(Scene &scene) :
+Shield::Shield(Scene &scene, bool respawn) :
     Collectable(scene, Layer::COLLECTABLE)
 {
     m_name = "Shield";
-    
+    m_respawn = respawn;
 
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
@@ -66,11 +66,16 @@ void Shield::Render()
 void Shield::OnRespawn()
 {
     m_state = State::IDLE;
-
-    SetToRespawn(true);
-    SetBodyEnabled(true);
-    SetEnabled(true);
-
+    if (!m_respawn) {
+        SetToRespawn(false);
+        SetBodyEnabled(false);
+        SetEnabled(false);
+    }
+    else {
+        SetToRespawn(true);
+        SetBodyEnabled(true);
+        SetEnabled(true);
+    }
     PE_Body* body = GetBody();
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);

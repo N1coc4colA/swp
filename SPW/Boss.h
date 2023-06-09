@@ -25,7 +25,7 @@ public:
     void SetCloser(bool);
     bool GetCloser();
     void SetShield(bool res);
-
+    void Reset_life();
 
 private:
     RE_Animator m_animator;
@@ -42,13 +42,19 @@ private:
     bool m_isBounced = false;
     PE_Vec2 m_bounce;
     int heart_count = 5;
+    int heart_start = heart_count;
     bool m_player_closer;
     int m_timer_shoot = 0;
     int m_timer_bigshoot = 0;
     int m_timer_shield = 0;
+    int m_timermoove = 0;
     bool m_shield = false;
 };
 
 inline int Boss::Get_life() {
     return heart_count;
+}
+
+inline void Boss::Reset_life() {
+    heart_count = heart_start;
 }

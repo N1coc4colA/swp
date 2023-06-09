@@ -130,7 +130,8 @@ void Oneway::OnRespawn()
 {
     
     m_isBounced = false;
-
+    m_fixedCount = 0;
+    m_retour = true;
     SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);

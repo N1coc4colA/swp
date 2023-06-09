@@ -44,6 +44,19 @@ Player::Player(Scene &scene)
     );
     idleAnim->SetCycleCount(0);
 
+    atlas = assetsManager.GetAtlas(AtlasID::SPECIAL);
+    part = atlas->GetPart("Idle");
+    AssertNew(part)
+        RE_TexAnim* C_idleAnim = new RE_TexAnim(
+            m_animator,
+            "C_Idle",
+            part
+        );
+    C_idleAnim->SetCycleCount(-1);
+    C_idleAnim->SetCycleTime(0.2f);
+
+    atlas = assetsManager.GetAtlas(AtlasID::PLAYER);
+
     part = atlas->GetPart("Falling");
     AssertNew(part)
 	RE_TexAnim *fallingAnim = new RE_TexAnim(
@@ -54,6 +67,18 @@ Player::Player(Scene &scene)
     fallingAnim->SetCycleCount(-1);
 	fallingAnim->SetCycleTime(0.2f);
 
+    atlas = assetsManager.GetAtlas(AtlasID::SPECIAL);
+    part = atlas->GetPart("Falling");
+    AssertNew(part)
+        RE_TexAnim* C_fallingAnim = new RE_TexAnim(
+            m_animator,
+            "C_Falling",
+            part
+        );
+    C_fallingAnim->SetCycleCount(-1);
+    C_fallingAnim->SetCycleTime(0.2f);
+
+    atlas = assetsManager.GetAtlas(AtlasID::PLAYER);
     part = atlas->GetPart("Running");
     AssertNew(part)
     RE_TexAnim *runningAnim = new RE_TexAnim(
@@ -64,6 +89,18 @@ Player::Player(Scene &scene)
     runningAnim->SetCycleCount(-1);
     runningAnim->SetCycleTime(1.f);
 
+    atlas = assetsManager.GetAtlas(AtlasID::SPECIAL);
+    part = atlas->GetPart("Running");
+    AssertNew(part)
+        RE_TexAnim* C_runningAnim = new RE_TexAnim(
+            m_animator,
+            "C_Running",
+            part
+        );
+    C_runningAnim->SetCycleCount(-1);
+    C_runningAnim->SetCycleTime(0.2f);
+
+    atlas = assetsManager.GetAtlas(AtlasID::PLAYER);
     part = atlas->GetPart("Dying");
     AssertNew(part)
     RE_TexAnim *dyingAnim = new RE_TexAnim(
@@ -74,6 +111,18 @@ Player::Player(Scene &scene)
     dyingAnim->SetCycleCount(0);
     dyingAnim->SetCycleTime(1.f);
 
+    atlas = assetsManager.GetAtlas(AtlasID::SPECIAL);
+    part = atlas->GetPart("Dying");
+    AssertNew(part)
+        RE_TexAnim* C_dyingAnim = new RE_TexAnim(
+            m_animator,
+            "C_Dying",
+            part
+        );
+    C_dyingAnim->SetCycleCount(-1);
+    C_dyingAnim->SetCycleTime(0.2f);
+
+    atlas = assetsManager.GetAtlas(AtlasID::PLAYER);
     part = atlas->GetPart("Skidding");
     AssertNew(part)
     RE_TexAnim *skiddingAnim = new RE_TexAnim(
@@ -82,6 +131,17 @@ Player::Player(Scene &scene)
 		part
 	);
     skiddingAnim->SetCycleCount(0);
+    
+    atlas = assetsManager.GetAtlas(AtlasID::SPECIAL);
+    part = atlas->GetPart("Skidding");
+    AssertNew(part)
+        RE_TexAnim* C_skiddingAnim = new RE_TexAnim(
+            m_animator,
+            "C_Skidding",
+            part
+        );
+    C_skiddingAnim->SetCycleCount(0);
+    
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
@@ -123,6 +183,7 @@ void Player::Update()
     // Sauvegarde les contrôles du joueur pour modifier
     // sa physique au prochain FixedUpdate()
     
+
     if (controls.shieldon)
     {
         if(!timer_start) {
@@ -166,7 +227,6 @@ void Player::Render()
 
     SDL_FRect rect = { 0, 0, 1.375f * scale, rect.w = 1.f * scale };
     PE_Vec2 pos = GetPosition();
-	//pos.y += 0.1f;
     camera->WorldToView(pos, rect.x, rect.y);
     
     // Dessine l'animation du joueur
@@ -189,6 +249,10 @@ void Player::FixedUpdate()
     // Tue le joueur s'il tombe dans un trou
     if (position.y < -2.0f)
     {
+        m_lifeCount--;
+        m_heartCount = m_heartstart;
+        Kill();
+        
         m_scene.Respawn();
         return;
     }
@@ -313,24 +377,49 @@ void Player::FixedUpdate()
                 } else {
                     body->ApplyImpulse(PE_Vec2::up * 55.f);
                 }
-                m_animator.PlayAnimation("Skidding");
+                if (m_capacity) {
+                    m_animator.PlayAnimation("C_Skidding");
+                }
+                else {
+                    m_animator.PlayAnimation("Skidding");
+                }
 	            m_jump = false;
                 break;
         }
         case State::FALLING: {
+            if (m_capacity) {
+                m_animator.PlayAnimation("C_Falling");
+                }
+            else {
                 m_animator.PlayAnimation("Falling");
-                break;
+            }
+            break;
         }
         case State::IDLE: {
+            if (m_capacity) {
+                m_animator.PlayAnimation("C_Idle");
+            }
+            else {
                 m_animator.PlayAnimation("Idle");
+            }
                 break;
         }
         case State::RUNNING: {
+            if (m_capacity) {
+                m_animator.PlayAnimation("C_Running");
+            }
+            else {
                 m_animator.PlayAnimation("Running");
+            }
                 break;
         }
         case State::DYING: {
+            if (m_capacity) {
+                m_animator.PlayAnimation("C_Dying");
+            }
+            else {
                 m_animator.PlayAnimation("Dying");
+            }
                 break;
         }
         default: {
@@ -440,7 +529,7 @@ void Player::OnRespawn()
     m_bounce = false;
     m_jump = false;
     m_jumpedOnce = false;
-
+    m_capacity = false;
     m_animator.StopAnimations();
     m_animator.PlayAnimation("Idle");
 

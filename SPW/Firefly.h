@@ -9,7 +9,7 @@ class Firefly
     : public Collectable
 {
 public:
-    Firefly(Scene &scene);
+    Firefly(Scene &scene, bool respawn);
     ~Firefly();
     void Start() override;
     void Render() override;
@@ -18,4 +18,5 @@ public:
 
 private:
     RE_Animator m_animator;
+    bool m_respawn;
 };

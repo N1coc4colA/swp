@@ -3,6 +3,7 @@
 #include "Settings.h"
 #include "GameBody.h"
 
+
 class Bonus : public GameBody
 {
 public:
@@ -19,6 +20,7 @@ private:
     RE_Animator m_animator;
     bool m_hit;
     bool m_active = true;
+    
     enum class State
     {
         FULL,

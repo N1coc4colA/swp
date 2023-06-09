@@ -305,7 +305,7 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case 'o':
             {
-                Firefly* firefly = new Firefly(scene);
+                Firefly* firefly = new Firefly(scene,true);
                 firefly->SetStartPosition(position);
                 break;
             }
@@ -317,7 +317,7 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case 'H':
             {
-                Heart* heart = new Heart(scene);
+                Heart* heart = new Heart(scene,true);
                 heart->SetStartPosition(position);
                 break;
             }
@@ -329,7 +329,7 @@ void LevelParser::InitScene(LevelScene &scene) const
             }
             case 's':
             {
-                Shield* shield = new Shield(scene);
+                Shield* shield = new Shield(scene,true);
                 shield->SetStartPosition(position);
                 break;
             }

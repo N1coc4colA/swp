@@ -5,6 +5,8 @@
 #include "Graphics.h"
 #include "Bulletlaunch.h"
 #include "Bullet.h"
+#include <cstdlib>
+#include <random>
 
 
 Boss::Boss(Scene &scene)
@@ -47,14 +49,14 @@ void Boss::Start()
     PE_World &world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::DYNAMIC;
-    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f,0.f);
     bodyDef.name = "Boss";
     bodyDef.damping.SetZero();
     PE_Body *body = world.CreateBody(bodyDef);
     SetBody(body);
 
     // Crée le collider
-    PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 0.45f);
+    PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 1.f);
     PE_ColliderDef colliderDef;
     colliderDef.friction = 0.005f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
@@ -123,20 +125,45 @@ void Boss::FixedUpdate()
     else {
         m_animator.PlayAnimation("Idle");
     }
+    
+    PE_Vec2 mvt = { 0.f,0.f };
+    if ((player->GetPosition().x - position.x) < 0) {
+        mvt= PE_Vec2{ -5.f, 0.f };
+    }
+    else {
+        mvt = PE_Vec2{ 5.f, 0.f };
+    }
+    
+    
+    
+    PE_Vec2 moove = {0.f,0.f};
+    m_timermoove++;
+    if (m_timermoove == 200) {
+        if ((player->GetPosition().x - position.x) < 0) {
+            moove = PE_Vec2{ -250.f, 0.f };
+        }
+        else {
+            moove = PE_Vec2{ 250.f, 0.f };
+        }
+        m_timermoove = 0;
+    }
+    body->SetVelocity(mvt+moove);
+   
+
+
     m_timer_bigshoot++;
     m_timer_shoot++;
     m_timer_shield++;
-    printf("%d\n", m_shield);
     if (m_timer_shoot == 150)
     {
         PE_Vec2 mvt;
         
         if ((player->GetPosition().x - position.x) > 0) {
-            mvt = PE_Vec2{ 1.75f, 0.f };
+            mvt = PE_Vec2{ 2.3f, 0.f };
             //positionbullet += {2.f, 3.f};
         }
         else {
-            mvt = PE_Vec2{ -1.75f, 0.f };
+            mvt = PE_Vec2{ -2.3f, 0.f };
             //positionbullet -= {2.f, -3.f};
         }
         
@@ -146,19 +173,19 @@ void Boss::FixedUpdate()
     }
 
     if (m_timer_bigshoot == 500) {
-        PE_Vec2 mvt = PE_Vec2{ 1.75f, 0.f };
+        PE_Vec2 mvt = PE_Vec2{ 2.3f, 0.f };
         Bulletlaunch* bullet = new Bulletlaunch(m_scene, true, mvt);
         bullet->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ -1.75f, 0.f };
+        mvt = PE_Vec2{ 2.3f, 0.f };
         Bulletlaunch* bullet2 = new Bulletlaunch(m_scene, true, mvt);
         bullet2->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ 0.f, 1.75f };
+        mvt = PE_Vec2{ 0.f, 2.3f };
         Bulletlaunch* bullet3 = new Bulletlaunch(m_scene, true, mvt);
         bullet3->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ 1.75f, 1.75f };
+        mvt = PE_Vec2{ 2.3f, 2.3f };
         Bulletlaunch* bullet4 = new Bulletlaunch(m_scene, true, mvt);
         bullet4->SetStartPosition(position + mvt);
-        mvt = PE_Vec2{ -1.75f, 1.75f };
+        mvt = PE_Vec2{ -2.3f, 2.3f };
         Bulletlaunch* bullet5 = new Bulletlaunch(m_scene, true, mvt);
         bullet5->SetStartPosition(position + mvt);
         m_timer_bigshoot = 0;
@@ -183,9 +210,10 @@ void Boss::Render()
 
     float scale = camera->GetWorldToViewScale();
     SDL_FRect rect = { 0 };
-    rect.h = 1.0f * scale;
-    rect.w = 1.0f * scale;
-    camera->WorldToView(GetPosition(), rect.x, rect.y);
+    rect.h = 2.0f * scale;
+    rect.w = 2.0f * scale;
+    
+    camera->WorldToView(GetPosition()-PE_Vec2{0.f,0.6f}, rect.x, rect.y);
     m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
@@ -193,7 +221,7 @@ void Boss::OnRespawn()
 {
     m_state = State::IDLE;
     m_isBounced = false;
-
+    Reset_life();
     SetToRespawn(true);
     SetBodyEnabled(true);
     SetEnabled(true);
@@ -216,16 +244,10 @@ void Boss::Damage(GameBody *damager)
             m_scene.Quit();
         }
         if (Player* player = dynamic_cast<Player*>(damager)) {
-            player->Bounce();
             Remove_life();
         }
         else {
             Remove_life();
-        }
-    }
-    else {
-        if (Player* player = dynamic_cast<Player*>(damager)) {
-            player->Bounce();
         }
     }
 }
@@ -246,7 +268,7 @@ void Boss::OnCollisionStay(GameCollision &collision)
     // Collision avec le joueur
     if (otherCollider->CheckCategory(CATEGORY_PLAYER))
     {
-        printf("carabistoulle\n");
+        
         Player *player = dynamic_cast<Player *>(collision.gameBody);
         if (player == nullptr)
         {
@@ -259,14 +281,6 @@ void Boss::OnCollisionStay(GameCollision &collision)
             player->Damage();
         }
         return;
-    } else if (otherCollider->CheckCategory(CATEGORY_ENEMY))
-    {
-        if (Boss *boss = dynamic_cast<Boss*>(collision.gameBody))
-        {
-            printf("carabistoulle\n");
-            boss->Bounce(manifold.normal * 40.f);
-            Bounce(manifold.normal * 4.f);
-        }
     }
 }
 

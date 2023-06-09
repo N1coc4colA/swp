@@ -5,12 +5,12 @@
 #include "Camera.h"
 #include "LevelScene.h"
 
-Heart::Heart(Scene &scene) :
+Heart::Heart(Scene &scene,bool respawn) :
     Collectable(scene, Layer::COLLECTABLE)
 {
     m_name = "Heart";
     
-
+    m_respawn = respawn;
     // Animation "Base"
     RE_Atlas* atlas = scene.GetAssetManager().GetAtlas(AtlasID::UI);
     AssertNew(atlas);
@@ -30,7 +30,9 @@ Heart::Heart(Scene &scene) :
 
 void Heart::Start()
 {
+    
     SetToRespawn(true);
+    
     m_animator.PlayAnimation("IDLE");
     PE_World& world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
@@ -74,11 +76,16 @@ void Heart::Render()
 void Heart::OnRespawn()
 {
     m_state = State::IDLE;
-
-    SetToRespawn(true);
-    SetBodyEnabled(true);
-    SetEnabled(true);
-
+    if (!m_respawn) {
+        SetToRespawn(false);
+        SetBodyEnabled(false);
+        SetEnabled(false);
+    }
+    else {
+        SetToRespawn(true);
+        SetBodyEnabled(true);
+        SetEnabled(true);
+    }
     PE_Body* body = GetBody();
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);

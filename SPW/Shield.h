@@ -7,7 +7,7 @@
 class Shield : public Collectable
 {
 public:
-    Shield(Scene &scene);
+    Shield(Scene &scene, bool respawn);
     
     ~Shield();
     void Start() override;
@@ -19,6 +19,7 @@ public:
     void Collect(GameBody *collector) override;
 private:
     RE_Animator m_animator;
+    bool m_respawn;
     enum class State
     {
         IDLE,
