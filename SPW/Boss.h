@@ -33,9 +33,9 @@ private:
     enum class State
     {
         IDLE,
-		SPINNING,
-        JUMPED,
-		DYING
+		SHIELD,
+        DYING,
+        RUNNING
     };
 
     State m_state = State::IDLE;

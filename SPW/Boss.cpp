@@ -32,6 +32,10 @@ Boss::Boss(Scene &scene)
     RE_TexAnim* shieldAnim = new RE_TexAnim(m_animator, "shield", part);
     shieldAnim->SetCycleCount(0);
 
+    part = atlas->GetPart("BossMoving");
+    AssertNew(part);
+    RE_TexAnim* mooveAnim = new RE_TexAnim(m_animator, "moove", part);
+    mooveAnim->SetCycleCount(0);
 }
 
 Boss::~Boss()
@@ -43,7 +47,7 @@ void Boss::Start()
     SetToRespawn(true);
 
     // Joue l'animation par défaut
-    m_animator.PlayAnimation("Idle");
+    m_animator.PlayAnimation("moove");
 
     // Crée le corps
     PE_World &world = m_scene.GetWorld();
@@ -121,21 +125,23 @@ void Boss::FixedUpdate()
     }
     if (m_shield) {
         m_animator.PlayAnimation("shield");
+        m_state = State::SHIELD;
+
     }
     else {
-        m_animator.PlayAnimation("Idle");
+        if (m_state == State::SHIELD) {
+            m_animator.PlayAnimation("moove");
+            m_state = State::RUNNING;
+        }
     }
     
     PE_Vec2 mvt = { 0.f,0.f };
     if ((player->GetPosition().x - position.x) < 0) {
-        mvt= PE_Vec2{ -5.f, 0.f };
+        mvt= PE_Vec2{ -2.f, 0.f };
     }
     else {
-        mvt = PE_Vec2{ 5.f, 0.f };
+        mvt = PE_Vec2{ 2.f, 0.f };
     }
-    
-    
-    
     PE_Vec2 moove = {0.f,0.f};
     m_timermoove++;
     if (m_timermoove == 200) {
@@ -147,6 +153,7 @@ void Boss::FixedUpdate()
         }
         m_timermoove = 0;
     }
+    
     body->SetVelocity(mvt+moove);
    
 
@@ -232,7 +239,7 @@ void Boss::OnRespawn()
     body->ClearForces();
 
     m_animator.StopAnimations();
-    m_animator.PlayAnimation("Idle");
+    m_animator.PlayAnimation("moove");
 }
 
 void Boss::Damage(GameBody *damager)
