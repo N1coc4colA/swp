@@ -94,11 +94,7 @@ LevelScene::LevelScene(SDL_Renderer *renderer, RE_Timer &mainTime, LevelData &le
         
         worldDim = { 24.0f, 24.0f * 1080.0f / 1920.0f };
         background->SetWorldDimensions(worldDim);
-        float factors[] = { 0.0f, 0.05f, 0.1f, 0.2f, 0.35f, 0.5f, 0.7f };
-        for (int i = 0; i < 7; i++)
-        {
-            background->SetTexture(i, m_textures[i], PE_Vec2(factors[i], factors[i]));
-        }
+        background->SetTexture(0, m_textures[0], PE_Vec2(0.f, 0.f));
     } else if (parser.themeName == "Desert")
     {
         level.themeID = ThemeID::DESERT;

@@ -216,7 +216,7 @@ std::vector<SDL_Texture *> &AssetManager::GetBackgrounds(ThemeID theme)
             break;
         case ThemeID::LOST:
             folder.assign("../Assets/Theme_Lost");
-            layerCount = 7;
+            layerCount = 1;
             break;
         case ThemeID::DESERT:
             folder.assign("../Assets/Theme_Desert");
