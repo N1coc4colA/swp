@@ -131,7 +131,7 @@ Player::Player(Scene &scene)
 		part
 	);
     skiddingAnim->SetCycleCount(0);
-    /*
+    
     atlas = assetsManager.GetAtlas(AtlasID::SPECIAL);
     part = atlas->GetPart("Skidding");
     AssertNew(part)
@@ -141,7 +141,7 @@ Player::Player(Scene &scene)
             part
         );
     C_skiddingAnim->SetCycleCount(0);
-    */
+    
 
     // Couleur des colliders en debug
     m_debugColor.r = 255;
@@ -196,6 +196,7 @@ void Player::Update()
             else {
                 shield = true;
                 
+                
             }
         
         controls.shieldon = false;
@@ -237,7 +238,6 @@ void Player::Render()
 
     SDL_FRect rect = { 0, 0, 1.375f * scale, rect.w = 1.f * scale };
     PE_Vec2 pos = GetPosition();
-	//pos.y += 0.1f;
     camera->WorldToView(pos, rect.x, rect.y);
     
     // Dessine l'animation du joueur
@@ -260,6 +260,10 @@ void Player::FixedUpdate()
     // Tue le joueur s'il tombe dans un trou
     if (position.y < -2.0f)
     {
+        m_lifeCount--;
+        m_heartCount = m_heartstart;
+        Kill();
+        
         m_scene.Respawn();
         return;
     }

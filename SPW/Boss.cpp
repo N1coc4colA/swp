@@ -47,14 +47,14 @@ void Boss::Start()
     PE_World &world = m_scene.GetWorld();
     PE_BodyDef bodyDef;
     bodyDef.type = PE_BodyType::DYNAMIC;
-    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f, 0.0f);
+    bodyDef.position = GetStartPosition() + PE_Vec2(0.5f,0.f);
     bodyDef.name = "Boss";
     bodyDef.damping.SetZero();
     PE_Body *body = world.CreateBody(bodyDef);
     SetBody(body);
 
     // Crée le collider
-    PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 0.45f);
+    PE_CircleShape circle(PE_Vec2(0.0f, 0.45f), 1.f);
     PE_ColliderDef colliderDef;
     colliderDef.friction = 0.005f;
     colliderDef.filter.categoryBits = CATEGORY_ENEMY;
@@ -182,9 +182,10 @@ void Boss::Render()
 
     float scale = camera->GetWorldToViewScale();
     SDL_FRect rect = { 0 };
-    rect.h = 1.0f * scale;
-    rect.w = 1.0f * scale;
-    camera->WorldToView(GetPosition(), rect.x, rect.y);
+    rect.h = 2.0f * scale;
+    rect.w = 2.0f * scale;
+    
+    camera->WorldToView(GetPosition()-PE_Vec2{0.f,0.6f}, rect.x, rect.y);
     m_animator.RenderCopyF(&rect, RE_Anchor::SOUTH);
 }
 
@@ -215,16 +216,10 @@ void Boss::Damage(GameBody *damager)
             m_scene.Quit();
         }
         if (Player* player = dynamic_cast<Player*>(damager)) {
-            player->Bounce();
             Remove_life();
         }
         else {
             Remove_life();
-        }
-    }
-    else {
-        if (Player* player = dynamic_cast<Player*>(damager)) {
-            player->Bounce();
         }
     }
 }

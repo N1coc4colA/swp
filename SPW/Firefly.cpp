@@ -1,11 +1,11 @@
 #include "Firefly.h"
 
 
-Firefly::Firefly(Scene &scene)
+Firefly::Firefly(Scene &scene, bool respawn)
     : Collectable(scene, Layer::COLLECTABLE)
 {
     m_name = "Firefly";
-
+    m_respawn = respawn;
     RE_Atlas *atlas = scene.GetAssetManager().GetAtlas(AtlasID::COLLECTABLE);
     AssertNew(atlas);
 
@@ -65,8 +65,16 @@ void Firefly::Render() {
 
 void Firefly::OnRespawn() {
    
-    SetBodyEnabled(true);
-    SetEnabled(true);
+    if (!m_respawn) {
+        SetToRespawn(false);
+        SetBodyEnabled(false);
+        SetEnabled(false);
+    }
+    else {
+        SetToRespawn(true);
+        SetBodyEnabled(true);
+        SetEnabled(true);
+    }
     PE_Body* body = GetBody();
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.0f));
     body->SetVelocity(PE_Vec2::zero);

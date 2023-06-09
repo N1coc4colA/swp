@@ -33,7 +33,7 @@ Bulletlaunch::Bulletlaunch(Scene &scene, bool Enemie,PE_Vec2 senstir) :
 
 void Bulletlaunch::Start()
 {
-    SetToRespawn(false);
+    SetToRespawn(true);
     if (m_enemie) {
         m_animator.PlayAnimation("boss");
     }
@@ -68,6 +68,7 @@ void Bulletlaunch::Start()
 
 void Bulletlaunch::Render()
 {
+    
     SDL_Renderer* renderer = m_scene.GetRenderer();
     Camera* camera = m_scene.GetActiveCamera();
 
@@ -83,11 +84,13 @@ void Bulletlaunch::Render()
 
 void Bulletlaunch::OnRespawn()
 {
+    
     m_state = State::IDLE;
+    
 
     SetToRespawn(false);
-    SetBodyEnabled(true);
-    SetEnabled(true);
+    SetBodyEnabled(false);
+    SetEnabled(false);
 
     PE_Body* body = GetBody();
     body->SetPosition(GetStartPosition() + PE_Vec2(0.5f, 0.5f));
@@ -119,7 +122,7 @@ void Bulletlaunch::FixedUpdate()
     if (position.y < -2.0f)
     {
         SetEnabled(false);
-        SetToRespawn(false);
+        SetToRespawn(true);
         return;
     }
 
