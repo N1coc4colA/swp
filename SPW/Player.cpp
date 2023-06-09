@@ -6,9 +6,9 @@
 #include "Graphics.h"
 #include "Brick.h"
 #include "Bonus.h"
-#include "Shield.h"
-#include "Bullet.h"
 #include "Bulletlaunch.h"
+#include "Snake.h"
+
 
 Player::Player(Scene &scene)
 	: GameBody(scene, Layer::PLAYER)
@@ -197,7 +197,6 @@ void Player::Update()
             
         }
     }
-    
     
 	if (!m_jump) {
         m_jump = controls.jumpPressed;
@@ -684,6 +683,21 @@ void Player::OnCollisionStay(GameCollision &collision)
         {
             bonus->Give_Bonus();
             
+        }
+    } else if (otherCollider->CheckCategory(CATEGORY_ENEMY))
+    {
+        if (auto snake = dynamic_cast<Snake *>(collision.gameBody))
+        {
+            collision.SetEnabled(false);
+            //Then we have to check if we're between a wall & a serpent.
+            PE_Vec2 dir = {collision.manifold.normal.x < 0 ? -1.f : 1.f, 0.f};
+            RayHit rh = m_scene.RayCast(GetPosition() + PE_Vec2{0.4f, 0.5f}, dir, 0.5f, CATEGORY_TERRAIN, false);
+            if (rh.collider)
+            {
+                // We're dead!
+                m_lifeCount--;
+                Kill();
+            }
         }
     }
 }
