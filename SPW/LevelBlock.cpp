@@ -97,22 +97,22 @@ void LevelBlock::FixedUpdate()
 {
     const PE_Vec2 position = GetPosition();
     
-    RayHit h1 = m_scene.RayCast(position + PE_Vec2{0.f, -0.3f}, PE_Vec2{1.f, 0.f}, 1.f, CATEGORY_PLAYER, false);
+    RayHit h1 = m_scene.RayCast(position + PE_Vec2{-0.f, -0.2f}, PE_Vec2{1.4f, 0.f}, 1.f, CATEGORY_PLAYER, false);
     
-    RayHit h2 = m_scene.RayCast(position + PE_Vec2{-0.5f, -0.5f}, PE_Vec2{0.f, 0.2f}, 1.f, CATEGORY_PLAYER, false);
-    RayHit h3 = m_scene.RayCast(position + PE_Vec2{-0.5f, 1.5f}, PE_Vec2{2.f, 0.f}, 1.f, CATEGORY_PLAYER, false);
-    RayHit h4 = m_scene.RayCast(position + PE_Vec2{1.5f, -0.5f}, PE_Vec2{0.f, 2.f}, 1.f, CATEGORY_PLAYER, false);
+    RayHit h2 = m_scene.RayCast(position + PE_Vec2{-0.2f, -0.2f}, PE_Vec2{0.f, 1.4f}, 1.f, CATEGORY_PLAYER, false);
+    RayHit h3 = m_scene.RayCast(position + PE_Vec2{-0.2f, 1.4f}, PE_Vec2{1.4f, 0.f}, 1.f, CATEGORY_PLAYER, false);
+    RayHit h4 = m_scene.RayCast(position + PE_Vec2{1.4f, -0.2f}, PE_Vec2{0.f, 1.4f}, 1.f, CATEGORY_PLAYER, false);
     
     RayHit h5 = m_scene.RayCast(position + PE_Vec2{1.f, 0.f}, PE_Vec2{-1.f, -1.f}, 1.f, CATEGORY_PLAYER, false);
     RayHit h6 = m_scene.RayCast(position, PE_Vec2{1.f, -1.f}, 1.f, CATEGORY_PLAYER, false);
 
-    if (h6.collider || h5.collider)
-    {
-        showDescription = true;
-    } else if (h1.collider)
+    if (h1.collider)
     {
         trigger();
         return;
+    } else if (h6.collider || h5.collider)
+    {
+        showDescription = true;
     } else if (h2.collider || h3.collider || h4.collider) {
         if (HubPlayer *player = dynamic_cast<HubPlayer *>(h2.collider ? h2.gameBody : (h3.collider ? h3.gameBody : h4.gameBody)))
         {
@@ -131,12 +131,12 @@ void LevelBlock::DrawGizmos()
     const PE_Vec2 position = GetBody()->GetPosition();
     
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-    graphics.DrawVector(PE_Vec2{1.f, 0.f}, position + PE_Vec2{0.f, -0.3f});
+    graphics.DrawVector(PE_Vec2{1.4f, 0.f}, position + PE_Vec2{-0.2f, -0.2f});
     
     SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
-    graphics.DrawVector(PE_Vec2{0.f, 2.f}, position + PE_Vec2{-0.5f, -0.5f});
-    graphics.DrawVector(PE_Vec2{2.f, 0.f}, position + PE_Vec2{-0.5f, 1.5f});
-    graphics.DrawVector(PE_Vec2{0.f, 2.f}, position + PE_Vec2{1.5f, -0.5f});
+    graphics.DrawVector(PE_Vec2{0.f, 1.4f}, position + PE_Vec2{-0.2f, -0.2f});
+    graphics.DrawVector(PE_Vec2{1.4f, 0.f}, position + PE_Vec2{-0.2f, 1.2f});
+    graphics.DrawVector(PE_Vec2{0.f, 1.4f}, position + PE_Vec2{1.2f, -0.2f});
     
     SDL_SetRenderDrawColor(renderer, 0, 0, 255, 255);
     graphics.DrawVector(PE_Vec2{-1.f, -1.f}, position + PE_Vec2{1.f, 0.f});
