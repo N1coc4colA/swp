@@ -60,7 +60,7 @@ protected:
 
     float m_hDirection = 0.f;
     bool m_jump = false;
-    bool m_onGround;
+    bool m_onGround = false;
     bool m_bounce = false;
     bool m_facingRight = true;
     bool shield = false;
@@ -77,6 +77,7 @@ protected:
     bool m_drifting = false;
     bool m_capacity = false;
     bool m_capacitylaunch = false;
+    bool m_dashed = false;
 };
 
 

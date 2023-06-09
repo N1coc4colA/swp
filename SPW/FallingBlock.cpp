@@ -16,6 +16,11 @@ FallingBlock::FallingBlock(Scene &scene)
     AssertNew(part)
     RE_TexAnim *anim = new RE_TexAnim(m_animator, "Base", part);
     anim->SetCycleCount(0);
+    
+    part = atlas->GetPart("FallingBefore");
+    AssertNew(part)
+    anim = new RE_TexAnim(m_animator, "Before", part);
+    anim->SetCycleCount(0);
 }
 
 void FallingBlock::Start()
@@ -50,11 +55,14 @@ void FallingBlock::FixedUpdate()
     if (m_timerRunning)
     {
         m_timer += m_scene.GetFixedTimeStep();
-        if (m_timer >= 1.6f)
+        if (m_timer >= 1.f)
         {
             m_active = false;
             SetEnabled(false);
             return;
+        } else if (m_timer >= 0.5f)
+        {
+            m_animator.PlayAnimation("Before");
         }
     }
     

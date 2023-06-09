@@ -87,7 +87,7 @@ Player::Player(Scene &scene)
 		part
 	);
     runningAnim->SetCycleCount(-1);
-    runningAnim->SetCycleTime(1.f);
+    runningAnim->SetCycleTime(0.5f);
 
     atlas = assetsManager.GetAtlas(AtlasID::SPECIAL);
     part = atlas->GetPart("Running");
@@ -327,6 +327,10 @@ void Player::FixedUpdate()
 	    } else {
 			tmpState = State::RUNNING;
 		}
+	    if (!m_dashed)
+	    {
+	        m_dashed = false;
+	    }
     } else {
         if (tmpState != State::FALLING)
         {
@@ -378,9 +382,16 @@ void Player::FixedUpdate()
                     } else
                     { 
                         body->ApplyImpulse((PE_Vec2{-2.f, 2.f}) * 45.f);
-                    } 
+                    }
+                    m_dashed = true;
                 } else {
-                    body->ApplyImpulse(PE_Vec2::up * 55.f);
+                    if (m_dashed)
+                    {
+                        body->ApplyImpulse(PE_Vec2::up * 25.f);
+                    } else {
+                        body->ApplyImpulse(PE_Vec2::up * 55.f);
+                    }
+                    m_dashed = false;
                 }
                 if (m_capacity) {
                     m_animator.PlayAnimation("C_Skidding");
@@ -516,7 +527,10 @@ void Player::FixedUpdate()
             m_shieldAanimator.StopAnimations();
         }
     }
-    
+
+    velocity = body->GetLocalVelocity();
+    velocity.y = PE_Clamp(velocity.y, -50.f, 50.f);
+    body->SetVelocity(velocity);
 }
 
 void Player::OnRespawn()
